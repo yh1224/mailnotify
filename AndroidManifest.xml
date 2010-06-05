@@ -9,6 +9,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="EmailNotifyAboutActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <receiver android:name="EmailNotifyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>

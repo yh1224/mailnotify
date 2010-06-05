@@ -9,11 +9,7 @@
         android:orientation="horizontal" android:layout_width="fill_parent"
         android:layout_height="fill_parent" android:layout_margin="6pt"
         android:layout_marginTop="10pt" android:gravity="center_horizontal|bottom">
-        <Button android:text="@string/report" android:id="@+id/btn_report"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:minEms="8"></Button>
         <Button android:text="@string/ok" android:id="@+id/btn_ok"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:minEms="8"></Button>
+            android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
     </LinearLayout>
 </LinearLayout>

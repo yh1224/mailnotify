@@ -5,7 +5,16 @@
     <string name="app_description">メールが届いたときに通知します!</string>
     <string name="notify_text">メールが届いてるかも?!</string>
     <string name="ok">了解</string>
-    <string name="description">Xperiaかつmopera Uメール専用です。ネットに接続できない状態でもメールが届いたときに通知します。mopera Uメールの自動受信設定は有効にしておいてください。\n\nむりやりな実装なので、うまく反応しなかったり反応しすぎたりするかもしれません。動作可否だけでも報告頂けると嬉しいです。\n\nタスク管理ソフトを使用している場合、このアプリは自動終了しないように設定しておいてください。
-    </string>
-<string name="report">報告</string>
+    <string name="description"><![CDATA[
+ネットに接続できない状態でもメールが届いたときに通知します。Xperiaかつmopera Uメール専用です。mopera Uメールの自動受信設定は有効にしておいてください。\n\n
+むりやりな実装なので、うまく反応しなかったり反応しすぎたりするかもしれません。動作可否だけでも報告頂けると嬉しいです。\n\n
+タスク管理ソフトを使用している場合、このアプリは自動終了しないように設定しておいてください。
+]]></string>
+    <string name="report">報告</string>
+    <string name="about">このアプリについて</string>
+    <string name="about_title">メール来たかも</string>
+    <string name="about_text"><![CDATA[
+ネットに接続できない状態でもメールが届いたときに通知します。\n\n
+Copyright 2010 Orange leaf\n
+]]></string>
 </resources>
