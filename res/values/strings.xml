@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">メール来たかも</string>
+    <string name="app_version">0.2</string>
+    <string name="app_description">メールが届いたときに通知します!</string>
+    <string name="notify_text">メールが届いてるかも?!</string>
+    <string name="ok">了解</string>
+    <string name="description">Xperiaかつmopera Uメール専用です。ネットに接続できない状態でもメールが届いたときに通知します。mopera Uメールの自動受信設定は有効にしておいてください。\n\nむりやりな実装なので、うまく反応しなかったり反応しすぎたりするかもしれません。動作可否だけでも報告頂けると嬉しいです。\n\nタスク管理ソフトを使用している場合、このアプリは自動終了しないように設定しておいてください。
+    </string>
+<string name="report">報告</string>
+</resources>

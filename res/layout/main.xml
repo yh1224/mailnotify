@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TextView android:text="@string/description"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:textSize="12pt" android:layout_margin="6pt"></TextView>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" android:layout_width="fill_parent"
+        android:layout_height="fill_parent" android:layout_margin="6pt"
+        android:layout_marginTop="10pt" android:gravity="center_horizontal|bottom">
+        <Button android:text="@string/report" android:id="@+id/btn_report"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:minEms="8"></Button>
+        <Button android:text="@string/ok" android:id="@+id/btn_ok"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:minEms="8"></Button>
+    </LinearLayout>
+</LinearLayout>
