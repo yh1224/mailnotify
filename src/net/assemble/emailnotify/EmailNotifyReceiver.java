@@ -9,18 +9,18 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
     static final String ACTION = "android.provider.Telephony.SMS_RECEIVED";
 
     public void onReceiveIntent(Context context, Intent intent) {
-        Log.d(this.getClass().getName(), "received intent: "
+        Log.d(getClass().getName(), "received intent: "
                 + intent.getAction());
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(this.getClass().getName(), "received intent: "
+        Log.d(getClass().getName(), "received intent: "
                 + intent.getAction());
 
         if (intent.getAction() != null) {
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-                Log.i(this.getClass().getName(), "EmailNotify restarted.");
+                Log.i(getClass().getName(), "EmailNotify restarted.");
                 new EmailObserver(context);
             }
         }

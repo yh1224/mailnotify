@@ -36,7 +36,7 @@ public class EmailObserver {
 
     private boolean checkLog() {
         boolean result = false;
-        //Log.d(this.getClass().getName(), "Checking log...");
+        //Log.d(getClass().getName(), "Checking log...");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -59,7 +59,7 @@ public class EmailObserver {
             // 05-28 00:20:53.021 D/MailPushFactory( 6694): getEmnMailbox : mailat:yh1224@mopera.net
             // 05-28 00:20:53.021 D/MailPushFactory( 6694): getEmnTimestamp : 1274973653000
             while (line != null) {
-                //Log.d(this.getClass().getName(), line);
+                //Log.d(getClass().getName(), line);
                 if (line.contains("getEmnMailbox")) {
                     // ログ出力日時を取得
                     String[] days = line.split(" ")[0].split("-");
@@ -84,7 +84,7 @@ public class EmailObserver {
             }
             bufferedReader.close();
         } catch (IOException e) {
-            Log.e(this.getClass().getName(), "Failed to check log.");
+            Log.e(getClass().getName(), "Failed to check log.");
             // 例外処理
         }
         mLastCheck = Calendar.getInstance();
