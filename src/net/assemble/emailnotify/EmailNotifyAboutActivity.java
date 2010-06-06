@@ -14,7 +14,7 @@ public class EmailNotifyAboutActivity extends Activity
 
         requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
-        setContentView(R.layout.about_activity);
+        setContentView(R.layout.about);
 
         try {
             PackageInfo pi = getPackageManager().getPackageInfo("net.assemble.emailnotify", 0);
