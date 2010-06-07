@@ -9,29 +9,49 @@ import java.util.Calendar;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 
-public class EmailObserver {
-    private Context mCtx;
+/**
+ * メール監視サービス
+ */
+public class EmailObserverService extends Service {
+    private static ComponentName mService;
     private EmObserver mObserver;
     private ContentResolver mContentResolver;
     private Calendar mLastCheck;
     private Calendar mLastNotify;
 
-    public EmailObserver(Context ctx) {
-        mCtx = ctx;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
 
         mObserver = new EmObserver(new Handler());
-        mContentResolver = mCtx.getContentResolver();
+        mContentResolver = getContentResolver();
         mContentResolver.registerContentObserver(Uri
                 .parse("content://com.android.email/update"), true, mObserver);
         mLastCheck = Calendar.getInstance();
+    }
+
+    public void onDestroy() {
+    }
+
+    @Override
+    public IBinder onBind(Intent arg0) {
+        return null;
     }
 
     private boolean checkLog() {
@@ -95,18 +115,17 @@ public class EmailObserver {
         Calendar cal = Calendar.getInstance();
         long diff = cal.getTimeInMillis() - mLastCheck.getTimeInMillis();
         if (diff > 10000/*10秒以内は再チェックしない*/ && checkLog()) {
-            NotificationManager notificationManager = (NotificationManager) mCtx
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification notification = new Notification(R.drawable.icon, mCtx
-                    .getResources().getString(R.string.app_name), System
-                    .currentTimeMillis());
-            Intent intent = new Intent(mCtx, EmailNotifyActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(mCtx, 0, intent, 0);
-            String message = mCtx.getResources().getString(R.string.notify_text);
+            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notification = new Notification(R.drawable.icon, 
+                    getResources().getString(R.string.app_name),
+                    System.currentTimeMillis());
+            Intent intent = new Intent(this, EmailNotifyActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            String message = getResources().getString(R.string.notify_text);
             message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
                     + cal.get(Calendar.MINUTE) + ")";
-            notification.setLatestEventInfo(mCtx,
-                    mCtx.getResources().getString(R.string.app_name),
+            notification.setLatestEventInfo(this,
+                    getResources().getString(R.string.app_name),
                     message, contentIntent);
             notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
             notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
@@ -125,6 +144,36 @@ public class EmailObserver {
         @Override
         public void onChange(boolean selfChange) {
             doNotify();
+        }
+    }
+
+    
+    /**
+     * サービス開始
+     */
+    public static void startService(Context ctx) {
+        mService = ctx.startService(new Intent(ctx, EmailObserverService.class));
+        if (mService == null) {
+            Log.e(ctx.getClass().getName(), "EmailObserverService could not start!");
+        } else {
+            Log.d(ctx.getClass().getName(), "EmailObserverService started: " + mService);
+        }
+    }
+
+    /**
+     * サービス停止
+     */
+    public static void stopService(Context ctx) {
+        if (mService != null) {
+            Intent i = new Intent();
+            i.setComponent(mService);
+            boolean res = ctx.stopService(i);
+            if (res == false) {
+                Log.e(ctx.getClass().getName(), "EmailObserverService could not stop!");
+            } else {
+                Log.d(ctx.getClass().getName(), "EmailObserverService stopped: " + mService);
+                mService = null;
+            }
         }
     }
 }

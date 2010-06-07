@@ -27,7 +27,7 @@ public class EmailNotifyActivity extends Activity {
             }
         });
 
-        new EmailObserver(this);
+        EmailObserverService.startService(this);
     }
 
     /**

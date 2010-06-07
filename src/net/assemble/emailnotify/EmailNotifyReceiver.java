@@ -21,7 +21,7 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
         if (intent.getAction() != null) {
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(getClass().getName(), "EmailNotify restarted.");
-                new EmailObserver(context);
+                EmailObserverService.startService(context);
             }
         }
     }
