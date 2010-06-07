@@ -11,7 +11,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -26,27 +25,27 @@ import android.util.Log;
 public class EmailObserverService extends Service {
     private static ComponentName mService;
     private EmObserver mObserver;
-    private ContentResolver mContentResolver;
     private Calendar mLastCheck;
     private Calendar mLastNotify;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mLastCheck = Calendar.getInstance();
+
+        mObserver = new EmObserver(new Handler());
+        getContentResolver().registerContentObserver(
+                Uri.parse("content://com.android.email/update"), true, mObserver);
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-
-        mObserver = new EmObserver(new Handler());
-        mContentResolver = getContentResolver();
-        mContentResolver.registerContentObserver(Uri
-                .parse("content://com.android.email/update"), true, mObserver);
-        mLastCheck = Calendar.getInstance();
     }
 
     public void onDestroy() {
+        getContentResolver().unregisterContentObserver(mObserver);
     }
 
     @Override
