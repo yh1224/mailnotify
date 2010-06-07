@@ -93,7 +93,7 @@ public class EmailObserverService extends Service {
                     ccal.set(Calendar.MILLISECOND, 0);
                     //Log.d(getClass().getName(), "ccal = " + ccal.getTimeInMillis());
 
-                    if (mLastNotify == null || ccal.getTimeInMillis() != mLastNotify.getTimeInMillis()) {
+                    if (mLastNotify == null || ccal.getTimeInMillis() > mLastNotify.getTimeInMillis()) {
                         // 未通知であれば通知する
                         mLastNotify = ccal;
                         result = true;
