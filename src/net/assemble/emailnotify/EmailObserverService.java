@@ -23,6 +23,8 @@ import android.util.Log;
  * メール監視サービス
  */
 public class EmailObserverService extends Service {
+    private static final String TAG = "EmailNotify";
+
     private static ComponentName mService;
     private EmObserver mObserver;
     private Calendar mLastCheck;
@@ -153,9 +155,9 @@ public class EmailObserverService extends Service {
     public static void startService(Context ctx) {
         mService = ctx.startService(new Intent(ctx, EmailObserverService.class));
         if (mService == null) {
-            Log.e(ctx.getClass().getName(), "EmailObserverService could not start!");
+            Log.e(TAG, "EmailObserverService could not start!");
         } else {
-            Log.d(ctx.getClass().getName(), "EmailObserverService started: " + mService);
+            Log.d(TAG, "EmailObserverService started: " + mService);
         }
     }
 
@@ -168,9 +170,9 @@ public class EmailObserverService extends Service {
             i.setComponent(mService);
             boolean res = ctx.stopService(i);
             if (res == false) {
-                Log.e(ctx.getClass().getName(), "EmailObserverService could not stop!");
+                Log.e(TAG, "EmailObserverService could not stop!");
             } else {
-                Log.d(ctx.getClass().getName(), "EmailObserverService stopped: " + mService);
+                Log.d(TAG, "EmailObserverService stopped: " + mService);
                 mService = null;
             }
         }
