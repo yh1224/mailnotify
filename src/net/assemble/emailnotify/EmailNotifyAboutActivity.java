@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -37,9 +39,13 @@ public class EmailNotifyAboutActivity extends Activity
         // テキスト
         AssetManager as = getResources().getAssets();
         try {
-            //InputStream input = as.open("about.txt");
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(as.open("about.txt")));
+            InputStream fin;
+            try {
+                fin = as.open("about_" + Locale.getDefault().getLanguage() + ".txt");
+            } catch (IOException e) {
+                fin = as.open("about.txt");
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(fin));
             StringBuffer str = new StringBuffer();
             String s;
             while ((s = in.readLine()) != null) {
