@@ -1,0 +1,6 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/preferences">
+        <Preference android:summary="@string/pref_launch_app_summary"
+            android:title="@string/pref_launch_app_title" android:key="launch_app" />
+    </PreferenceCategory>
+</PreferenceScreen>

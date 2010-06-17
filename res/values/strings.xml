@@ -4,10 +4,22 @@
     <string name="app_version">0.2</string>
     <string name="app_description">メールが届いたときに通知します!</string>
     <string name="notify_text">メールが届いてるかも?!</string>
-    <string name="ok">了解</string>
-    <string name="description"><![CDATA[ネットに接続できない状態でもメールが届いたときに通知します。Xperiaかつmopera Uメール専用です。mopera Uメールの自動受信設定は有効にしておいてください。\n\nむりやりな実装なので、うまく反応しなかったり反応しすぎたりするかもしれません。動作可否だけでも報告頂けると嬉しいです。\n\nタスク管理ソフトを使用している場合、このアプリは自動終了しないように設定しておいてください。]]></string>
+    <string name="ok">OK</string>
+    <string name="description"><![CDATA[ネットに接続できない状態でもメールが届いたときに通知します。Xperiaかつmopera Uメール専用です。mopera Uメールの自動受信設定は有効にしておいてください。\n\nタスク管理ソフト等を使用している場合、このアプリは自動終了しないようにご注意ください。]]></string>
     <string name="report">報告</string>
     <string name="about">バージョン情報</string>
     <string name="about_title">メール来たかも</string>
     <string name="about_text"><![CDATA[ネットに接続できない状態でもメールが届いたときに通知します。\n\nCopyright 2010 Orange leaf\n]]></string>
+    <string name="preferences">設定</string>
+    <string name="pref_notification_title">通知</string>
+    <string name="pref_notification_summary">メールが来ていることを通知バーに通知します。</string>
+    <string name="pref_launch_title">アプリを起動</string>
+    <string name="pref_launch_summary">メールが来たときにアプリを起動します。</string>
+    <string name="select_app">アプリ選択</string>
+    <string name="pref_launch_app_title">メールアプリ</string>
+    <string name="pref_launch_app_is">起動するメールアプリ:</string>
+    <string name="pref_launch_app_summary">通知をクリックしたときに起動するメールアプリを選択してください。</string>
+    <string name="enable">有効化</string>
+    <string name="service_started">メール監視を開始しました。</string>
+    <string name="service_stopped">メール監視を停止しました。</string>
 </resources>

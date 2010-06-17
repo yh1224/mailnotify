@@ -2,32 +2,27 @@ package net.assemble.emailnotify;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ToggleButton;
 
 import net.assemble.emailnotify.R;
 
-public class EmailNotifyActivity extends Activity {
+public class EmailNotifyActivity extends Activity implements View.OnClickListener {
+    private ToggleButton mEnableButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Button btn_ok = (Button) findViewById(R.id.btn_ok);
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mEnableButton = (ToggleButton) findViewById(R.id.enable);
+        mEnableButton.setOnClickListener(this);
 
-        EmailObserverService.startService(this);
+        updateService();
     }
 
     /**
@@ -46,9 +41,8 @@ public class EmailNotifyActivity extends Activity {
         int itemId = item.getItemId();
         Intent intent;
         switch (itemId) {
-        case R.id.menu_report:
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:yh1224@gmail.com"));
-            intent.putExtra(Intent.EXTRA_SUBJECT, "About EmailNotify");
+        case R.id.menu_preferences:
+            intent = new Intent().setClass(this, EmailNotifyPreferencesActivity.class);
             startActivity(intent);
             break;
         case R.id.menu_about:
@@ -57,6 +51,22 @@ public class EmailNotifyActivity extends Activity {
             break;
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        EmailNotifyPreferences.setEnable(this, mEnableButton.isChecked());
+        updateService();
     };
 
+    private void updateService() {
+        if (EmailNotifyPreferences.getEnable(this)) {
+            EmailObserverService.startService(this);
+            mEnableButton.setChecked(true);
+        } else {
+            EmailObserverService.stopService(this);
+            mEnableButton.setChecked(false);
+        }
+    }
+    
 }

@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * メール監視サービス
@@ -112,28 +113,67 @@ public class EmailObserverService extends Service {
         return result;
     }
 
-    public void doNotify() {
+    /**
+     * 通知
+     */
+    private void doNotify() {
+        Calendar cal = Calendar.getInstance();
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification(R.drawable.icon, 
+                getResources().getString(R.string.app_name),
+                System.currentTimeMillis());
+
+        Intent intent = new Intent();
+        ComponentName component = EmailNotifyPreferences.getComponent(this);
+        if (component != null) {
+            intent.setComponent(component);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent.setClass(this, EmailNotifyActivity.class);
+        }
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        String message = getResources().getString(R.string.notify_text);
+        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                + cal.get(Calendar.MINUTE) + ")";
+        notification.setLatestEventInfo(this,
+                getResources().getString(R.string.app_name),
+                message, contentIntent);
+        notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+        notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
+        notification.ledARGB = 0xff00ff00;
+        notification.ledOnMS = 200;
+        notification.ledOffMS = 2000;
+        notificationManager.notify(1, notification);
+    }
+
+    /**
+     * アプリ起動
+     */
+    private void doLaunch() {
+        Intent intent = new Intent();
+        ComponentName component = EmailNotifyPreferences.getComponent(this);
+        if (component != null) {
+            intent.setComponent(component);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent.setClass(this, EmailNotifyActivity.class);
+        }
+        startActivity(intent);
+    }
+
+    /**
+     * メールが来たかどうかをチェックし、アクションを起こす
+     */
+    public void checkEmail() {
         Calendar cal = Calendar.getInstance();
         long diff = cal.getTimeInMillis() - mLastCheck.getTimeInMillis();
         if (diff > 10000/*10秒以内は再チェックしない*/ && checkLog()) {
-            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification notification = new Notification(R.drawable.icon, 
-                    getResources().getString(R.string.app_name),
-                    System.currentTimeMillis());
-            Intent intent = new Intent(this, EmailNotifyActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-            String message = getResources().getString(R.string.notify_text);
-            message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
-                    + cal.get(Calendar.MINUTE) + ")";
-            notification.setLatestEventInfo(this,
-                    getResources().getString(R.string.app_name),
-                    message, contentIntent);
-            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-            notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
-            notification.ledARGB = 0xff00ff00;
-            notification.ledOnMS = 200;
-            notification.ledOffMS = 2000;
-            notificationManager.notify(1, notification);
+            if (EmailNotifyPreferences.getNotify(this)) {
+                doNotify();
+            }
+            if (EmailNotifyPreferences.getLaunch(this)) {
+                doLaunch();
+            }
         }
     }
 
@@ -144,21 +184,40 @@ public class EmailObserverService extends Service {
 
         @Override
         public void onChange(boolean selfChange) {
-            doNotify();
+            checkEmail();
         }
     }
 
     
     /**
+     * サービス動作有無取得
+     */
+    public static boolean isActive() {
+        if (mService != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * サービス開始
      */
-    public static void startService(Context ctx) {
+    public static boolean startService(Context ctx) {
+        boolean result;
+        boolean restart = EmailObserverService.isActive();
         mService = ctx.startService(new Intent(ctx, EmailObserverService.class));
         if (mService == null) {
             Log.e(TAG, "EmailObserverService could not start!");
+            result = false;
         } else {
             Log.d(TAG, "EmailObserverService started: " + mService);
+            result = true;
         }
+        if (!restart && result) {
+            Toast.makeText(ctx, R.string.service_started, Toast.LENGTH_SHORT).show();
+        }
+        return result;
     }
 
     /**
@@ -173,6 +232,7 @@ public class EmailObserverService extends Service {
                 Log.e(TAG, "EmailObserverService could not stop!");
             } else {
                 Log.d(TAG, "EmailObserverService stopped: " + mService);
+                Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
                 mService = null;
             }
         }
