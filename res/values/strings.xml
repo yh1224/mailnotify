@@ -9,7 +9,6 @@
     <string name="report">報告</string>
     <string name="about">バージョン情報</string>
     <string name="about_title">メール来たかも</string>
-    <string name="about_text"><![CDATA[ネットに接続できない状態でもメールが届いたときに通知します。\n\nCopyright 2010 Orange leaf\n]]></string>
     <string name="preferences">設定</string>
     <string name="pref_notification_title">通知</string>
     <string name="pref_notification_summary">メールが来ていることを通知バーに通知します。</string>

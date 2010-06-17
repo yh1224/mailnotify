@@ -1,15 +1,21 @@
 package net.assemble.emailnotify;
 
+import java.io.InputStreamReader;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ToggleButton;
+import android.widget.TextView;
 
 public class EmailNotifyAboutActivity extends Activity
 {
@@ -27,6 +33,23 @@ public class EmailNotifyAboutActivity extends Activity
         } catch (NameNotFoundException e) {}
         getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
                 R.drawable.icon);
+
+        // テキスト
+        AssetManager as = getResources().getAssets();
+        try {
+            //InputStream input = as.open("about.txt");
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(as.open("about.txt")));
+            StringBuffer str = new StringBuffer();
+            String s;
+            while ((s = in.readLine()) != null) {
+                str.append(s + "\n");
+            }
+            in.close();
+
+            TextView text = (TextView) findViewById(R.id.text);
+            text.setText(str.toString());
+        } catch (IOException e) {}
 
         // OK
         Button btn_ok = (Button) findViewById(R.id.ok);
