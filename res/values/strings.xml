@@ -5,7 +5,6 @@
     <string name="app_description">メールが届いたときに通知します!</string>
     <string name="notify_text">メールが届いてるかも?!</string>
     <string name="ok">OK</string>
-    <string name="description"><![CDATA[ネットに接続できない状態でもEメールが届いたときに通知します。\n\n- Xperia + mopera Uメール専用です。\n- mopera Uメールの自動受信設定を有効にしておいてください。\n- Eメールアプリにアカウントを設定しておいてください。\n\n※タスク管理ソフト等で本アプリが自動終了されないようご注意ください。]]></string>
     <string name="report">報告</string>
     <string name="about">バージョン情報</string>
     <string name="about_title">メール来たかも</string>

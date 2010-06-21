@@ -1,5 +1,7 @@
 package net.assemble.emailnotify;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import net.assemble.emailnotify.R;
@@ -21,6 +24,13 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
 
         mEnableButton = (ToggleButton) findViewById(R.id.enable);
         mEnableButton.setOnClickListener(this);
+
+        AssetsReader ar = new AssetsReader(this);
+        try {
+            String str = ar.getText("description.txt");
+            TextView text = (TextView) findViewById(R.id.description);
+            text.setText(str);
+        } catch (IOException e) {}
 
         updateService();
     }
@@ -46,7 +56,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             startActivity(intent);
             break;
         case R.id.menu_about:
-            intent = new Intent().setClass(this, EmailNotifyAboutActivity.class);
+            intent = new Intent().setClass(this, AboutActivity.class);
             startActivity(intent);
             break;
         }
