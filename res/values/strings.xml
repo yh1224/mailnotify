@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">メール来たかも</string>
-    <string name="app_version">0.2</string>
-    <string name="app_description">メールが届いたときに通知します!</string>
-    <string name="notify_text">メールが届いてるかも?!</string>
+    <string name="app_name">Eメール通知</string>
+    <string name="notify_text">メールが届いています。</string>
     <string name="ok">OK</string>
     <string name="report">報告</string>
     <string name="about">バージョン情報</string>
-    <string name="about_title">メール来たかも</string>
     <string name="preferences">設定</string>
     <string name="pref_notification_title">通知</string>
-    <string name="pref_notification_summary">メールが来ていることを通知バーに通知します。</string>
+    <string name="pref_notification_summary">メールが届いたことを通知バーに通知します。</string>
     <string name="pref_launch_title">アプリを起動</string>
-    <string name="pref_launch_summary">メールが来たときにアプリを起動します。</string>
+    <string name="pref_launch_summary">メールが届いたときに自動的にアプリを起動します。</string>
     <string name="select_app">アプリ選択</string>
     <string name="pref_launch_app_title">起動アプリ</string>
     <string name="pref_launch_app_is">起動するアプリ:</string>
