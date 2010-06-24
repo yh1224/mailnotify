@@ -10,7 +10,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 public class AssetsReader {
-    private Context mCtx; 
+    private Context mCtx;
 
     public AssetsReader(Context ctx) {
         mCtx = ctx;
@@ -18,7 +18,7 @@ public class AssetsReader {
 
     /**
      * テキストファイルから文字列を読み込む
-     * 
+     *
      * @param filename ファイル名
      * @return 文字列
      */
@@ -27,7 +27,7 @@ public class AssetsReader {
         AssetManager as = mCtx.getAssets();
         InputStream fin;
         try {
-            fin = as.open(filename + Locale.getDefault().getLanguage());
+            fin = as.open(filename + "." + Locale.getDefault().getLanguage());
         } catch (IOException e) {
             fin = as.open(filename);
         }
