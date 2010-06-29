@@ -16,6 +16,15 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_NOTIFY = "notify";
     public static final boolean PREF_NOTIFY_DEFAULT = true;
 
+    public static final String PREF_KEY_SOUND = "sound";
+    public static final String PREF_SOUND_DEFAULT = "content://settings/system/notification_sound";
+
+    public static final String PREF_KEY_VIBRATION = "vibration";
+    public static final boolean PREF_VIBRATION_DEFAULT = true;
+
+    public static final String PREF_KEY_KILL_EMAIL = "kill_email";
+    public static final boolean PREF_KILL_EMAIL_DEFAULT = false;
+
     public static final String PREF_KEY_LAUNCH = "launch";
     public static final boolean PREF_LAUNCH_DEFAULT = false;
 
@@ -38,6 +47,24 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_NOTIFY,
                 EmailNotifyPreferences.PREF_NOTIFY_DEFAULT);
+    }
+
+    public static String getSound(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                EmailNotifyPreferences.PREF_KEY_SOUND,
+                EmailNotifyPreferences.PREF_SOUND_DEFAULT);
+    }
+
+    public static boolean getVibration(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_VIBRATION,
+                EmailNotifyPreferences.PREF_VIBRATION_DEFAULT);
+    }
+
+    public static boolean getKillEmail(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_KILL_EMAIL,
+                EmailNotifyPreferences.PREF_KILL_EMAIL_DEFAULT);
     }
 
     public static boolean getLaunch(Context ctx) {

@@ -1,0 +1,768 @@
+06-12 21:49:03.809 I/dalvikvm(  946): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:49:03.939 I/dalvikvm(  946): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:49:04.829 D/dalvikvm(  524): GC freed 1197 objects / 443760 bytes in 289ms
+06-12 21:49:05.199 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:05.439 D/dalvikvm(  524): GC freed 1196 objects / 441768 bytes in 133ms
+06-12 21:49:05.599 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:08.549 D/dalvikvm(  351): GC freed 10011 objects / 509008 bytes in 597ms
+06-12 21:49:08.759 D/dalvikvm(  524): GC freed 1197 objects / 443800 bytes in 127ms
+06-12 21:49:09.189 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:09.439 D/dalvikvm(  524): GC freed 1196 objects / 441984 bytes in 132ms
+06-12 21:49:09.589 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:13.219 D/dalvikvm(  524): GC freed 1197 objects / 443752 bytes in 799ms
+06-12 21:49:13.329 I/ActivityManager(   72): Process org.kman.WifiManager (pid 946) has died.
+06-12 21:49:13.329 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:49:13.809 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:14.159 D/dalvikvm(  524): GC freed 1197 objects / 443592 bytes in 131ms
+06-12 21:49:14.309 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:15.359 W/InputManagerService(   72): Window already focused, ignoring focus gain of: com.android.internal.view.IInputMethodClient$Stub$Proxy@4346ed20
+06-12 21:49:16.069 D/dalvikvm(  354): GC freed 18018 objects / 440072 bytes in 249ms
+06-12 21:49:17.259 D/dalvikvm(  524): GC freed 1197 objects / 443848 bytes in 124ms
+06-12 21:49:17.689 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:17.929 I/ActivityManager(   72): Starting activity: Intent { cmp=com.android.email/.activity.setup.AccountSetupCheckSettings (has extras) }
+06-12 21:49:18.399 I/ActivityManager(   72): Displayed activity com.android.email/.activity.setup.AccountSetupCheckSettings: 409 ms (total 409 ms)
+06-12 21:49:18.609 D/dalvikvm(  524): GC freed 1197 objects / 444896 bytes in 157ms
+06-12 21:49:18.779 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:20.279 D/dalvikvm(  935): GC freed 5449 objects / 327336 bytes in 164ms
+06-12 21:49:21.179 D/dalvikvm(  524): GC freed 1197 objects / 443792 bytes in 241ms
+06-12 21:49:22.289 I/ActivityManager(   72): Displayed activity com.android.email/.activity.setup.AccountSettings: 956 ms (total 956 ms)
+06-12 21:49:22.469 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:22.699 D/dalvikvm(  524): GC freed 1200 objects / 442088 bytes in 129ms
+06-12 21:49:22.879 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:25.889 D/dalvikvm(  524): GC freed 1197 objects / 444984 bytes in 140ms
+06-12 21:49:26.299 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:26.559 D/dalvikvm(  524): GC freed 1196 objects / 441752 bytes in 154ms
+06-12 21:49:26.719 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:29.949 D/HeroHomeLoaders(  788): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:49:29.949 D/HeroHomeLoaders(  788):   --> package:com.android.email
+06-12 21:49:29.949 D/HeroHomeLoaders(  788):   --> sync package com.android.email
+06-12 21:49:30.199 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:49:30.469 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:49:30.609 W/ActivityManager(   72): Activity pause timeout for HistoryRecord{434c4c30 com.android.email/.activity.setup.AccountSettings}
+06-12 21:49:30.689 D/dalvikvm(  935): GC freed 7820 objects / 617952 bytes in 472ms
+06-12 21:49:30.829 I/ActivityManager(   72): Stopping service: com.android.email/.service.MailService
+06-12 21:49:33.899 D/dalvikvm(  524): GC freed 1197 objects / 443752 bytes in 1012ms
+06-12 21:49:33.999 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=956 uid=10059 gids={3003}
+06-12 21:49:34.759 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:49:34.759 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:49:34.969 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:49:34.979 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:49:35.219 D/HeroHomeLoaders(  788): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:49:35.239 D/HeroHomeLoaders(  788):   --> package:com.android.email
+06-12 21:49:35.309 D/HeroHomeLoaders(  788):   --> sync package com.android.email
+06-12 21:49:36.099 I/dalvikvm(  956): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:49:36.369 I/dalvikvm(  956): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:49:37.079 D/HeroHomeLoaders(  788): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:49:37.079 D/HeroHomeLoaders(  788):   --> package:com.android.email
+06-12 21:49:37.079 D/HeroHomeLoaders(  788):   --> sync package com.android.email
+06-12 21:49:37.509 D/HeroHomeLoaders(  788): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:49:37.509 D/HeroHomeLoaders(  788):   --> package:com.android.email
+06-12 21:49:37.509 D/HeroHomeLoaders(  788):   --> sync package com.android.email
+06-12 21:49:37.779 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:49:37.789 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:49:37.899 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:40.269 I/ActivityManager(   72): Process org.kman.WifiManager (pid 956) has died.
+06-12 21:49:40.279 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:49:40.469 D/dalvikvm(  362): GC freed 11205 objects / 525840 bytes in 1306ms
+06-12 21:49:40.649 D/dalvikvm(  935): threadid=3: bogus mon 1+0>0; adjusting
+06-12 21:49:40.769 D/dalvikvm(  524): GC freed 1196 objects / 441760 bytes in 592ms
+06-12 21:49:41.249 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:41.539 D/dalvikvm(  524): GC freed 1196 objects / 441896 bytes in 130ms
+06-12 21:49:41.769 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:43.599 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=962 uid=10059 gids={3003}
+06-12 21:49:43.909 I/dalvikvm(  962): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:49:43.939 I/dalvikvm(  962): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:49:44.259 I/ActivityManager(   72): Process org.kman.WifiManager (pid 962) has died.
+06-12 21:49:44.259 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:49:44.659 D/dalvikvm(  524): GC freed 1197 objects / 443536 bytes in 169ms
+06-12 21:49:45.169 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:45.499 D/dalvikvm(  524): GC freed 1201 objects / 445448 bytes in 196ms
+06-12 21:49:45.679 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:46.029 D/dalvikvm(  935): GC freed 6909 objects / 392712 bytes in 231ms
+06-12 21:49:46.589 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=967 uid=10059 gids={3003}
+06-12 21:49:46.709 I/dalvikvm(  967): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:49:46.739 I/dalvikvm(  967): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:49:47.139 I/ActivityManager(   72): Process org.kman.WifiManager (pid 967) has died.
+06-12 21:49:47.139 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:49:48.029 D/dalvikvm(  935): GC freed 10866 objects / 596712 bytes in 160ms
+06-12 21:49:48.909 D/dalvikvm(  524): GC freed 1197 objects / 444928 bytes in 218ms
+06-12 21:49:49.349 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:49.569 D/dalvikvm(  524): GC freed 1196 objects / 441984 bytes in 123ms
+06-12 21:49:49.729 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:50.249 D/dalvikvm(   72): GC freed 35441 objects / 1530432 bytes in 478ms
+06-12 21:49:52.189 D/skia    (  935): purging 255K from font cache [27 entries]
+06-12 21:49:52.399 D/dalvikvm(  935): GC freed 1154 objects / 64544 bytes in 205ms
+06-12 21:49:53.149 D/dalvikvm(  524): GC freed 1197 objects / 443624 bytes in 277ms
+06-12 21:49:53.569 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:54.139 D/dalvikvm(  524): GC freed 1196 objects / 442096 bytes in 450ms
+06-12 21:49:54.319 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:56.109 D/dalvikvm(  351): GC freed 10008 objects / 508240 bytes in 240ms
+06-12 21:49:57.039 D/dalvikvm(  524): GC freed 1197 objects / 443616 bytes in 349ms
+06-12 21:49:57.199 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:57.619 D/dalvikvm(  524): GC freed 1196 objects / 442064 bytes in 140ms
+06-12 21:49:57.819 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:49:58.609 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=975 uid=10059 gids={3003}
+06-12 21:49:58.789 I/dalvikvm(  975): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:49:58.819 I/dalvikvm(  975): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:49:59.209 I/ActivityManager(   72): Process org.kman.WifiManager (pid 975) has died.
+06-12 21:49:59.209 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:50:00.609 D/dalvikvm(  524): GC freed 1196 objects / 442080 bytes in 140ms
+06-12 21:50:01.019 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:01.259 D/dalvikvm(  524): GC freed 1197 objects / 445160 bytes in 123ms
+06-12 21:50:01.429 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:01.629 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=980 uid=10059 gids={3003}
+06-12 21:50:01.869 I/dalvikvm(  980): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:01.919 I/dalvikvm(  980): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:50:01.989 D/dalvikvm(  935): GC freed 7257 objects / 394384 bytes in 328ms
+06-12 21:50:02.029 D/OpenSSLSessionImpl(  935): Freeing OpenSSL session
+06-12 21:50:04.259 I/ActivityManager(   72): Process org.kman.WifiManager (pid 980) has died.
+06-12 21:50:04.259 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:50:04.519 D/dalvikvm(  935): GC freed 11496 objects / 556792 bytes in 205ms
+06-12 21:50:04.689 D/dalvikvm(  524): GC freed 1197 objects / 443656 bytes in 334ms
+06-12 21:50:05.129 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:05.399 D/dalvikvm(  524): GC freed 1197 objects / 445144 bytes in 147ms
+06-12 21:50:05.549 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:06.829 D/dalvikvm(  935): GC freed 10222 objects / 499720 bytes in 178ms
+06-12 21:50:07.679 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=988 uid=10059 gids={3003}
+06-12 21:50:07.789 I/dalvikvm(  988): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:07.819 I/dalvikvm(  988): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:50:08.489 D/dalvikvm(  524): GC freed 1197 objects / 443512 bytes in 137ms
+06-12 21:50:08.909 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:09.199 D/dalvikvm(  524): GC freed 1197 objects / 445096 bytes in 114ms
+06-12 21:50:09.359 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:12.629 D/dalvikvm(  524): GC freed 1197 objects / 443624 bytes in 181ms
+06-12 21:50:13.429 D/dalvikvm(  935): GC freed 10762 objects / 509296 bytes in 194ms
+06-12 21:50:13.719 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:14.129 D/dalvikvm(  524): GC freed 1196 objects / 441992 bytes in 240ms
+06-12 21:50:14.829 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:15.899 D/dalvikvm(  129): GC freed 2157 objects / 84432 bytes in 157ms
+06-12 21:50:17.179 D/dalvikvm(  524): GC freed 1200 objects / 442336 bytes in 203ms
+06-12 21:50:17.619 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:18.169 D/dalvikvm(  524): GC freed 1196 objects / 441904 bytes in 192ms
+06-12 21:50:18.329 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:21.039 D/dalvikvm(  248): GC freed 113 objects / 4360 bytes in 339ms
+06-12 21:50:21.399 D/dalvikvm(  524): GC freed 1197 objects / 443576 bytes in 135ms
+06-12 21:50:21.819 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:22.069 D/dalvikvm(  524): GC freed 1196 objects / 441960 bytes in 141ms
+06-12 21:50:22.269 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:24.299 I/ActivityManager(   72): Start proc com.android.settings for broadcast com.android.settings/.widget.SettingsAppWidgetProvider: pid=997 uid=1000 gids={3003, 3002, 3001}
+06-12 21:50:24.379 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 cmp=ms.salt.prehome/.PreHome }
+06-12 21:50:24.439 I/dalvikvm(  997): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:24.519 I/dalvikvm(  997): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:50:24.619 I/ActivityManager(   72): Process org.kman.WifiManager (pid 988) has died.
+06-12 21:50:24.619 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:50:25.129 I/ActivityManager(   72): Displayed activity ms.salt.prehome/.PreHome: 618 ms (total 54512 ms)
+06-12 21:50:25.869 I/ActivityManager(   72): Process com.android.settings (pid 997) has died.
+06-12 21:50:25.869 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:50:25.929 D/dalvikvm(  524): GC freed 1197 objects / 443576 bytes in 164ms
+06-12 21:50:26.429 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:26.659 D/dalvikvm(  524): GC freed 1196 objects / 441904 bytes in 120ms
+06-12 21:50:26.819 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:29.569 I/ActivityManager(   72): Start proc com.android.settings for broadcast com.android.settings/.widget.SettingsAppWidgetProvider: pid=1003 uid=1000 gids={3003, 3002, 3001}
+06-12 21:50:29.579 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 cmp=ms.salt.prehome/.PreHome }
+06-12 21:50:29.589 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.nd.android.panda.hero.home/.home.Launcher }
+06-12 21:50:29.819 I/ActivityManager(   72): processNextBroadcast: waiting for ProcessRecord{434cae70 1003:com.android.settings/1000}
+06-12 21:50:30.149 D/dalvikvm(   50): GC freed 285 objects / 10832 bytes in 516ms
+06-12 21:50:30.169 I/dalvikvm( 1003): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:30.209 I/dalvikvm( 1003): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:50:30.529 D/dalvikvm(   50): GC freed 57 objects / 2472 bytes in 375ms
+06-12 21:50:30.789 D/dalvikvm(   50): GC freed 2 objects / 48 bytes in 262ms
+06-12 21:50:30.899 I/ActivityManager(   72): Process com.android.email (pid 935) has died.
+06-12 21:50:30.909 I/WindowManager(   72): WIN DEATH: Window{434d73b0 com.android.email/com.android.email.activity.FolderMessageList paused=false}
+06-12 21:50:31.329 D/dalvikvm(  524): GC freed 1197 objects / 443664 bytes in 235ms
+06-12 21:50:31.699 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:31.929 D/dalvikvm(  524): GC freed 1197 objects / 443712 bytes in 118ms
+06-12 21:50:32.069 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:35.309 D/dalvikvm(  524): GC freed 1201 objects / 443920 bytes in 221ms
+06-12 21:50:35.999 D/skia    (  911): purging 23K from font cache [3 entries]
+06-12 21:50:37.269 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:37.539 D/dalvikvm(  911): GC freed 3190 objects / 196152 bytes in 1537ms
+06-12 21:50:37.739 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1009 uid=10059 gids={3003}
+06-12 21:50:37.849 I/dalvikvm( 1009): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:37.879 I/dalvikvm( 1009): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:50:38.829 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=net.assemble.emailnotify/.EmailNotifyActivity }
+06-12 21:50:39.289 D/EmailNotify(  369): EmailObserverService started: ComponentInfo{net.assemble.emailnotify/net.assemble.emailnotify.EmailObserverService}
+06-12 21:50:39.759 I/ActivityManager(   72): Displayed activity net.assemble.emailnotify/.EmailNotifyActivity: 833 ms (total 833 ms)
+06-12 21:50:40.049 D/dalvikvm(  524): GC freed 1196 objects / 441928 bytes in 2401ms
+06-12 21:50:40.569 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:40.809 D/dalvikvm(  524): GC freed 1196 objects / 441752 bytes in 137ms
+06-12 21:50:40.969 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:43.369 D/dalvikvm(  351): GC freed 10037 objects / 509968 bytes in 167ms
+06-12 21:50:43.919 D/dalvikvm(  524): GC freed 1201 objects / 444104 bytes in 128ms
+06-12 21:50:44.349 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:44.589 D/dalvikvm(  524): GC freed 1196 objects / 441776 bytes in 138ms
+06-12 21:50:44.759 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:47.919 D/dalvikvm(  524): GC freed 1197 objects / 443672 bytes in 125ms
+06-12 21:50:48.369 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:48.629 D/dalvikvm(  524): GC freed 1196 objects / 441824 bytes in 142ms
+06-12 21:50:48.829 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:50.069 D/dalvikvm(  129): GC freed 327 objects / 12256 bytes in 248ms
+06-12 21:50:52.699 D/dalvikvm(  524): GC freed 1197 objects / 443832 bytes in 1019ms
+06-12 21:50:53.169 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:53.979 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.email/.activity.Welcome }
+06-12 21:50:54.049 I/ActivityManager(   72): Start proc com.android.email for activity com.android.email/.activity.FolderMessageList: pid=1015 uid=10017 gids={3003, 1015}
+06-12 21:50:54.319 I/dalvikvm( 1015): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:54.399 I/dalvikvm( 1015): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:50:54.569 I/ActivityThread( 1015): Publishing provider com.android.email.attachmentprovider: com.android.email.provider.AttachmentProvider
+06-12 21:50:54.719 I/ActivityManager(   72): Process com.android.settings (pid 1003) has died.
+06-12 21:50:55.809 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1009) has died.
+06-12 21:50:55.809 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:50:56.029 D/dalvikvm(  524): GC freed 1196 objects / 441800 bytes in 1425ms
+06-12 21:50:56.839 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:50:57.079 D/dalvikvm(  524): GC freed 1201 objects / 444144 bytes in 133ms
+06-12 21:50:57.249 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:00.249 D/dalvikvm(  524): GC freed 1197 objects / 443664 bytes in 136ms
+06-12 21:51:00.639 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:00.869 D/dalvikvm(  524): GC freed 1196 objects / 442200 bytes in 125ms
+06-12 21:51:01.029 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:03.879 I/ActivityManager(   72): Starting activity: Intent { cmp=com.android.email/.activity.MessageCompose (has extras) }
+06-12 21:51:04.039 D/dalvikvm( 1015): GC freed 4299 objects / 288616 bytes in 152ms
+06-12 21:51:05.299 D/dalvikvm(   72): GC freed 30528 objects / 1366712 bytes in 835ms
+06-12 21:51:06.259 I/ActivityManager(   72): Displayed activity com.android.email/.activity.MessageCompose: 2201 ms (total 12229 ms)
+06-12 21:51:06.369 D/dalvikvm(  524): GC freed 1197 objects / 443672 bytes in 2375ms
+06-12 21:51:07.299 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:07.559 D/dalvikvm(  524): GC freed 1196 objects / 441944 bytes in 144ms
+06-12 21:51:07.739 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:08.399 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1027 uid=10059 gids={3003}
+06-12 21:51:08.819 I/ActivityManager(   72): processNextBroadcast: waiting for ProcessRecord{43544818 1027:org.kman.WifiManager/10059}
+06-12 21:51:08.909 I/dalvikvm( 1027): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:08.939 I/dalvikvm( 1027): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:09.449 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1027) has died.
+06-12 21:51:09.449 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:10.779 D/dalvikvm(  524): GC freed 1197 objects / 443664 bytes in 150ms
+06-12 21:51:11.189 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:11.339 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1032 uid=10059 gids={3003}
+06-12 21:51:11.449 I/dalvikvm( 1032): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:11.489 I/dalvikvm( 1032): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:12.189 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1032) has died.
+06-12 21:51:12.189 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:12.439 D/dalvikvm(  524): GC freed 1196 objects / 441992 bytes in 1152ms
+06-12 21:51:12.619 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:14.609 D/dalvikvm(  248): GC freed 328 objects / 90040 bytes in 147ms
+06-12 21:51:15.199 D/dalvikvm(  524): GC freed 1197 objects / 443624 bytes in 134ms
+06-12 21:51:15.609 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:16.269 I/ActivityManager(   72): Start proc android.process.acore for content provider com.android.providers.contacts/.GoogleContactsProvider: pid=1039 uid=10000 gids={3003, 1015}
+06-12 21:51:16.339 I/dalvikvm( 1039): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:16.379 I/dalvikvm( 1039): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=46)
+06-12 21:51:16.399 I/ActivityThread( 1039): Publishing provider user_dictionary: com.android.providers.userdictionary.UserDictionaryProvider
+06-12 21:51:16.449 I/ActivityThread( 1039): Publishing provider com.android.globalsearch.SuggestionProvider: com.android.globalsearch.SuggestionProvider
+06-12 21:51:17.439 D/dalvikvm(  524): GC freed 1196 objects / 442056 bytes in 1635ms
+06-12 21:51:17.489 I/ActivityThread( 1039): Publishing provider com.google.android.providers.enhancedgooglesearch: com.google.android.providers.enhancedgooglesearch.SuggestionProvider
+06-12 21:51:18.409 I/ActivityThread( 1039): Publishing provider contacts;call_log: com.android.providers.contacts.GoogleContactsProvider
+06-12 21:51:18.649 I/ActivityThread( 1039): Publishing provider com.android.globalsearch.stats: com.android.globalsearch.StatsProvider
+06-12 21:51:18.659 I/ActivityThread( 1039): Publishing provider applications: com.android.providers.applications.ApplicationsProvider
+06-12 21:51:19.069 I/ActivityThread( 1039): Publishing provider com.android.launcher.settings: com.android.launcher.LauncherProvider
+06-12 21:51:19.379 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:19.739 D/dalvikvm( 1039): GC freed 3701 objects / 274760 bytes in 206ms
+06-12 21:51:19.849 D/skia    (  248): purging 52K from font cache [3 entries]
+06-12 21:51:20.049 D/dalvikvm(  248): GC freed 246 objects / 10064 bytes in 200ms
+06-12 21:51:20.539 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1052 uid=10059 gids={3003}
+06-12 21:51:20.999 I/dalvikvm( 1052): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:21.039 D/dalvikvm(  524): GC freed 1196 objects / 441872 bytes in 421ms
+06-12 21:51:21.209 I/dalvikvm( 1052): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:21.279 I/ActivityManager(   72): Process ms.salt.prehome (pid 911) has died.
+06-12 21:51:21.279 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:22.279 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:22.439 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1052) has died.
+06-12 21:51:22.439 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:22.839 D/dalvikvm(  524): GC freed 1197 objects / 443856 bytes in 218ms
+06-12 21:51:23.069 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:23.389 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1059 uid=10059 gids={3003}
+06-12 21:51:23.519 I/dalvikvm( 1059): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:23.549 I/dalvikvm( 1059): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:24.309 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1059) has died.
+06-12 21:51:24.309 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:25.679 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'clearResult' (wrong CL)
+06-12 21:51:25.679 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'clearResult' (wrong CL)
+06-12 21:51:25.699 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'createBindArray' (wrong CL)
+06-12 21:51:25.699 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'createBindArray' (wrong CL)
+06-12 21:51:25.769 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'searchWord' (wrong CL)
+06-12 21:51:25.769 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'searchWord' (wrong CL)
+06-12 21:51:26.459 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1064 uid=10059 gids={3003}
+06-12 21:51:26.619 I/dalvikvm( 1064): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:26.759 I/dalvikvm( 1064): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'getNextWord' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'getNextWord' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'getStroke' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'getStroke' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'getCandidate' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'getCandidate' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'getFrequency' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'getFrequency' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'getLeftPartOfSpeech' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'getLeftPartOfSpeech' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'getRightPartOfSpeech' (wrong CL)
+06-12 21:51:27.039 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'getRightPartOfSpeech' (wrong CL)
+06-12 21:51:27.319 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1064) has died.
+06-12 21:51:27.319 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:27.489 D/dalvikvm(  524): GC freed 1197 objects / 445032 bytes in 1570ms
+06-12 21:51:27.899 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:28.169 D/dalvikvm(  524): GC freed 1197 objects / 445160 bytes in 147ms
+06-12 21:51:28.409 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:29.449 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1070 uid=10059 gids={3003}
+06-12 21:51:29.479 I/ActivityManager(   72): processNextBroadcast: waiting for ProcessRecord{4343b2b0 1070:org.kman.WifiManager/10059}
+06-12 21:51:29.509 D/WifiService(   72): ACTION_BATTERY_CHANGED pluggedType: 0
+06-12 21:51:29.789 I/dalvikvm( 1070): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:29.959 I/dalvikvm( 1070): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:31.089 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1070) has died.
+06-12 21:51:31.089 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:31.689 D/dalvikvm(  351): GC freed 9985 objects / 507864 bytes in 1455ms
+06-12 21:51:32.319 D/dalvikvm(  524): GC freed 1196 objects / 442136 bytes in 457ms
+06-12 21:51:32.629 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1076 uid=10059 gids={3003}
+06-12 21:51:32.829 I/ActivityManager(   72): processNextBroadcast: waiting for ProcessRecord{43481a50 1076:org.kman.WifiManager/10059}
+06-12 21:51:33.429 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:33.529 I/dalvikvm( 1076): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:33.589 I/dalvikvm( 1076): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:34.319 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1076) has died.
+06-12 21:51:34.319 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:34.459 D/dalvikvm(  524): GC freed 1196 objects / 442096 bytes in 162ms
+06-12 21:51:35.089 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:37.429 D/dalvikvm(  524): GC freed 1196 objects / 442096 bytes in 563ms
+06-12 21:51:37.899 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:38.529 D/dalvikvm(  524): GC freed 1196 objects / 442296 bytes in 160ms
+06-12 21:51:38.709 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:41.329 D/dalvikvm(  524): GC freed 1197 objects / 443632 bytes in 169ms
+06-12 21:51:41.719 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:42.179 D/dalvikvm(  524): GC freed 1196 objects / 442008 bytes in 142ms
+06-12 21:51:42.339 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:51:44.589 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1082 uid=10059 gids={3003}
+06-12 21:51:44.729 D/dalvikvm(   50): GC freed 281 objects / 10688 bytes in 141ms
+06-12 21:51:45.039 D/dalvikvm(   50): GC freed 57 objects / 2448 bytes in 273ms
+06-12 21:51:45.329 D/dalvikvm(   50): GC freed 2 objects / 56 bytes in 283ms
+06-12 21:51:46.679 I/dalvikvm( 1082): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:46.939 I/dalvikvm( 1082): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:51:47.379 I/WindowManager(   72): WIN DEATH: Window{432de2e8 com.nd.android.panda.hero.home/com.nd.android.panda.hero.home.home.Launcher paused=false}
+06-12 21:51:47.379 I/ActivityManager(   72): Process android.hero.process.acore (pid 788) has died.
+06-12 21:51:47.379 W/ActivityManager(   72): Scheduling restart of crashed service com.nd.android.panda.hero.home/.update.ServerRequestService in 5000ms
+06-12 21:51:47.489 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:50.579 D/dalvikvm(  248): GC freed 2023 objects / 149568 bytes in 230ms
+06-12 21:51:51.699 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:51:52.439 I/ActivityManager(   72): Start proc android.hero.process.acore for service com.nd.android.panda.hero.home/.update.ServerRequestService: pid=1087 uid=10082 gids={3003, 3002, 3001, 1015}
+06-12 21:51:52.569 I/dalvikvm( 1087): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:51:52.599 I/dalvikvm( 1087): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=56)
+06-12 21:51:53.129 W/SurfaceFlinger(   72): executeScheduledBroadcasts() skipped, contention on the client. We'll try again later...
+06-12 21:51:53.339 D/dalvikvm(  129): GC freed 876 objects / 34072 bytes in 506ms
+06-12 21:51:53.359 I/ActivityThread( 1087): Publishing provider com.nd.android.panda.hero.home.settings: com.nd.android.panda.hero.home.home.LauncherProvider
+06-12 21:51:53.779 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1082) has died.
+06-12 21:51:53.779 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:51:57.199 D/dalvikvm(  248): GC freed 504 objects / 22136 bytes in 161ms
+06-12 21:51:57.829 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:04.029 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:05.229 D/skia    (  248): purging 64K from font cache [5 entries]
+06-12 21:52:05.369 D/dalvikvm(  248): GC freed 1471 objects / 54584 bytes in 138ms
+06-12 21:52:06.999 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'setStroke' (wrong CL)
+06-12 21:52:06.999 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'setStroke' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'setCandidate' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'setCandidate' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'setLeftPartOfSpeech' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'setLeftPartOfSpeech' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'setRightPartOfSpeech' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'setRightPartOfSpeech' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libwebcore.so' for 'selectWord' (wrong CL)
+06-12 21:52:07.019 D/dalvikvm(  248): +++ not scanning '/system/lib/libexif.so' for 'selectWord' (wrong CL)
+06-12 21:52:10.169 D/skia    (   72): purging 132K from font cache [15 entries]
+06-12 21:52:10.259 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:10.589 D/dalvikvm(   72): GC freed 26399 objects / 1176032 bytes in 421ms
+06-12 21:52:11.479 D/dalvikvm(  524): GC freed 2861 objects / 520544 bytes in 400ms
+06-12 21:52:13.319 D/dalvikvm(  248): GC freed 1362 objects / 223840 bytes in 169ms
+06-12 21:52:17.529 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:18.459 D/dalvikvm(  351): GC freed 10006 objects / 508824 bytes in 237ms
+06-12 21:52:19.459 D/dalvikvm( 1015): GC freed 6061 objects / 298056 bytes in 175ms
+06-12 21:52:20.449 D/dalvikvm( 1015): GC freed 8214 objects / 528944 bytes in 156ms
+06-12 21:52:21.999 D/webviewglue( 1015): nativeDestroy view: 0xd9aa0
+06-12 21:52:23.639 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:29.759 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:33.059 D/dalvikvm(  354): GC freed 26242 objects / 629616 bytes in 182ms
+06-12 21:52:35.939 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:39.039 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:39.819 D/skia    (  369): purging 68K from font cache [6 entries]
+06-12 21:52:39.949 D/dalvikvm(  369): GC freed 325 objects / 20136 bytes in 123ms
+06-12 21:52:42.139 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:43.099 I/InetAddress( 1015): Unknown host mail.mopera.net, throwing UnknownHostException
+06-12 21:52:43.859 D/dalvikvm( 1015): GC freed 5770 objects / 345768 bytes in 156ms
+06-12 21:52:45.149 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:48.259 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:49.149 I/InetAddress( 1087): Unknown host panda.sj.91.com, throwing UnknownHostException
+06-12 21:52:49.389 I/ServerRequestService( 1087): Host is unresolved: panda.sj.91.com:80
+06-12 21:52:49.539 I/ActivityManager(   72): Start proc com.android.settings for broadcast com.android.settings/.widget.SettingsAppWidgetProvider: pid=1098 uid=1000 gids={3003, 3002, 3001}
+06-12 21:52:49.559 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 cmp=ms.salt.prehome/.PreHome }
+06-12 21:52:49.659 I/ActivityManager(   72): Start proc ms.salt.prehome for activity ms.salt.prehome/.PreHome: pid=1100 uid=10040 gids={3003, 1015}
+06-12 21:52:49.879 I/dalvikvm( 1100): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:52:49.939 I/dalvikvm( 1100): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=34)
+06-12 21:52:49.979 I/dalvikvm( 1098): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:52:50.009 I/dalvikvm( 1098): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:52:50.279 I/ActivityManager(   72): Process android.process.acore (pid 1039) has died.
+06-12 21:52:50.329 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:52:51.419 I/ActivityManager(   72): Displayed activity ms.salt.prehome/.PreHome: 1786 ms (total 1786 ms)
+06-12 21:52:51.509 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:51.679 I/ActivityManager(   72): Process com.android.settings (pid 1098) has died.
+06-12 21:52:51.689 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:52:53.389 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.nd.android.panda.hero.home/.home.Launcher }
+06-12 21:52:54.939 D/dalvikvm( 1087): GC freed 3880 objects / 284968 bytes in 146ms
+06-12 21:52:55.029 I/AdMob SDK( 1087): AdMob SDK version is 20091123-ANDROID-3312276cc1406347
+06-12 21:52:55.039 W/Settings( 1087): Setting android_id has moved from android.provider.Settings.System to android.provider.Settings.Secure, returning read-only value.
+06-12 21:52:55.169 I/AdMob SDK( 1087): The user ID is B8EADDE08CE10A9431CB4369199F329E
+06-12 21:52:55.189 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:55.259 D/AdMob SDK( 1087): Publisher ID read from AndroidManifest.xml is a14b4d6cbc836b9
+06-12 21:52:55.259 I/AdMob SDK( 1087): Publisher ID set to a14b4d6cbc836b9
+06-12 21:52:55.679 D/dalvikvm( 1087): GC freed 1359 objects / 95560 bytes in 194ms
+06-12 21:52:55.949 D/createFreeText( 1087): --> createFreeText
+06-12 21:52:55.959 D/createFreeText( 1087): --> isValidate = false
+06-12 21:52:56.259 D/HeroHomeLoaders( 1087): load applications
+06-12 21:52:56.329 V/ThemeSetting( 1087): 0|1.0
+06-12 21:52:56.519 D/dalvikvm( 1087): GC freed 586 objects / 42080 bytes in 144ms
+06-12 21:52:56.529 D/HeroHomeLoaders( 1087): loading user items
+06-12 21:52:56.529 D/HeroHomeLoaders( 1087):   --> starting workspace loader
+06-12 21:52:56.549 D/HeroHomeLoaders( 1087):   ----> running workspace loader (1)
+06-12 21:52:56.569 E/TAG     ( 1087): Base onCreate:2700
+06-12 21:52:56.709 I/System.out( 1087): -------centerTofit-------------------
+06-12 21:52:58.489 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:52:58.599 D/HeroHomeLoaders( 1087):   --> done loading workspace
+06-12 21:52:58.599 D/HeroHomeLoaders( 1087):   ----> worskpace items=9
+06-12 21:52:58.599 D/HeroHomeLoaders( 1087):   ----> worskpace widgets=6
+06-12 21:52:58.599 D/HeroHomeLoaders( 1087):   ----> items cloned, ready to refresh UI
+06-12 21:52:58.609 D/HeroHomeLoaders( 1087):   ----> loading applications from workspace loader
+06-12 21:52:58.609 D/HeroHomeLoaders( 1087):   --> starting applications loader unlocked
+06-12 21:52:58.609 D/HeroHomeLoaders( 1087):   --> starting applications loader
+06-12 21:52:58.619 D/HeroHomeLoaders( 1087):   ----> running applications loader (1)
+06-12 21:53:02.449 D/HeroHomeLoaders( 1087):   ----> onDesktopItemsLoaded()
+06-12 21:53:02.489 D/Launcher( 1087): ------> binding 9 items
+06-12 21:53:02.489 D/Launcher( 1087): ------> binding 6 widgets
+06-12 21:53:02.489 D/Launcher( 1087): ------> start binding items
+06-12 21:53:02.509 D/HeroHomeLoaders( 1087):   ----> cleared application list
+06-12 21:53:02.929 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:03.409 W/ActivityManager(   72): Launch timeout has expired, giving up wake lock!
+06-12 21:53:03.459 W/ActivityManager(   72): Activity idle timeout for HistoryRecord{4332ac18 com.nd.android.panda.hero.home/.home.Launcher}
+06-12 21:53:05.969 D/dalvikvm( 1087): GC freed 2857 objects / 150936 bytes in 375ms
+06-12 21:53:06.749 I/System.out( 1087): -------centerTofit-------------------
+06-12 21:53:07.579 I/System.out( 1087): -------centerTofit-------------------
+06-12 21:53:07.669 W/InputMethodManager( 1087): Ignoring onBind: cur seq=92, given seq=91
+06-12 21:53:09.019 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:09.589 D/skia    ( 1015): purging 83K from font cache [9 entries]
+06-12 21:53:10.739 I/ActivityManager(   72): Process com.android.email (pid 1015) has died.
+06-12 21:53:10.739 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:53:10.749 I/WindowManager(   72): WIN DEATH: Window{43510210 com.android.email/com.android.email.activity.FolderMessageList paused=false}
+06-12 21:53:11.269 D/dalvikvm( 1087): GC freed 5272 objects / 343104 bytes in 156ms
+06-12 21:53:12.609 W/ResourceType( 1087): No package identifier when getting value for resource number 0xffffffff
+06-12 21:53:12.799 W/ImageView( 1087): Unable to find resource: -1
+06-12 21:53:12.799 W/ImageView( 1087): android.content.res.Resources$NotFoundException: Resource ID #0xffffffff
+06-12 21:53:12.799 W/ImageView( 1087):  at android.content.res.Resources.getValue(Resources.java:896)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.content.res.Resources.getDrawable(Resources.java:584)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.widget.ImageView.resolveUri(ImageView.java:485)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.widget.ImageView.setImageResource(ImageView.java:270)
+06-12 21:53:12.799 W/ImageView( 1087):  at java.lang.reflect.Method.invokeNative(Native Method)
+06-12 21:53:12.799 W/ImageView( 1087):  at java.lang.reflect.Method.invoke(Method.java:521)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.widget.RemoteViews$ReflectionAction.apply(RemoteViews.java:448)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.widget.RemoteViews.performApply(RemoteViews.java:848)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.widget.RemoteViews.apply(RemoteViews.java:825)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.appwidget.AppWidgetHostView.updateAppWidget(AppWidgetHostView.java:181)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.appwidget.AppWidgetHost.createView(AppWidgetHost.java:217)
+06-12 21:53:12.799 W/ImageView( 1087):  at com.nd.android.panda.hero.home.home.Launcher.bindAppWidgets(Launcher.java:2316)
+06-12 21:53:12.799 W/ImageView( 1087):  at com.nd.android.panda.hero.home.home.Launcher.access$22(Launcher.java:2306)
+06-12 21:53:12.799 W/ImageView( 1087):  at com.nd.android.panda.hero.home.home.Launcher$DesktopBinder.handleMessage(Launcher.java:3048)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.os.Handler.dispatchMessage(Handler.java:99)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.os.Looper.loop(Looper.java:123)
+06-12 21:53:12.799 W/ImageView( 1087):  at android.app.ActivityThread.main(ActivityThread.java:4203)
+06-12 21:53:12.799 W/ImageView( 1087):  at java.lang.reflect.Method.invokeNative(Native Method)
+06-12 21:53:12.799 W/ImageView( 1087):  at java.lang.reflect.Method.invoke(Method.java:521)
+06-12 21:53:12.799 W/ImageView( 1087):  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:791)
+06-12 21:53:12.799 W/ImageView( 1087):  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:549)
+06-12 21:53:12.799 W/ImageView( 1087):  at dalvik.system.NativeStart.main(Native Method)
+06-12 21:53:12.859 D/dalvikvm(  351): GC freed 9999 objects / 507728 bytes in 7058ms
+06-12 21:53:13.209 W/ResourceType( 1087): No package identifier when getting value for resource number 0xffffffff
+06-12 21:53:13.289 W/ImageView( 1087): Unable to find resource: -1
+06-12 21:53:13.289 W/ImageView( 1087): android.content.res.Resources$NotFoundException: Resource ID #0xffffffff
+06-12 21:53:13.289 W/ImageView( 1087):  at android.content.res.Resources.getValue(Resources.java:896)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.content.res.Resources.getDrawable(Resources.java:584)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.ImageView.resolveUri(ImageView.java:485)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.ImageView.onMeasure(ImageView.java:577)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:2989)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.LinearLayout.measureChildBeforeLayout(LinearLayout.java:888)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.LinearLayout.measureHorizontal(LinearLayout.java:619)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.LinearLayout.onMeasure(LinearLayout.java:280)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:2989)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.FrameLayout.onMeasure(FrameLayout.java:245)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:2989)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.FrameLayout.onMeasure(FrameLayout.java:245)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at com.nd.android.panda.hero.home.home.CellLayout.onMeasure(CellLayout.java:642)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at com.nd.android.panda.hero.home.home.Workspace.onMeasure(Workspace.java:646)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:2989)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.FrameLayout.onMeasure(FrameLayout.java:245)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:2989)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.FrameLayout.onMeasure(FrameLayout.java:245)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewGroup.measureChildWithMargins(ViewGroup.java:2989)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.widget.FrameLayout.onMeasure(FrameLayout.java:245)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.View.measure(View.java:7703)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewRoot.performTraversals(ViewRoot.java:747)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.view.ViewRoot.handleMessage(ViewRoot.java:1613)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.os.Handler.dispatchMessage(Handler.java:99)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.os.Looper.loop(Looper.java:123)
+06-12 21:53:13.289 W/ImageView( 1087):  at android.app.ActivityThread.main(ActivityThread.java:4203)
+06-12 21:53:13.289 W/ImageView( 1087):  at java.lang.reflect.Method.invokeNative(Native Method)
+06-12 21:53:13.289 W/ImageView( 1087):  at java.lang.reflect.Method.invoke(Method.java:521)
+06-12 21:53:13.289 W/ImageView( 1087):  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:791)
+06-12 21:53:13.289 W/ImageView( 1087):  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:549)
+06-12 21:53:13.289 W/ImageView( 1087):  at dalvik.system.NativeStart.main(Native Method)
+06-12 21:53:13.609 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:13.829 D/dalvikvm(   72): GC freed 19461 objects / 800208 bytes in 700ms
+06-12 21:53:15.609 I/InetAddress( 1087): Unknown host r.admob.com, throwing UnknownHostException
+06-12 21:53:15.689 W/AdMob SDK( 1087): Could not get ad from AdMob servers.
+06-12 21:53:15.689 W/AdMob SDK( 1087): java.net.UnknownHostException: Host is unresolved: r.admob.com:80
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at java.net.Socket.connect(Socket.java:1002)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpConnection.<init>(HttpConnection.java:67)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpConnectionManager$ConnectionPool.getHttpConnection(HttpConnectionManager.java:151)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpConnectionManager.getConnection(HttpConnectionManager.java:73)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.getHTTPConnection(HttpURLConnection.java:826)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:812)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.sendRequest(HttpURLConnection.java:1227)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.doRequestInternal(HttpURLConnection.java:1554)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.doRequest(HttpURLConnection.java:1547)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection.getOutputStream(HttpURLConnection.java:1148)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at com.admob.android.ads.AdRequester.requestAd(AdRequester.java:91)
+06-12 21:53:15.689 W/AdMob SDK( 1087):  at com.admob.android.ads.AdView$1.run(AdView.java:310)
+06-12 21:53:15.699 I/AdMob SDK( 1087): Server replied that no ads are available (20519ms)
+06-12 21:53:18.149 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:19.889 D/skia    ( 1087): purging 135K from font cache [18 entries]
+06-12 21:53:20.059 D/dalvikvm( 1087): GC freed 8470 objects / 738160 bytes in 166ms
+06-12 21:53:21.259 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:24.369 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:27.469 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:29.079 D/dalvikvm(  129): GC freed 1613 objects / 63520 bytes in 156ms
+06-12 21:53:30.569 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:33.679 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:33.879 D/skia    (  248): purging 54K from font cache [5 entries]
+06-12 21:53:34.039 D/dalvikvm(  248): GC freed 1793 objects / 312456 bytes in 156ms
+06-12 21:53:36.789 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:39.889 V/P-WiFi Status Retriever(  524): ################## IOException
+06-12 21:53:40.289 D/dalvikvm(  524): GC freed 10133 objects / 651592 bytes in 180ms
+06-12 21:53:40.499 D/dalvikvm(  524): GC freed 1225 objects / 51400 bytes in 112ms
+06-12 21:53:40.659 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:53:40.989 D/dalvikvm( 1087): GC freed 105 objects / 5368 bytes in 151ms
+06-12 21:53:43.409 D/dalvikvm(  524): GC freed 702 objects / 232904 bytes in 160ms
+06-12 21:53:45.249 D/dalvikvm(  524): GC freed 495 objects / 210864 bytes in 241ms
+06-12 21:53:47.509 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:53:48.629 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.email/.activity.Welcome }
+06-12 21:53:48.699 I/ActivityManager(   72): Start proc com.android.email for activity com.android.email/.activity.FolderMessageList: pid=1116 uid=10017 gids={3003, 1015}
+06-12 21:53:49.199 I/dalvikvm( 1116): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:53:49.319 I/dalvikvm( 1116): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:53:49.539 I/ActivityManager(   72): Displayed activity com.nd.android.panda.hero.home/.home.Launcher: 56115 ms (total 56115 ms)
+06-12 21:53:49.629 I/ActivityThread( 1116): Publishing provider com.android.email.attachmentprovider: com.android.email.provider.AttachmentProvider
+06-12 21:53:49.719 D/dalvikvm(  524): GC freed 704 objects / 232928 bytes in 1795ms
+06-12 21:53:51.719 D/dalvikvm(  524): GC freed 495 objects / 210896 bytes in 476ms
+06-12 21:53:51.999 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:53:52.719 D/dalvikvm(  524): GC freed 852 objects / 238336 bytes in 142ms
+06-12 21:53:52.929 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:53:55.519 D/dalvikvm(  524): GC freed 1049 objects / 439568 bytes in 175ms
+06-12 21:53:55.939 D/skia    (   72): purging 64K from font cache [9 entries]
+06-12 21:53:56.269 D/dalvikvm(   72): GC freed 12638 objects / 521496 bytes in 332ms
+06-12 21:53:56.699 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:53:57.299 D/dalvikvm(  524): GC freed 1182 objects / 443120 bytes in 219ms
+06-12 21:53:57.839 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:53:58.439 D/NetworkLocationProvider(   72): onCellLocationChanged [38918,166150585]
+06-12 21:53:58.449 I/ActivityManager(   72): Starting activity: Intent { cmp=com.android.email/.activity.setup.AccountSettings (has extras) }
+06-12 21:53:58.639 D/dalvikvm( 1116): GC freed 4370 objects / 291496 bytes in 170ms
+06-12 21:53:59.639 I/ActivityManager(   72): Displayed activity com.android.email/.activity.setup.AccountSettings: 993 ms (total 993 ms)
+06-12 21:53:59.699 D/dalvikvm(  351): GC freed 9984 objects / 507896 bytes in 1491ms
+06-12 21:54:00.219 D/dalvikvm(  524): GC freed 1197 objects / 443536 bytes in 140ms
+06-12 21:54:00.609 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:01.069 D/dalvikvm(  524): GC freed 1197 objects / 445064 bytes in 125ms
+06-12 21:54:01.409 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:04.089 D/dalvikvm(  524): GC freed 1201 objects / 443912 bytes in 145ms
+06-12 21:54:04.509 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:04.839 D/dalvikvm(  524): GC freed 1197 objects / 444904 bytes in 229ms
+06-12 21:54:04.979 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:07.939 D/dalvikvm(  524): GC freed 1197 objects / 443584 bytes in 205ms
+06-12 21:54:08.389 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:08.619 D/dalvikvm(  524): GC freed 1197 objects / 444984 bytes in 125ms
+06-12 21:54:08.949 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:11.569 W/InputManagerService(   72): Window already focused, ignoring focus gain of: com.android.internal.view.IInputMethodClient$Stub$Proxy@431bfb08
+06-12 21:54:12.179 D/dalvikvm(  524): GC freed 1197 objects / 444944 bytes in 141ms
+06-12 21:54:12.589 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:12.909 D/dalvikvm(  524): GC freed 1197 objects / 444976 bytes in 207ms
+06-12 21:54:13.069 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:13.849 D/dalvikvm( 1116): GC freed 4589 objects / 419696 bytes in 144ms
+06-12 21:54:14.409 D/HeroHomeLoaders( 1087): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:54:14.549 D/HeroHomeLoaders( 1087):   --> package:com.android.email
+06-12 21:54:14.549 D/HeroHomeLoaders( 1087):   --> sync package com.android.email
+06-12 21:54:14.839 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:54:15.159 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:54:16.119 I/ActivityManager(   72): Stopping service: com.android.email/.service.MailService
+06-12 21:54:16.569 D/HeroHomeLoaders( 1087): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:54:16.569 D/HeroHomeLoaders( 1087):   --> package:com.android.email
+06-12 21:54:16.569 D/HeroHomeLoaders( 1087):   --> sync package com.android.email
+06-12 21:54:17.959 D/HeroHomeLoaders( 1087): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:54:17.959 D/HeroHomeLoaders( 1087):   --> package:com.android.email
+06-12 21:54:17.959 D/HeroHomeLoaders( 1087):   --> sync package com.android.email
+06-12 21:54:18.279 D/HeroHomeLoaders( 1087): application intent received: android.intent.action.PACKAGE_CHANGED, replacing=false
+06-12 21:54:18.279 D/HeroHomeLoaders( 1087):   --> package:com.android.email
+06-12 21:54:18.279 D/HeroHomeLoaders( 1087):   --> sync package com.android.email
+06-12 21:54:19.569 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:54:19.569 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:54:19.629 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:54:19.639 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:54:19.689 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f060001
+06-12 21:54:19.699 W/ResourceType(   72): No package identifier when getting value for resource number 0x7f080000
+06-12 21:54:20.089 D/dalvikvm(  524): GC freed 1197 objects / 443520 bytes in 3255ms
+06-12 21:54:20.369 I/ActivityManager(   72): Process com.android.email (pid 1116) has died.
+06-12 21:54:20.369 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:54:20.369 I/WindowManager(   72): WIN DEATH: Window{43332b28 com.android.email/com.android.email.activity.FolderMessageList paused=false}
+06-12 21:54:20.809 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:21.189 D/dalvikvm(  524): GC freed 1196 objects / 441936 bytes in 127ms
+06-12 21:54:21.349 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:24.079 D/dalvikvm( 1087): GC freed 7215 objects / 430032 bytes in 183ms
+06-12 21:54:25.429 D/skia    ( 1087): purging 105K from font cache [12 entries]
+06-12 21:54:25.579 D/dalvikvm( 1087): GC freed 991 objects / 51664 bytes in 155ms
+06-12 21:54:26.199 D/NetworkLocationProvider(   72): onCellLocationChanged [38918,165511200]
+06-12 21:54:27.159 D/dalvikvm(  524): GC freed 1197 objects / 443584 bytes in 1748ms
+06-12 21:54:28.019 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.email/.activity.Welcome }
+06-12 21:54:28.179 I/ActivityManager(   72): Start proc com.android.email for activity com.android.email/.activity.Welcome: pid=1127 uid=10017 gids={3003, 1015}
+06-12 21:54:28.719 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:29.219 I/dalvikvm( 1127): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:54:29.379 W/ActivityManager(   72): Activity destroy timeout for HistoryRecord{434af878 com.android.email/.activity.FolderMessageList}
+06-12 21:54:29.409 I/dalvikvm( 1127): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:54:29.789 I/ActivityThread( 1127): Publishing provider com.android.email.attachmentprovider: com.android.email.provider.AttachmentProvider
+06-12 21:54:30.419 I/ActivityManager(   72): Starting activity: Intent { cmp=com.android.email/.activity.FolderMessageList (has extras) }
+06-12 21:54:31.229 I/ActivityManager(   72): Displayed activity com.android.email/.activity.FolderMessageList: 796 ms (total 3082 ms)
+06-12 21:54:31.449 D/dalvikvm(  524): GC freed 1196 objects / 441936 bytes in 1868ms
+06-12 21:54:32.279 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:32.589 D/dalvikvm(  524): GC freed 1197 objects / 444944 bytes in 184ms
+06-12 21:54:32.779 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:33.139 D/dalvikvm( 1127): GC freed 4569 objects / 294960 bytes in 162ms
+06-12 21:54:34.899 D/dalvikvm( 1127): GC freed 7644 objects / 413080 bytes in 158ms
+06-12 21:54:35.779 D/dalvikvm(  524): GC freed 1201 objects / 444136 bytes in 180ms
+06-12 21:54:36.699 D/dalvikvm(  129): GC freed 1570 objects / 68016 bytes in 274ms
+06-12 21:54:37.029 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:37.509 D/dalvikvm(  524): GC freed 1196 objects / 441784 bytes in 205ms
+06-12 21:54:37.789 D/dalvikvm( 1127): GC freed 7089 objects / 382440 bytes in 172ms
+06-12 21:54:37.859 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:40.469 D/dalvikvm(  524): GC freed 1201 objects / 444144 bytes in 171ms
+06-12 21:54:40.659 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:41.549 D/dalvikvm(  248): GC freed 862 objects / 31720 bytes in 205ms
+06-12 21:54:41.639 D/dalvikvm(  524): GC freed 1197 objects / 443608 bytes in 668ms
+06-12 21:54:42.339 D/dalvikvm( 1127): GC freed 10106 objects / 501888 bytes in 173ms
+06-12 21:54:42.589 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:44.019 D/dalvikvm(  524): GC freed 1200 objects / 442456 bytes in 129ms
+06-12 21:54:44.539 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:45.969 D/dalvikvm(  524): GC freed 1197 objects / 443616 bytes in 128ms
+06-12 21:54:46.409 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:46.419 D/dalvikvm(  351): GC freed 10036 objects / 509992 bytes in 261ms
+06-12 21:54:46.899 D/skia    (   72): purging 64K from font cache [9 entries]
+06-12 21:54:47.269 D/dalvikvm(   72): GC freed 22689 objects / 970680 bytes in 370ms
+06-12 21:54:47.769 D/dalvikvm(  524): GC freed 1197 objects / 445032 bytes in 127ms
+06-12 21:54:47.929 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:49.979 D/dalvikvm(  524): GC freed 1197 objects / 443608 bytes in 148ms
+06-12 21:54:50.589 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:51.369 D/dalvikvm(  524): GC freed 1197 objects / 443824 bytes in 197ms
+06-12 21:54:51.829 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:53.969 D/dalvikvm(  524): GC freed 1196 objects / 441760 bytes in 140ms
+06-12 21:54:54.579 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:55.069 D/dalvikvm(  524): GC freed 1197 objects / 443808 bytes in 125ms
+06-12 21:54:55.259 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:57.959 D/dalvikvm(  524): GC freed 1196 objects / 442032 bytes in 138ms
+06-12 21:54:58.489 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:54:58.709 D/dalvikvm(  524): GC freed 1196 objects / 441928 bytes in 122ms
+06-12 21:54:58.869 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:01.959 D/dalvikvm(  524): GC freed 1197 objects / 443584 bytes in 140ms
+06-12 21:55:02.559 W/InputManagerService(   72): Window already focused, ignoring focus gain of: com.android.internal.view.IInputMethodClient$Stub$Proxy@4337b828
+06-12 21:55:02.609 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:03.559 D/dalvikvm(  524): GC freed 1196 objects / 441976 bytes in 782ms
+06-12 21:55:04.579 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:04.949 D/dalvikvm( 1127): GC freed 8505 objects / 403544 bytes in 193ms
+06-12 21:55:05.089 D/skia    ( 1100): purging 23K from font cache [3 entries]
+06-12 21:55:05.569 D/dalvikvm( 1100): GC freed 2134 objects / 142208 bytes in 472ms
+06-12 21:55:06.089 D/dalvikvm(  524): GC freed 1201 objects / 443992 bytes in 166ms
+06-12 21:55:06.319 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1144 uid=10059 gids={3003}
+06-12 21:55:06.479 I/dalvikvm( 1144): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:55:06.509 I/dalvikvm( 1144): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:55:07.109 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:07.839 D/dalvikvm(  524): GC freed 1196 objects / 442304 bytes in 140ms
+06-12 21:55:08.009 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:09.069 D/dalvikvm(  362): GC freed 11193 objects / 524832 bytes in 164ms
+06-12 21:55:09.859 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1144) has died.
+06-12 21:55:09.859 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:55:10.589 D/OpenSSLSessionImpl( 1127): Freeing OpenSSL session
+06-12 21:55:10.609 D/dalvikvm( 1127): GC freed 10442 objects / 599824 bytes in 184ms
+06-12 21:55:11.509 D/dalvikvm(  524): GC freed 1197 objects / 443584 bytes in 759ms
+06-12 21:55:11.949 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:12.389 I/ActivityManager(   72): Start proc org.kman.WifiManager for broadcast org.kman.WifiManager/.WifiWidget: pid=1152 uid=10059 gids={3003}
+06-12 21:55:12.559 I/dalvikvm( 1152): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:55:12.589 I/dalvikvm( 1152): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:55:13.009 D/dalvikvm(  524): GC freed 1197 objects / 445064 bytes in 909ms
+06-12 21:55:13.219 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:14.639 D/dalvikvm( 1127): GC freed 9484 objects / 482096 bytes in 187ms
+06-12 21:55:15.269 D/dalvikvm(  524): GC freed 1197 objects / 444864 bytes in 165ms
+06-12 21:55:15.449 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:16.469 D/dalvikvm(  524): GC freed 1197 objects / 443768 bytes in 138ms
+06-12 21:55:16.689 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:16.979 D/dalvikvm( 1127): GC freed 7585 objects / 457440 bytes in 182ms
+06-12 21:55:19.019 D/dalvikvm(  369): GC freed 100 objects / 4160 bytes in 920ms
+06-12 21:55:19.099 D/dalvikvm(  524): GC freed 1197 objects / 443632 bytes in 281ms
+06-12 21:55:19.499 D/dalvikvm( 1127): GC freed 5453 objects / 308464 bytes in 190ms
+06-12 21:55:19.729 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:20.429 D/dalvikvm(  524): GC freed 1196 objects / 442040 bytes in 351ms
+06-12 21:55:20.909 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:23.159 D/dalvikvm(  524): GC freed 1197 objects / 444856 bytes in 138ms
+06-12 21:55:23.489 D/skia    (  354): purging 77K from font cache [10 entries]
+06-12 21:55:23.689 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:23.949 D/dalvikvm(  354): GC freed 22953 objects / 513840 bytes in 457ms
+06-12 21:55:24.139 D/dalvikvm(  524): GC freed 1197 objects / 443736 bytes in 148ms
+06-12 21:55:24.299 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:26.159 I/ActivityManager(   72): Start proc com.android.settings for broadcast com.android.settings/.widget.SettingsAppWidgetProvider: pid=1160 uid=1000 gids={3003, 3002, 3001}
+06-12 21:55:26.209 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 cmp=ms.salt.prehome/.PreHome }
+06-12 21:55:26.489 I/dalvikvm( 1160): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:55:26.529 I/dalvikvm( 1160): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:55:26.899 I/ActivityManager(   72): Displayed activity ms.salt.prehome/.PreHome: 628 ms (total 628 ms)
+06-12 21:55:27.459 I/ActivityManager(   72): Process org.kman.WifiManager (pid 1152) has died.
+06-12 21:55:27.459 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:55:27.809 I/ActivityManager(   72): Process com.android.settings (pid 1160) has died.
+06-12 21:55:27.809 I/ActivityManager(   72): Low Memory: No more background processes.
+06-12 21:55:27.909 D/dalvikvm(  524): GC freed 1197 objects / 443528 bytes in 167ms
+06-12 21:55:28.299 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:28.539 D/dalvikvm(  524): GC freed 1196 objects / 442088 bytes in 122ms
+06-12 21:55:28.769 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:29.399 D/WifiService(   72): ACTION_BATTERY_CHANGED pluggedType: 0
+06-12 21:55:29.929 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=net.assemble.emailnotify/.EmailNotifyActivity }
+06-12 21:55:30.049 D/EmailNotify(  369): EmailObserverService started: ComponentInfo{net.assemble.emailnotify/net.assemble.emailnotify.EmailObserverService}
+06-12 21:55:30.579 I/ActivityManager(   72): Displayed activity net.assemble.emailnotify/.EmailNotifyActivity: 639 ms (total 639 ms)
+06-12 21:55:31.759 D/dalvikvm(  524): GC freed 1201 objects / 444000 bytes in 240ms
+06-12 21:55:32.189 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:32.409 D/dalvikvm(  524): GC freed 1197 objects / 445120 bytes in 119ms
+06-12 21:55:32.559 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:34.039 D/dalvikvm(  351): GC freed 9987 objects / 507608 bytes in 404ms
+06-12 21:55:35.709 D/dalvikvm(  524): GC freed 1197 objects / 443632 bytes in 285ms
+06-12 21:55:36.279 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:36.519 D/dalvikvm(  524): GC freed 1196 objects / 442256 bytes in 130ms
+06-12 21:55:36.739 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:39.729 D/dalvikvm(  524): GC freed 1197 objects / 444928 bytes in 220ms
+06-12 21:55:40.169 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:40.389 D/dalvikvm(  524): GC freed 1196 objects / 442008 bytes in 122ms
+06-12 21:55:40.559 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:40.849 D/skia    ( 1100): purging 16K from font cache [2 entries]
+06-12 21:55:40.979 D/dalvikvm( 1100): GC freed 1640 objects / 93000 bytes in 125ms
+06-12 21:55:43.369 W/InputManagerService(   72): Window already focused, ignoring focus gain of: com.android.internal.view.IInputMethodClient$Stub$Proxy@433a3e78
+06-12 21:55:43.589 D/dalvikvm(  524): GC freed 1197 objects / 443616 bytes in 186ms
+06-12 21:55:44.069 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:44.299 D/dalvikvm(  524): GC freed 1196 objects / 442080 bytes in 129ms
+06-12 21:55:44.459 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:44.809 I/ActivityManager(   72): Start proc com.android.settings for broadcast com.android.settings/.widget.SettingsAppWidgetProvider: pid=1168 uid=1000 gids={3003, 3002, 3001}
+06-12 21:55:44.809 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 cmp=ms.salt.prehome/.PreHome }
+06-12 21:55:44.869 I/ActivityManager(   72): processNextBroadcast: waiting for ProcessRecord{432e8858 1168:com.android.settings/1000}
+06-12 21:55:45.199 I/dalvikvm( 1168): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=38)
+06-12 21:55:45.289 I/dalvikvm( 1168): Debugger thread not active, ignoring DDM send (t=0x41504e4d l=44)
+06-12 21:55:45.449 I/ActivityManager(   72): Displayed activity ms.salt.prehome/.PreHome: 599 ms (total 599 ms)
+06-12 21:55:47.259 I/ActivityManager(   72): Starting activity: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=net.assemble.emailnotify/.EmailNotifyActivity }
+06-12 21:55:47.539 D/EmailNotify(  369): EmailObserverService started: ComponentInfo{net.assemble.emailnotify/net.assemble.emailnotify.EmailObserverService}
+06-12 21:55:47.659 I/ActivityManager(   72): Displayed activity net.assemble.emailnotify/.EmailNotifyActivity: 367 ms (total 367 ms)
+06-12 21:55:48.069 D/dalvikvm(  524): GC freed 1197 objects / 443680 bytes in 383ms
+06-12 21:55:48.569 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:48.879 D/dalvikvm(  524): GC freed 1197 objects / 443840 bytes in 209ms
+06-12 21:55:49.089 V/P-WiFi Status Retriever(  524): err unmatch
+06-12 21:55:49.469 I/ActivityManager(   72): Process com.android.settings (pid 1168) has died.

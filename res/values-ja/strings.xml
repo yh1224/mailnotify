@@ -6,15 +6,22 @@
     <string name="report">報告</string>
     <string name="about">バージョン情報</string>
     <string name="preferences">設定</string>
+    <string name="preferences_notification">通知設定</string>
     <string name="pref_notification_title">通知</string>
     <string name="pref_notification_summary">メールが届いたことを通知バーに通知します。</string>
     <string name="pref_launch_title">アプリを起動</string>
     <string name="pref_launch_summary">メールが届いたときに自動的にアプリを起動します。</string>
     <string name="select_app">アプリ選択</string>
+    <string name="pref_sound_title">通知音</string>
+    <string name="pref_sound_summary">メール着信通知の通知音を選択します。</string>
+    <string name="pref_vibration_title">バイブレーション</string>
+    <string name="pref_vibration_summary">メール着信通知時にバイブレーションします。</string>
     <string name="pref_launch_app_title">起動アプリ</string>
-    <string name="pref_launch_app_is">起動するアプリ:</string>
+    <string name="pref_launch_app_is">通知クリック時に起動するアプリ:</string>
     <string name="pref_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
+    <string name="pref_kill_email_title">Eメールアプリ受信抑止</string>
+    <string name="pref_kill_email_summary">メール着信時にEメールアプリで自動受信させない。</string>
     <string name="enable">有効化</string>
-    <string name="service_started">メール監視を開始しました。</string>
-    <string name="service_stopped">メール監視を停止しました。</string>
+    <string name="service_started">メール着信監視を開始しました。</string>
+    <string name="service_stopped">メール着信監視を停止しました。</string>
 </resources>

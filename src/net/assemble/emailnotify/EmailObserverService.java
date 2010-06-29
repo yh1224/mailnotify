@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -58,7 +59,7 @@ public class EmailObserverService extends Service {
 
     private boolean checkLog() {
         boolean result = false;
-        //Log.d(getClass().getName(), "Checking log...");
+//        Log.d(TAG, "Checking email notification.");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -81,7 +82,7 @@ public class EmailObserverService extends Service {
             // 05-28 00:20:53.021 D/MailPushFactory( 6694): getEmnMailbox : mailat:yh1224@mopera.net
             // 05-28 00:20:53.021 D/MailPushFactory( 6694): getEmnTimestamp : 1274973653000
             while (line != null) {
-                //Log.d(getClass().getName(), line);
+                //Log.d(TAG, line);
                 if (line.contains("getEmnMailbox")) {
                     // ログ出力日時を取得
                     String[] days = line.split(" ")[0].split("-");
@@ -93,20 +94,19 @@ public class EmailObserverService extends Service {
                     ccal.set(Calendar.MINUTE, Integer.valueOf(times[1]));
                     ccal.set(Calendar.SECOND, Integer.valueOf(times[2].substring(0, 2)));
                     ccal.set(Calendar.MILLISECOND, 0);
-                    //Log.d(getClass().getName(), "ccal = " + ccal.getTimeInMillis());
 
                     if (mLastNotify == null || ccal.getTimeInMillis() > mLastNotify.getTimeInMillis()) {
                         // 未通知であれば通知する
+                        Log.d(TAG, "[" + ccal.getTimeInMillis() + "] " + line);
                         mLastNotify = ccal;
                         result = true;
-                        break;
                     }
                 }
                 line = bufferedReader.readLine();
             }
             bufferedReader.close();
         } catch (IOException e) {
-            Log.e(getClass().getName(), "Failed to check log.");
+            Log.e(TAG, "Failed to check log.");
             // 例外処理
         }
         mLastCheck = Calendar.getInstance();
@@ -117,9 +117,8 @@ public class EmailObserverService extends Service {
      * 通知
      */
     private void doNotify() {
-        Calendar cal = Calendar.getInstance();
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.icon, 
+        Notification notification = new Notification(R.drawable.icon,
                 getResources().getString(R.string.app_name),
                 System.currentTimeMillis());
 
@@ -133,12 +132,20 @@ public class EmailObserverService extends Service {
         }
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
         String message = getResources().getString(R.string.notify_text);
-        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
-                + cal.get(Calendar.MINUTE) + ")";
+//        Calendar cal = Calendar.getInstance();
+//        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
+//                + cal.get(Calendar.MINUTE) + ")";
         notification.setLatestEventInfo(this,
                 getResources().getString(R.string.app_name),
                 message, contentIntent);
-        notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+        notification.defaults = 0;
+        String soundUri = EmailNotifyPreferences.getSound(this);
+        if (soundUri.startsWith("content:")) {
+            notification.sound = Uri.parse(soundUri);
+        }
+        if (EmailNotifyPreferences.getVibration(this)) {
+            notification.defaults |= Notification.DEFAULT_VIBRATE;
+        }
         notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
         notification.ledARGB = 0xff00ff00;
         notification.ledOnMS = 200;
@@ -162,17 +169,32 @@ public class EmailObserverService extends Service {
     }
 
     /**
+     * Eメールアプリを殺す
+     */
+    private void killEmailApp() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        manager.restartPackage("com.android.email");
+    }
+
+    /**
      * メールが来たかどうかをチェックし、アクションを起こす
      */
     public void checkEmail() {
         Calendar cal = Calendar.getInstance();
-        long diff = cal.getTimeInMillis() - mLastCheck.getTimeInMillis();
-        if (diff > 10000/*10秒以内は再チェックしない*/ && checkLog()) {
+        if (cal.getTimeInMillis() - mLastCheck.getTimeInMillis() < 200) {
+            /* 最低でも200msあけてチェック */
+            return;
+        }
+
+        if (checkLog()) {
             if (EmailNotifyPreferences.getNotify(this)) {
                 doNotify();
             }
             if (EmailNotifyPreferences.getLaunch(this)) {
                 doLaunch();
+            }
+            if (EmailNotifyPreferences.getKillEmail(this)) {
+                killEmailApp();
             }
         }
     }
@@ -188,7 +210,7 @@ public class EmailObserverService extends Service {
         }
     }
 
-    
+
     /**
      * サービス動作有無取得
      */

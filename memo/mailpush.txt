@@ -1,0 +1,20 @@
+
+
+frameworks/base/telephony/java/com/android/internal/telephony/WapPushOverSms.java
+
+WapPushOverSms::dispatchWapPdu()
+「WPA PUSH: Rx: xxxxxxxxxxxxxxxxxxxx」
+↓分岐
+CONTENT_TYPE_B_PUSH_CO → WapPushOverSms::dispatchWapPdu_PushCO()
+CONTENT_TYPE_B_MMS     → WapPushOverSms::dispatchWapPdu_MMS()
+その他                 → WapPushOverSms::dispatchWapPdu_default()
+
+「WAP PUSH: dispatchWapPdu_MailPush Start: appId = 9」???
+「Email: *** MailService: mail push」
+「MailPushFactory: Wsp xxx」
+
+MailPushSecurity
+Email
+
+
+
