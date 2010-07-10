@@ -24,7 +24,7 @@ public class AboutActivity extends Activity
         setContentView(R.layout.about);
 
         try {
-            PackageInfo pi = getPackageManager().getPackageInfo("net.assemble.emailnotify", 0);
+            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
             setTitle(getResources().getString(R.string.app_name) + " ver." + pi.versionName);
         } catch (NameNotFoundException e) {}
         getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
