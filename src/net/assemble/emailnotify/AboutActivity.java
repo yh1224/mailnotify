@@ -48,12 +48,13 @@ public class AboutActivity extends Activity
 
         });
 
-        // Send report
-        Button btn_report = (Button) findViewById(R.id.report);
-        btn_report.setOnClickListener(new View.OnClickListener() {
+        // Feedback
+        Button btn_feedback = (Button) findViewById(R.id.feedback);
+        btn_feedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:yh1224@gmail.com"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "mailto:" + getResources().getString(R.string.feedback_to)));
                 intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
                 startActivity(intent);
             }
