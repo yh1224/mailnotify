@@ -1,4 +1,4 @@
-package net.assemble.emailnotify;
+package net.assemble.android;
 
 import java.io.IOException;
 
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+
+import net.assemble.emailnotify.R;
 
 public class AboutActivity extends Activity
 {

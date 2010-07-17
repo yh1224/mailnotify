@@ -11,16 +11,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="EmailNotifyPreferencesActivity" />
-        <activity android:name="EmailNotifyPreferencesLaunchAppActivity"
+        <activity android:name=".EmailNotifyPreferencesActivity" />
+        <activity android:name=".EmailNotifyPreferencesLaunchAppActivity"
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name="AboutActivity" android:theme="@android:style/Theme.Dialog" />
-        <receiver android:name="EmailNotifyReceiver">
+        <receiver android:name=".EmailNotifyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service android:name="EmailObserverService" />
+        <service android:name=".EmailObserverService" />
+        <activity android:name="net.assemble.android.AboutActivity"
+            android:theme="@android:style/Theme.Dialog" />
     </application>
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />

@@ -12,7 +12,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import net.assemble.emailnotify.R;
+import net.assemble.android.AboutActivity;
+import net.assemble.android.AssetsReader;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
     private ToggleButton mEnableButton;
