@@ -26,17 +26,17 @@ import android.widget.Toast;
  */
 public class EmailObserverService extends Service {
     private static final String TAG = "EmailNotify";
+    private static final int DELAY_CHECK = 200; /* ms */
 
     private static ComponentName mService;
     private EmObserver mObserver;
-    private Calendar mLastCheck;
     private Calendar mLastNotify;
+    private Handler mHandler = new Handler();
+    boolean pending = false; 
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mLastCheck = Calendar.getInstance();
 
         mObserver = new EmObserver(new Handler());
         getContentResolver().registerContentObserver(
@@ -59,7 +59,7 @@ public class EmailObserverService extends Service {
 
     private boolean checkLog() {
         boolean result = false;
-//        Log.d(TAG, "Checking email notification.");
+        //Log.d(TAG, "Checking log...");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -109,7 +109,6 @@ public class EmailObserverService extends Service {
             Log.e(TAG, "Failed to check log.");
             // 例外処理
         }
-        mLastCheck = Calendar.getInstance();
         return result;
     }
 
@@ -160,6 +159,7 @@ public class EmailObserverService extends Service {
         Intent intent = new Intent();
         ComponentName component = EmailNotifyPreferences.getComponent(this);
         if (component != null) {
+            //Log.d(TAG, "Launching app: " + component);
             intent.setComponent(component);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else {
@@ -172,6 +172,7 @@ public class EmailObserverService extends Service {
      * Eメールアプリを殺す
      */
     private void killEmailApp() {
+        //Log.d(TAG, "Killing email app.");
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         manager.restartPackage("com.android.email");
     }
@@ -180,12 +181,7 @@ public class EmailObserverService extends Service {
      * メールが来たかどうかをチェックし、アクションを起こす
      */
     public void checkEmail() {
-        Calendar cal = Calendar.getInstance();
-        if (cal.getTimeInMillis() - mLastCheck.getTimeInMillis() < 200) {
-            /* 最低でも200msあけてチェック */
-            return;
-        }
-
+        pending = false;
         if (checkLog()) {
             if (EmailNotifyPreferences.getNotify(this)) {
                 doNotify();
@@ -206,7 +202,18 @@ public class EmailObserverService extends Service {
 
         @Override
         public void onChange(boolean selfChange) {
-            checkEmail();
+            //Log.d(TAG, "onChange() called.");
+
+            // DELAY_CHECK(ms)後にcheckEmail()を実行する。
+            if (!pending) {
+                pending = true;
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkEmail();
+                    }
+                }, DELAY_CHECK);
+            }
         }
     }
 
