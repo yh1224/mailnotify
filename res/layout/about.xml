@@ -6,13 +6,14 @@
         android:layout_height="wrap_content"
         android:src="@android:drawable/divider_horizontal_dark" />
     <ScrollView android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:layout_weight="9">
+        android:layout_height="wrap_content" android:layout_weight="9"
+        android:scrollbarStyle="outsideInset">
         <LinearLayout android:orientation="vertical"
             android:layout_width="fill_parent" android:layout_height="wrap_content">
             <TextView android:id="@+id/text"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8px" />
+                android:layout_margin="10px" />
         </LinearLayout>
     </ScrollView>
     <LinearLayout android:orientation="horizontal"
