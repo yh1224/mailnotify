@@ -7,7 +7,6 @@ import android.util.Log;
 
 public class EmailNotifyReceiver extends BroadcastReceiver {
     private static final String TAG = "EmailNotify";
-    private static final String ACTION = "android.provider.Telephony.SMS_RECEIVED";
 
     @Override
     public void onReceive(Context context, Intent intent) {
