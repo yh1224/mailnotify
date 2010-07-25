@@ -13,6 +13,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -43,6 +44,10 @@ public class EmailObserverService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        EmailNotifyLogOpenHelper h = new EmailNotifyLogOpenHelper(this);
+        mDb = h.getWritableDatabase();
+        mDb.delete(EmailNotifyLogOpenHelper.TABLE_LOG, null, null);
+
         // 起動前のものは通知しないようにする
         mLastCheck = Calendar.getInstance();
 
@@ -61,6 +66,7 @@ public class EmailObserverService extends Service {
     public void onDestroy() {
         super.onDestroy();
         getContentResolver().unregisterContentObserver(mObserver);
+        mDb.close();
     }
 
     @Override
@@ -212,10 +218,10 @@ public class EmailObserverService extends Service {
                     commandLine.toArray(new String[commandLine.size()]));
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()), 1024);
-            String line = bufferedReader.readLine();
             // Sample:
             // 07-23 22:46:53.610 D/WAP PUSH( 1038): Rx: 0006060302030aaf89030d6a00850703796831323234406d6f70657261008705c3072010072313465401
-            while (line != null) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
                 //Log.d(TAG, line);
                 //if (line.contains("getEmnMailbox")) {
                 if (line.substring(19).startsWith("D/WAP PUSH") && line.contains(": Rx: ")) {
@@ -231,26 +237,37 @@ public class EmailObserverService extends Service {
                     ccal.set(Calendar.SECOND, Integer.valueOf(times[2].substring(0, 2)));
                     ccal.set(Calendar.MILLISECOND, 0);
 
-                    if (ccal.getTimeInMillis() > mLastCheck.getTimeInMillis()) {
-                        // 未チェック
-                        mLastCheck = ccal;
-
-                        // データ解析
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        for (int i = 0; i < data.length(); i += 2){
-                            int b = Integer.parseInt(data.substring(i, i + 2), 16);
-                            baos.write(b);
-                        }
-                        if (!checkWapPdu(baos.toByteArray())) {
-                            // メール受信ではなかった
-                            continue;
-                        }
-
-                        Log.d(TAG, "[" + ccal.getTimeInMillis() + "] " + data);
-                        result = true;
+                    if (ccal.getTimeInMillis() <= mLastCheck.getTimeInMillis()) {
+                        // チェック済
+                        continue;
                     }
+                    mLastCheck = ccal;
+
+                    // ログ採取
+                    ContentValues values = new ContentValues();
+                    Calendar cal = Calendar.getInstance();
+                    values.put("created_at", cal.getTimeInMillis() / 1000);
+                    values.put("created_date", cal.getTime().toLocaleString());
+                    values.put("received_at", ccal.getTimeInMillis() / 1000);
+                    values.put("received_date", ccal.getTime().toLocaleString());
+                    values.put("log_line", line);
+                    values.put("wap_pdu", data);
+                    mDb.insert(EmailNotifyLogOpenHelper.TABLE_LOG, null, values);
+
+                    // データ解析
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    for (int i = 0; i < data.length(); i += 2){
+                        int b = Integer.parseInt(data.substring(i, i + 2), 16);
+                        baos.write(b);
+                    }
+                    if (!checkWapPdu(baos.toByteArray())) {
+                        // メール受信ではなかった
+                        continue;
+                    }
+
+                    Log.d(TAG, "[" + ccal.getTimeInMillis() + "] " + data);
+                    result = true;
                 }
-                line = bufferedReader.readLine();
             }
             bufferedReader.close();
         } catch (IOException e) {

@@ -4,9 +4,11 @@
     <string name="notify_text">メールが届いています。</string>
     <string name="ok">OK</string>
     <string name="preferences">設定</string>
+    <string name="log">ログ</string>
     <string name="about">バージョン情報</string>
     <string name="feedback">報告</string>
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
+    <string name="no_log">メール着信ログはありません。</string>
     <string name="preferences_notification">通知設定</string>
     <string name="pref_notification_title">通知</string>
     <string name="pref_notification_summary">メールが届いたことを通知バーに通知します。</string>

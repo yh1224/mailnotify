@@ -56,6 +56,10 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             intent = new Intent().setClass(this, EmailNotifyPreferencesActivity.class);
             startActivity(intent);
             break;
+        case R.id.menu_log:
+            intent = new Intent().setClass(this, EmailNotifyLogActivity.class);
+            startActivity(intent);
+            break;
         case R.id.menu_about:
             intent = new Intent().setClass(this, AboutActivity.class);
             startActivity(intent);
