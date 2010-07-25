@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -17,6 +18,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     private Preference mPrefLaunchApp;
+    private ListPreference mPrefPolling;
     private SharedPreferences mPref;
 
     @Override
@@ -27,6 +29,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         addPreferencesFromResource(R.xml.preferences);
 
         mPrefLaunchApp = findPreference("launch_app");
+        mPrefPolling = (ListPreference) findPreference("polling_interval");
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         updateSummary();
@@ -52,6 +55,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     protected void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        updateService();
     }
 
     @Override
@@ -73,18 +77,49 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         }
     }
 
+    /**
+     * summaryを更新
+     */
     private void updateSummary() {
+        // 起動アプリ
         ComponentName component = EmailNotifyPreferences.getComponent(this);
         if (component != null) {
             mPrefLaunchApp.setSummary(
                     getResources().getString(R.string.pref_launch_app_is) + "\n" +
                     component.getClassName());
         }
+
+        // ポーリング
+        String val = mPrefPolling.getValue();
+        String[] entries = getResources().getStringArray(R.array.entries_polling_interval);
+        String[] entryvalues = getResources().getStringArray(R.array.entryvalues_polling_interval);
+        for (int i = 0; i < entries.length; i++) {
+            if (val.equals(entryvalues[i])) {
+                if (i == 0) {
+                    // default
+                    mPrefPolling.setSummary(R.string.pref_polling_interval_summary);
+                } else {
+                    mPrefPolling.setSummary(getResources().getString(R.string.pref_polling_interval_is) +
+                            ": " + entries[i]);
+                }
+            }
+        }
     }
 
+    /**
+     * 設定変更時の処理
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // summaryを更新
         updateSummary();
+    }
+
+    /**
+     * 設定を反映
+     */
+    private void updateService() {
+        EmailObserverService.startService(this);
     }
 
 }

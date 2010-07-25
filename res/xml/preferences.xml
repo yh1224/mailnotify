@@ -15,5 +15,9 @@
             android:title="@string/pref_kill_email_title" />
         <Preference android:summary="@string/pref_launch_app_summary"
             android:title="@string/pref_launch_app_title" android:key="launch_app" />
+        <ListPreference android:title="@string/pref_polling_interval_title"
+            android:summary="@string/pref_polling_interval_summary"
+            android:key="polling_interval" android:entries="@array/entries_polling_interval"
+            android:entryValues="@array/entryvalues_polling_interval" android:defaultValue="0"/>
     </PreferenceCategory>
 </PreferenceScreen>

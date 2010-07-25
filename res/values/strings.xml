@@ -22,6 +22,15 @@
     <string name="pref_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
     <string name="pref_kill_email_title">Eメールアプリ受信抑止</string>
     <string name="pref_kill_email_summary">メール着信時にEメールアプリで自動受信させない。</string>
+    <string name="pref_polling_interval_title">ポーリング</string>
+    <string name="pref_polling_interval_summary">Xperia(SO-01B)以外の機種で通知を有効にしたい場合、設定してみてください。</string>
+    <string name="pref_polling_interval_is">定期チェック間隔</string>
+    <string name="interval_none">定期チェックしない</string>
+    <string name="interval_1min">毎分</string>
+    <string name="interval_5min">5分ごと</string>
+    <string name="interval_10min">10分ごと</string>
+    <string name="interval_30min">30分ごと</string>
+    <string name="interval_1hour">1時間ごと</string>
     <string name="enable">有効化</string>
     <string name="service_started">メール着信監視を開始しました。</string>
     <string name="service_stopped">メール着信監視を停止しました。</string>
