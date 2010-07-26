@@ -11,6 +11,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EmailNotifyLogActivity" />
         <activity android:name=".EmailNotifyPreferencesActivity" />
         <activity android:name=".EmailNotifyPreferencesLaunchAppActivity"
             android:theme="@android:style/Theme.Dialog" />
