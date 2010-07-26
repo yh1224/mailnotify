@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -195,6 +196,27 @@ public class EmailObserverService extends Service {
     }
 
     /**
+     * ログ日時解析
+     * @param line ログ行
+     * @return 日時
+     */
+    private Calendar getLogDate(String line) {
+        // 日付
+        Calendar cal = Calendar.getInstance();
+        String[] days = line.split(" ")[0].split("-");
+        String[] times = line.split(" ")[1].split(":");
+        cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, Integer.valueOf(days[0]) - 1);
+        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(days[1]));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(times[0]));
+        cal.set(Calendar.MINUTE, Integer.valueOf(times[1]));
+        cal.set(Calendar.SECOND, Integer.valueOf(times[2].substring(0, 2)));
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal;
+    }
+
+    /**
      * メール受信通知確認
      *
      * ログから、メール受信通知(WAP PUSH)を受信したかどうかチェックする
@@ -225,23 +247,14 @@ public class EmailObserverService extends Service {
                 //Log.d(TAG, line);
                 //if (line.contains("getEmnMailbox")) {
                 if (line.substring(19).startsWith("D/WAP PUSH") && line.contains(": Rx: ")) {
-                    // ログ出力日時を取得
-                    String[] days = line.split(" ")[0].split("-");
-                    String[] times = line.split(" ")[1].split(":");
-                    String data = line.split(": Rx: ")[1];
-                    Calendar ccal = Calendar.getInstance();
-                    ccal.set(Calendar.MONTH, Integer.valueOf(days[0]) - 1);
-                    ccal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(days[1]));
-                    ccal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(times[0]));
-                    ccal.set(Calendar.MINUTE, Integer.valueOf(times[1]));
-                    ccal.set(Calendar.SECOND, Integer.valueOf(times[2].substring(0, 2)));
-                    ccal.set(Calendar.MILLISECOND, 0);
-
+                    Calendar ccal = getLogDate(line);
                     if (ccal.getTimeInMillis() <= mLastCheck.getTimeInMillis()) {
                         // チェック済
                         continue;
                     }
                     mLastCheck = ccal;
+
+                    String data = line.split(": Rx: ")[1];
 
                     // ログ採取
                     ContentValues values = new ContentValues();
