@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,6 +38,7 @@ public class EmailObserverService extends Service {
     private static ComponentName mService;
     private EmObserver mObserver;
     private SQLiteDatabase mDb;
+    private AlarmManager mAlarmManager;
     private Calendar mLastCheck;
     private Handler mHandler = new Handler();
     boolean pending = false;
@@ -48,6 +50,8 @@ public class EmailObserverService extends Service {
         EmailNotifyLogOpenHelper h = new EmailNotifyLogOpenHelper(this);
         mDb = h.getWritableDatabase();
         mDb.delete(EmailNotifyLogOpenHelper.TABLE_LOG, null, null);
+
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         // 起動前のものは通知しないようにする
         mLastCheck = Calendar.getInstance();
@@ -403,20 +407,19 @@ public class EmailObserverService extends Service {
      * ポーリングチェックを開始する
      */
     public void startPolling() {
-        final Runnable checkEmailHandler = new Runnable() {
-            @Override
-            public void run() {
-                checkEmail();
-            }
-        };
-
         int interval = EmailNotifyPreferences.getPollingInterval(this);
         if (interval > 0) {
-            Log.d(TAG, "Start polling. interval=" + interval + "sec.");
-            mHandler.postDelayed(checkEmailHandler, interval * 1000);
-        } else {
-            //Log.d(TAG, "Stop polling.");
-            mHandler.removeCallbacks(checkEmailHandler);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.SECOND, interval);
+            long next = cal.getTimeInMillis();
+
+            Intent intent = new Intent(this, EmailNotifyReceiver.class);
+            PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+            mAlarmManager.set(AlarmManager.RTC_WAKEUP, next, sender);
+
+            Log.d(TAG, "Start polling: next="
+                    + DateFormat.getDateTimeInstance().format(cal.getTime())
+                    + " (msec=" + next + ")");
         }
     }
 
