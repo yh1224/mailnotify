@@ -12,6 +12,10 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "received intent: " + intent.getAction());
 
+        if (!EmailNotifyPreferences.getEnable(context)) {
+            return;
+        }
+
         if (intent.getAction() != null) {
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(TAG, "EmailNotify restarted.");
