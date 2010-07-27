@@ -32,7 +32,6 @@
     <string name="interval_5min">5分ごと</string>
     <string name="interval_10min">10分ごと</string>
     <string name="interval_30min">30分ごと</string>
-    <string name="interval_1hour">1時間ごと</string>
     <string name="enable">有効化</string>
     <string name="service_started">メール着信監視を開始しました。</string>
     <string name="service_stopped">メール着信監視を停止しました。</string>
