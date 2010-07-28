@@ -8,7 +8,6 @@
     <string name="about">バージョン情報</string>
     <string name="feedback">報告</string>
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
-    <string name="no_log">メール着信ログはありません。</string>
     <string name="preferences_notification">通知設定</string>
     <string name="pref_notification_title">通知</string>
     <string name="pref_notification_summary">メールが届いたことを通知バーに通知します。</string>
@@ -25,7 +24,7 @@
     <string name="pref_kill_email_title">Eメールアプリ受信抑止</string>
     <string name="pref_kill_email_summary">メール着信時にEメールアプリで自動受信させない。</string>
     <string name="pref_polling_interval_title">定期チェック</string>
-    <string name="pref_polling_interval_summary">Xperia(SO-01B)以外の機種で通知を有効にしたい場合、設定してみてください。</string>
+    <string name="pref_polling_interval_summary">即時通知がおこなわれない場合、設定してみてください。</string>
     <string name="pref_polling_interval_is">定期チェック間隔</string>
     <string name="interval_none">定期チェックしない</string>
     <string name="interval_1min">1分ごと</string>
