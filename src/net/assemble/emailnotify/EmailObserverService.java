@@ -8,6 +8,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import net.assemble.android.MyLog;
+
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -15,11 +17,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -37,19 +37,13 @@ public class EmailObserverService extends Service {
 
     private static ComponentName mService;
     private EmObserver mObserver;
-    private SQLiteDatabase mDb;
     private AlarmManager mAlarmManager;
     private Calendar mLastCheck;
     private Handler mHandler = new Handler();
     boolean pending = false;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        EmailNotifyLogOpenHelper h = new EmailNotifyLogOpenHelper(this);
-        mDb = h.getWritableDatabase();
-        mDb.delete(EmailNotifyLogOpenHelper.TABLE_LOG, null, null);
 
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -71,7 +65,6 @@ public class EmailObserverService extends Service {
     public void onDestroy() {
         super.onDestroy();
         getContentResolver().unregisterContentObserver(mObserver);
-        mDb.close();
     }
 
     @Override
@@ -229,7 +222,7 @@ public class EmailObserverService extends Service {
      */
     private boolean checkIfMailReceived() {
         boolean result = false;
-        //Log.d(TAG, "Checking log...");
+        //Log.d(TAG, "Checking...");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -260,17 +253,6 @@ public class EmailObserverService extends Service {
 
                     String data = line.split(": Rx: ")[1];
 
-                    // ログ採取
-                    ContentValues values = new ContentValues();
-                    Calendar cal = Calendar.getInstance();
-                    values.put("created_at", cal.getTimeInMillis() / 1000);
-                    values.put("created_date", cal.getTime().toLocaleString());
-                    values.put("received_at", ccal.getTimeInMillis() / 1000);
-                    values.put("received_date", ccal.getTime().toLocaleString());
-                    values.put("log_line", line);
-                    values.put("wap_pdu", data);
-                    mDb.insert(EmailNotifyLogOpenHelper.TABLE_LOG, null, values);
-
                     // データ解析
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     for (int i = 0; i < data.length(); i += 2){
@@ -279,17 +261,20 @@ public class EmailObserverService extends Service {
                     }
                     if (!checkWapPdu(baos.toByteArray())) {
                         // メール受信ではなかった
+                        MyLog.w(this, "Unexpected PDU: " + data);
                         continue;
                     }
 
-                    Log.d(TAG, "[" + ccal.getTimeInMillis() + "] " + data);
+                    MyLog.i(this, "Received: " + data);
                     result = true;
                 }
             }
             bufferedReader.close();
+            if (!result) {
+                MyLog.i(this, "Checked: email not received.");
+            }
         } catch (IOException e) {
-            Log.e(TAG, "Failed to check log.");
-            // 例外処理
+            MyLog.e(this, "Unexpected error on check.");
         }
         startPolling();
         return result;
@@ -451,6 +436,7 @@ public class EmailObserverService extends Service {
         }
         if (!restart && result) {
             Toast.makeText(ctx, R.string.service_started, Toast.LENGTH_SHORT).show();
+            MyLog.i(ctx, "Service started.");
         }
         return result;
     }
@@ -468,6 +454,7 @@ public class EmailObserverService extends Service {
             } else {
                 Log.d(TAG, "EmailObserverService stopped: " + mService);
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
+                MyLog.i(ctx, "Service stopped.");
                 mService = null;
             }
         }

@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 
 import net.assemble.android.AboutActivity;
 import net.assemble.android.AssetsReader;
+import net.assemble.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
     private ToggleButton mEnableButton;
@@ -57,7 +58,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             startActivity(intent);
             break;
         case R.id.menu_log:
-            intent = new Intent().setClass(this, EmailNotifyLogActivity.class);
+            intent = new Intent().setClass(this, MyLogActivity.class);
             startActivity(intent);
             break;
         case R.id.menu_about:
