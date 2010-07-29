@@ -31,7 +31,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
 
         AssetsReader ar = new AssetsReader(this);
         try {
-            String str = ar.getText("description.html");
+            String str = ar.getText("description.txt");
             TextView text = (TextView) findViewById(R.id.description);
             text.setText(Html.fromHtml(str, new Html.ImageGetter() {
                 @Override
@@ -93,5 +93,5 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             mEnableButton.setChecked(false);
         }
     }
-    
+
 }
