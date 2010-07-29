@@ -222,7 +222,7 @@ public class EmailObserverService extends Service {
      */
     private boolean checkIfMailReceived() {
         boolean result = false;
-        //Log.d(TAG, "Checking...");
+        if (EmailNotify.DEBUG) MyLog.d(this, "Checking...");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -270,9 +270,6 @@ public class EmailObserverService extends Service {
                 }
             }
             bufferedReader.close();
-            if (!result) {
-                MyLog.i(this, "Checked: email not received.");
-            }
         } catch (IOException e) {
             MyLog.e(this, "Unexpected error on check.");
         }
