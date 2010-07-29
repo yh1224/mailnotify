@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,7 +33,14 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         try {
             String str = ar.getText("description.txt");
             TextView text = (TextView) findViewById(R.id.description);
-            text.setText(str);
+            text.setText(Html.fromHtml(str, new Html.ImageGetter() {
+                @Override
+                public Drawable getDrawable(String source) {
+                    Drawable d = getResources().getDrawable(R.drawable.icon);
+                    d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+                    return d;
+                }
+            }, null));
         } catch (IOException e) {}
 
         updateService();
