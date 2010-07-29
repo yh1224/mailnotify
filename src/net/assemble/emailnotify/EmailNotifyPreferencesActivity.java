@@ -119,7 +119,11 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
      * 設定を反映
      */
     private void updateService() {
-        EmailObserverService.startService(this);
+        if (EmailNotifyPreferences.getEnable(this)) {
+            EmailObserverService.startService(this);
+        } else {
+            EmailObserverService.stopService(this);
+        }
     }
 
 }
