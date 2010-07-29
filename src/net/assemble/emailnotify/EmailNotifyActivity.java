@@ -31,7 +31,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
 
         AssetsReader ar = new AssetsReader(this);
         try {
-            String str = ar.getText("description.txt");
+            String str = ar.getText("description.html");
             TextView text = (TextView) findViewById(R.id.description);
             text.setText(Html.fromHtml(str, new Html.ImageGetter() {
                 @Override
