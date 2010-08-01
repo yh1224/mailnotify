@@ -47,7 +47,7 @@ public class MyLog {
      *
      * @param text ログ文字列
      */
-    private static void add(Context ctx, int level, String text) {
+    private static void add(Context ctx, int level, String tag, String text) {
         ContentValues values = new ContentValues();
         Calendar cal = Calendar.getInstance();
         values.put("created_at", cal.getTimeInMillis() / 1000);
@@ -58,25 +58,25 @@ public class MyLog {
         rotate(ctx);
     }
 
-    public static void e(Context ctx, String text) {
-        Log.e(ctx.getClass().getName(), text);
-        add(ctx, LEVEL_ERROR, text);
+    public static void e(Context ctx, String tag, String text) {
+        Log.e(tag, text);
+        add(ctx, LEVEL_ERROR, tag, text);
     }
-    public static void w(Context ctx, String text) {
-        Log.w(ctx.getClass().getName(), text);
-        add(ctx, LEVEL_WARN, text);
+    public static void w(Context ctx, String tag, String text) {
+        Log.w(tag, text);
+        add(ctx, LEVEL_WARN, tag, text);
     }
-    public static void i(Context ctx, String text) {
-        Log.i(ctx.getClass().getName(), text);
-        add(ctx, LEVEL_INFO, text);
+    public static void i(Context ctx, String tag, String text) {
+        Log.i(tag, text);
+        add(ctx, LEVEL_INFO, tag, text);
     }
-    public static void d(Context ctx, String text) {
-        Log.d(ctx.getClass().getName(), text);
-        add(ctx, LEVEL_DEBUG, text);
+    public static void d(Context ctx, String tag, String text) {
+        Log.d(tag, text);
+        add(ctx, LEVEL_DEBUG, tag, text);
     }
-    public static void v(Context ctx, String text) {
-        Log.v(ctx.getClass().getName(), text);
-        add(ctx, LEVEL_VERBOSE, text);
+    public static void v(Context ctx, String tag, String text) {
+        Log.v(tag, text);
+        add(ctx, LEVEL_VERBOSE, tag, text);
     }
 
     /**

@@ -222,7 +222,7 @@ public class EmailObserverService extends Service {
      */
     private boolean checkIfMailReceived() {
         boolean result = false;
-        if (EmailNotify.DEBUG) MyLog.d(this, "Checking...");
+        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Checking...");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -261,17 +261,17 @@ public class EmailObserverService extends Service {
                     }
                     if (!checkWapPdu(baos.toByteArray())) {
                         // メール受信ではなかった
-                        MyLog.w(this, "Unexpected PDU: " + data);
+                        MyLog.w(this, TAG, "Unexpected PDU: " + data);
                         continue;
                     }
 
-                    MyLog.i(this, "Received: " + data);
+                    MyLog.i(this, TAG, "Received: " + data);
                     result = true;
                 }
             }
             bufferedReader.close();
         } catch (IOException e) {
-            MyLog.e(this, "Unexpected error on check.");
+            MyLog.e(this, TAG, "Unexpected error on check.");
         }
         startPolling();
         return result;
@@ -433,7 +433,7 @@ public class EmailObserverService extends Service {
         }
         if (!restart && result) {
             Toast.makeText(ctx, R.string.service_started, Toast.LENGTH_SHORT).show();
-            MyLog.i(ctx, "Service started.");
+            MyLog.i(ctx, TAG, "Service started.");
         }
         return result;
     }
@@ -451,7 +451,7 @@ public class EmailObserverService extends Service {
             } else {
                 Log.d(TAG, "EmailObserverService stopped: " + mService);
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
-                MyLog.i(ctx, "Service stopped.");
+                MyLog.i(ctx, TAG, "Service stopped.");
                 mService = null;
             }
         }
