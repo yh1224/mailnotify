@@ -222,7 +222,7 @@ public class EmailObserverService extends Service {
      */
     private boolean checkIfMailReceived() {
         boolean result = false;
-        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Checking...");
+        if (EmailNotify.DEBUG) Log.d(TAG, "Checking...");
         try {
             ArrayList<String> commandLine = new ArrayList<String>();
             commandLine.add("logcat");
@@ -240,7 +240,15 @@ public class EmailObserverService extends Service {
             // Sample:
             // 07-23 22:46:53.610 D/WAP PUSH( 1038): Rx: 0006060302030aaf89030d6a00850703796831323234406d6f70657261008705c3072010072313465401
             String line;
+            String firstLine = null;
+            String lastLine = null;
             while ((line = bufferedReader.readLine()) != null) {
+                if (EmailNotify.DEBUG) {
+                    if (firstLine == null) {
+                        firstLine = line;
+                    }
+                    lastLine = line;
+                }
                 //Log.d(TAG, line);
                 //if (line.contains("getEmnMailbox")) {
                 if (line.substring(19).startsWith("D/WAP PUSH") && line.contains(": Rx: ")) {
@@ -267,6 +275,17 @@ public class EmailObserverService extends Service {
 
                     MyLog.i(this, TAG, "Received: " + data);
                     result = true;
+                }
+            }
+            if (EmailNotify.DEBUG) {
+                if (firstLine != null && lastLine != null) {
+                    Calendar cal = getLogDate(firstLine);
+                    Calendar cal2 = getLogDate(lastLine);
+                    MyLog.d(this, TAG, "Checked: " +
+                            cal.getTime().toLocaleString() + " - " +
+                            cal2.getTime().toLocaleString());
+                } else {
+                    MyLog.d(this, TAG, "Checked: no log found.");
                 }
             }
             bufferedReader.close();
