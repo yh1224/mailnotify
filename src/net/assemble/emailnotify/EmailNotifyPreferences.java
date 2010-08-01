@@ -32,6 +32,7 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_LAUNCH_APP_CLASS = "launch_app_class_name";
 
     public static final String PREF_KEY_POLLING_INTERVAL = "polling_interval";
+    public static final String PREF_POLLING_INTERVAL_DEFAULT = "0";
 
     public static boolean getEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
@@ -88,7 +89,8 @@ public class EmailNotifyPreferences
 
     public static int getPollingInterval(Context ctx) {
         String val = PreferenceManager.getDefaultSharedPreferences(ctx).getString(
-                EmailNotifyPreferences.PREF_KEY_POLLING_INTERVAL, "0");
+                EmailNotifyPreferences.PREF_KEY_POLLING_INTERVAL,
+                EmailNotifyPreferences.PREF_POLLING_INTERVAL_DEFAULT);
         return Integer.parseInt(val);
     }
 
