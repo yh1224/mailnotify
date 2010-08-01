@@ -68,6 +68,10 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             break;
         case R.id.menu_log:
             intent = new Intent().setClass(this, MyLogActivity.class);
+            if (EmailNotify.DEBUG) {
+                //intent.putExtra("level", MyLog.LEVEL_VERBOSE);
+                intent.putExtra("debug_menu", true);
+            }
             startActivity(intent);
             break;
         case R.id.menu_about:

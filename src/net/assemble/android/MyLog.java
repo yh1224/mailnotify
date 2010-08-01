@@ -84,10 +84,31 @@ public class MyLog {
      *
      * @return カーソル
      */
-    public static Cursor getLogCursor(Context ctx) { 
+    public static Cursor getLogCursor(Context ctx, int level) { 
         Cursor c = getDb(ctx).query(MyLogOpenHelper.TABLE_LOG,
-                null, null, null, null, null, "created_at", null);
+                null, "level <= " + level, null,
+                null, null, "created_at", null);
         return c;
+    }
+
+    /**
+     * ログを取得
+     *
+     * @return 全ログの文字列
+     */
+    public static String getLogText(Context ctx, int level) { 
+        Cursor c = getDb(ctx).query(MyLogOpenHelper.TABLE_LOG,
+                null, "level <= " + level, null,
+                null, null, "created_at", null);
+        StringBuffer buf = new StringBuffer();
+        if (c.moveToFirst()) {
+            do {
+                String date = c.getString(c.getColumnIndex("created_date"));
+                String log_text = c.getString(c.getColumnIndex("log_text"));
+                buf.append(date + ": " + log_text + "\n");
+            } while (c.moveToNext());
+        }
+        return buf.toString();
     }
 
 }
