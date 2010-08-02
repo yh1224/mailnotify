@@ -3,6 +3,7 @@ package net.assemble.emailnotify;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -25,6 +26,20 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        // ライセンス付与
+        Intent intent = getIntent();
+        if (intent.hasExtra("license_key")) {
+            EmailNotifyPreferences.setLicenseKey(this, intent.getStringExtra("license_key"));
+            if (EmailNotifyPreferences.isLicensed(this)) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.app_name);
+                alertDialogBuilder.setMessage(R.string.licensed_message);
+                alertDialogBuilder.setCancelable(true);
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        }
 
         mEnableButton = (ToggleButton) findViewById(R.id.enable);
         mEnableButton.setOnClickListener(this);

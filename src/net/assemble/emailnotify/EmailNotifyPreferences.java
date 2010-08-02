@@ -1,8 +1,13 @@
 package net.assemble.emailnotify;
 
+import java.security.NoSuchAlgorithmException;
+
+import net.assemble.android.LicenseManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
 /**
@@ -33,6 +38,8 @@ public class EmailNotifyPreferences
 
     public static final String PREF_KEY_POLLING_INTERVAL = "polling_interval";
     public static final String PREF_POLLING_INTERVAL_DEFAULT = "0";
+
+    public static final String PREF_KEY_LICENSE_KEY = "license_key";
 
     public static boolean getEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
@@ -92,6 +99,32 @@ public class EmailNotifyPreferences
                 EmailNotifyPreferences.PREF_KEY_POLLING_INTERVAL,
                 EmailNotifyPreferences.PREF_POLLING_INTERVAL_DEFAULT);
         return Integer.parseInt(val);
+    }
+
+    public static boolean isLicensed(Context ctx) {
+        PackageInfo pi;
+        try {
+            pi = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+            if (getLicenseKey(ctx).equals(LicenseManager.generateLicenseKey(ctx, pi.packageName))) {
+                return true;
+            }
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static String getLicenseKey(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                EmailNotifyPreferences.PREF_KEY_LICENSE_KEY, null);
+    }
+
+    public static void setLicenseKey(Context ctx, String val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putString(EmailNotifyPreferences.PREF_KEY_LICENSE_KEY, val);
+        e.commit();
     }
 
 }

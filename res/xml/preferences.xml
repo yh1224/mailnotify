@@ -23,4 +23,9 @@
             android:summary="@string/pref_kill_email_summary"
             android:title="@string/pref_kill_email_title" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_license">
+        <Preference android:key="license_key"
+            android:title="@string/pref_license_key_title"
+            android:summary="@string/pref_license_key_summary" />
+    </PreferenceCategory>
 </PreferenceScreen>

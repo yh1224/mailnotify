@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -17,8 +18,11 @@ import android.preference.PreferenceScreen;
 public class EmailNotifyPreferencesActivity extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
+    private static final String LICENSE_URL = "http://market.android.com/search?q=net.assemble.emailnotify";
+
     private Preference mPrefLaunchApp;
     private ListPreference mPrefPolling;
+    private Preference mPrefLicense;
     private SharedPreferences mPref;
 
     @Override
@@ -30,7 +34,19 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 
         mPrefLaunchApp = findPreference("launch_app");
         mPrefPolling = (ListPreference) findPreference("polling_interval");
+        mPrefLicense = (Preference) findPreference("license_key");
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (!EmailNotifyPreferences.isLicensed(this)) {
+            mPrefLicense.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(LICENSE_URL));
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
 
         updateSummary();
     }
@@ -103,6 +119,20 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                             ": " + entries[i]);
                 }
             }
+        }
+
+        // ライセンス
+        if (EmailNotifyPreferences.isLicensed(this)) {
+            mPrefLicense.setSummary(R.string.pref_license_key_registered);
+            mPrefLicense.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // ignore
+                    return false;
+                }
+            });
+        } else {
+            mPrefLicense.setSummary(R.string.pref_license_key_summary);
         }
     }
 
