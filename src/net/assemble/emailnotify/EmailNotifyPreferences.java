@@ -102,16 +102,18 @@ public class EmailNotifyPreferences
     }
 
     public static boolean isLicensed(Context ctx) {
-        PackageInfo pi;
-        try {
-            pi = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
-            if (getLicenseKey(ctx).equals(LicenseManager.generateLicenseKey(ctx, pi.packageName))) {
-                return true;
+        String licenseKey = getLicenseKey(ctx);
+        if (licenseKey != null) {
+            try {
+                PackageInfo pi = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+                if (licenseKey.equals(LicenseManager.generateLicenseKey(ctx, pi.packageName))) {
+                    return true;
+                }
+            } catch (NameNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
             }
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         }
         return false;
     }
