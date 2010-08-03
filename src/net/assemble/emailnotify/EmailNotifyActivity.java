@@ -1,10 +1,15 @@
 package net.assemble.emailnotify;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
@@ -27,20 +32,6 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        // ライセンス付与
-        Intent intent = getIntent();
-        if (intent.hasExtra("license_key")) {
-            EmailNotifyPreferences.setLicenseKey(this, intent.getStringExtra("license_key"));
-            if (EmailNotifyPreferences.isLicensed(this)) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle(R.string.app_name);
-                alertDialogBuilder.setMessage(R.string.licensed_message);
-                alertDialogBuilder.setCancelable(true);
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-        }
-
         mEnableButton = (ToggleButton) findViewById(R.id.enable);
         mEnableButton.setOnClickListener(this);
 
@@ -59,6 +50,10 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         } catch (IOException e) {}
 
         updateService();
+
+        if (!EmailNotifyPreferences.isLicensed(this)) {
+            checkLicense();
+        }
     }
 
     /**
@@ -112,5 +107,41 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             mEnableButton.setChecked(false);
         }
     }
+
+    private void checkLicense() {
+        // ライセンスチェック
+        PackageManager pm = getPackageManager();
+        String packageName = getPackageName() + ".license";
+        Intent intent = new Intent();
+        intent.setClassName(packageName, packageName + ".LicenseActivity");
+        List<ResolveInfo> appList = pm.queryIntentActivities(intent, 0);
+        if (appList.isEmpty()) {
+            return;
+        }
+        startActivityForResult(intent, 2/*TODO*/);
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 2/*TODO */) {
+            if (resultCode == RESULT_OK) {
+                if (data.hasExtra("license_key")) {
+                    EmailNotifyPreferences.setLicenseKey(this, data.getStringExtra("license_key"));
+                    if (EmailNotifyPreferences.isLicensed(this)) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                        alertDialogBuilder.setTitle(R.string.app_name);
+                        alertDialogBuilder.setMessage(R.string.licensed_message);
+                        alertDialogBuilder.setCancelable(true);
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+                    }
+                }
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
 }
