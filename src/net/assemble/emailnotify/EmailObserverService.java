@@ -189,6 +189,21 @@ public class EmailObserverService extends Service {
             return false;
         }
 
+        // mailat判定 (mopera限定にする)
+        int strLen = 0;
+        for (int i = dataIndex + 7; pdu[i] != 0; i++) {
+            strLen++;
+        }
+        byte[] m = new byte[strLen]; 
+        for (int i = 0; pdu[dataIndex + 7 + i] != 0; i++) {
+            m[i] = pdu[dataIndex + 7 + i];
+        }
+        String mailat = new String(m, 0);
+        //Log.d(TAG, "mailat: " + mailat);
+        if (mailat.endsWith("@mopera")) {
+            return false;
+        }
+
         return true;
     }
 
@@ -267,7 +282,11 @@ public class EmailObserverService extends Service {
                         int b = Integer.parseInt(data.substring(i, i + 2), 16);
                         baos.write(b);
                     }
-                    if (!checkWapPdu(baos.toByteArray())) {
+                    boolean ret = false;
+                    try {
+                        ret = checkWapPdu(baos.toByteArray());
+                    } catch (IndexOutOfBoundsException e) {}
+                    if (!ret) {
                         // メール受信ではなかった
                         MyLog.w(this, TAG, "Unexpected PDU: " + data);
                         continue;
