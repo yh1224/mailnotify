@@ -79,32 +79,6 @@ public class MyLog {
         add(ctx, LEVEL_VERBOSE, tag, text);
     }
 
-    public static void e(Context ctx, String tag, int resId) {
-        String text = ctx.getResources().getString(resId);
-        Log.e(tag, text);
-        add(ctx, LEVEL_ERROR, tag, text);
-    }
-    public static void w(Context ctx, String tag, int resId) {
-        String text = ctx.getResources().getString(resId);
-        Log.w(tag, text);
-        add(ctx, LEVEL_WARN, tag, text);
-    }
-    public static void i(Context ctx, String tag, int resId) {
-        String text = ctx.getResources().getString(resId);
-        Log.i(tag, text);
-        add(ctx, LEVEL_INFO, tag, text);
-    }
-    public static void d(Context ctx, String tag, int resId) {
-        String text = ctx.getResources().getString(resId);
-        Log.d(tag, text);
-        add(ctx, LEVEL_DEBUG, tag, text);
-    }
-    public static void v(Context ctx, String tag, int resId) {
-        String text = ctx.getResources().getString(resId);
-        Log.v(tag, text);
-        add(ctx, LEVEL_VERBOSE, tag, text);
-    }
-
     /**
      * ログを取得
      *

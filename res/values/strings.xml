@@ -6,8 +6,6 @@
     <string name="preferences">設定</string>
     <string name="log">ログ</string>
     <string name="about">バージョン情報</string>
-    <string name="buy">購入</string>
-    <string name="licensed_message">機能制限を解除しました。</string>
     <string name="feedback">報告</string>
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
     <string name="preferences_notification">通知設定</string>
@@ -30,9 +28,6 @@
     <string name="pref_polling_interval_title">定期監視</string>
     <string name="pref_polling_interval_summary">Xperia(SO-01B)以外では即時通知できないため、設定が必須となります。</string>
     <string name="pref_polling_interval_is">定期監視間隔</string>
-    <string name="pref_license_key_title">ライセンス</string>
-    <string name="pref_license_key_summary">気に入っていただけたら後方支援にご協力お願いいたします。</string>
-    <string name="pref_license_key_registered">登録済</string>
     <string name="interval_none">定期監視しない</string>
     <string name="interval_1min">1分ごと</string>
     <string name="interval_5min">5分ごと</string>
