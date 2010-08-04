@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -22,9 +22,13 @@ import android.widget.ToggleButton;
 
 import net.assemble.android.AboutActivity;
 import net.assemble.android.AssetsReader;
+import net.assemble.android.MyLog;
 import net.assemble.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "EmailNotify";
+    private static final String APP_LICENSE_URL = "http://market.android.com/search?q=net.assemble.emailnotify.license";
+
     private ToggleButton mEnableButton;
 
     @Override
@@ -62,6 +66,20 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+
+	// 購入メニュー (ライセンス未登録時のみ)
+        if (!EmailNotifyPreferences.isLicensed(this)) {
+            MenuItem menuBuy = menu.add(R.string.buy);
+            menuBuy.setIcon(android.R.drawable.ic_menu_more);
+            menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_LICENSE_URL));
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
         return true;
     }
 
@@ -128,20 +146,17 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
                 if (data.hasExtra("license_key")) {
                     EmailNotifyPreferences.setLicenseKey(this, data.getStringExtra("license_key"));
                     if (EmailNotifyPreferences.isLicensed(this)) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                        alertDialogBuilder.setTitle(R.string.app_name);
-                        alertDialogBuilder.setMessage(R.string.licensed_message);
-                        alertDialogBuilder.setCancelable(true);
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
+                        MyLog.i(this, TAG, R.string.licensed_message);
                     }
                 }
+                // ライセンスアプリ終了
+                ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                manager.restartPackage(getPackageName() + ".license");
             }
             return;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 }
