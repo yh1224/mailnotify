@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -19,6 +20,8 @@ import net.assemble.android.AssetsReader;
 import net.assemble.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
+    private static final String MARKET_URL = "http://market.android.com/search?q=net.assemble.emailnotify2";
+
     private ToggleButton mEnableButton;
 
     @Override
@@ -52,6 +55,21 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+
+        // Upgradeメニュー (FREE版のみ)
+        if (EmailNotify.FREE_VERSION) {
+            MenuItem menuBuy = menu.add(R.string.buy);
+            menuBuy.setIcon(android.R.drawable.ic_menu_more);
+            menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL));
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
+
         return true;
     }
 
