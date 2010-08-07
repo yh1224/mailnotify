@@ -200,7 +200,7 @@ public class EmailObserverService extends Service {
         }
         String mailat = new String(m, 0);
         //Log.d(TAG, "mailat: " + mailat);
-        if (mailat.endsWith("@mopera")) {
+        if (!mailat.endsWith("@mopera")) {
             return false;
         }
 
