@@ -18,6 +18,7 @@ public class MyLogActivity extends ListActivity {
     int mLevel;
     boolean mDebugMenu;
     MenuItem mMenuReport;
+    MenuItem mMenuClear;
 
     /** Called when the activity is first created. */
     @Override
@@ -46,7 +47,9 @@ public class MyLogActivity extends ListActivity {
      */
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mDebugMenu) {
-            mMenuReport = menu.add(R.string.feedback);
+            mMenuClear = menu.add("Clear");
+            mMenuClear.setIcon(android.R.drawable.ic_menu_delete);
+            mMenuReport = menu.add("Report");
             mMenuReport.setIcon(android.R.drawable.ic_menu_send);
         }
         return true;
@@ -56,7 +59,10 @@ public class MyLogActivity extends ListActivity {
      * オプションメニューの選択
      */
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item == mMenuReport) {
+        if (item == mMenuClear) {
+            MyLog.clearAll(this);
+            updateList();
+        } else if (item == mMenuReport) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
                     "mailto:" + getResources().getString(R.string.feedback_to)));
             intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));

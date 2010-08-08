@@ -34,12 +34,19 @@ public class MyLog {
     }
 
     /**
-     * 古いログを削除する
+     * 古いログを消去する
      */
     private static void rotate(Context ctx) {
         Calendar cal = Calendar.getInstance();
         long t = cal.getTimeInMillis() / 1000 - LOG_ROTATE_LIMIT_SEC;
         getDb(ctx).delete(MyLogOpenHelper.TABLE_LOG, "created_at < " + t, null);
+    }
+
+    /**
+     * ログをすべて消去する
+     */
+    public static void clearAll(Context ctx) {
+        getDb(ctx).delete(MyLogOpenHelper.TABLE_LOG, null, null);
     }
 
     /**
