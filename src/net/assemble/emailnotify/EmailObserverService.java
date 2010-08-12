@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import net.assemble.android.MyLog;
 
@@ -73,15 +75,25 @@ public class EmailObserverService extends Service {
     }
 
     /**
+     * EBDDEC文字を数値に変換
+     * 
+     * @param c EBDDEC文字
+     * @return 数値
+     */
+    private int ebcdec(byte c) {
+        return (c >> 4) * 10 + (c & 0x0f);
+    }
+
+    /**
      * WAP PDU解析 (基本ぱくり)
      *
      * frameworks/base/telephony/java/com/android/internal/telephony/WapPushOverSms.java
      * WapPushOverSms#dispatchWapPdu()
      *
      * @param pdu WAP PDU
-     * @return true:メールを受信した
+     * @return 受信通知日時
      */
-    private boolean checkWapPdu(byte[] pdu) {
+    private Calendar checkWapPdu(byte[] pdu) {
         WspTypeDecoder pduDecoder = new WspTypeDecoder(pdu);
 
         int index = 0;
@@ -92,7 +104,7 @@ public class EmailObserverService extends Service {
         if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
                 (pduType != WspTypeDecoder.PDU_TYPE_CONFIRMED_PUSH)) {
             Log.w(TAG, "Received non-PUSH WAP PDU. Type = " + pduType);
-            return false;
+            return null;
         }
 
         pduDecoder = new WspTypeDecoder(pdu);
@@ -105,7 +117,7 @@ public class EmailObserverService extends Service {
          */
         if (pduDecoder.decodeUintvarInteger(index) == false) {
             Log.w(TAG, "Received PDU. Header Length error.");
-            return false;
+            return null;
         }
         headerLength = (int)pduDecoder.getValue32();
         index += pduDecoder.getDecodedDataLength();
@@ -126,7 +138,7 @@ public class EmailObserverService extends Service {
          */
         if (pduDecoder.decodeContentType(index) == false) {
             Log.w(TAG, "Received PDU. Header Content-Type error.");
-            return false;
+            return null;
         }
         int binaryContentType;
         String mimeType = pduDecoder.getValueString();
@@ -156,7 +168,7 @@ public class EmailObserverService extends Service {
                     break;
                 default:
                     Log.w(TAG, "Received PDU. Unsupported Content-Type = " + binaryContentType);
-                    return false;
+                    return null;
             }
         } else {
             if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML)) {
@@ -175,7 +187,7 @@ public class EmailObserverService extends Service {
                 binaryContentType = 0x030a;
             } else {
                 Log.w(TAG, "Received PDU. Unknown Content-Type = " + mimeType);
-                return false;
+                return null;
             }
         }
         index += pduDecoder.getDecodedDataLength();
@@ -186,25 +198,40 @@ public class EmailObserverService extends Service {
                 ", dataIndex=" + dataIndex);
 
         if (binaryContentType != 0x030a) {
-            return false;
+            return null;
         }
+
+        dataIndex += 7;
 
         // mailat判定 (mopera限定にする)
         int strLen = 0;
-        for (int i = dataIndex + 7; pdu[i] != 0; i++) {
+        for (int i = dataIndex; pdu[i] != 0; i++) {
             strLen++;
         }
         byte[] m = new byte[strLen]; 
-        for (int i = 0; pdu[dataIndex + 7 + i] != 0; i++) {
-            m[i] = pdu[dataIndex + 7 + i];
+        for (int i = 0; pdu[dataIndex + i] != 0; i++) {
+            m[i] = pdu[dataIndex + i];
         }
         String mailat = new String(m, 0);
         //Log.d(TAG, "mailat: " + mailat);
         if (!mailat.endsWith("@mopera")) {
-            return false;
+            return null;
         }
+        dataIndex += strLen + 1;
 
-        return true;
+        // 日時取得
+        dataIndex += 4;
+        int yyyy = ebcdec(pdu[dataIndex + 0]) * 100 + ebcdec(pdu[dataIndex + 1]);
+        int mm = ebcdec(pdu[dataIndex + 2]);
+        int dd = ebcdec(pdu[dataIndex + 3]);
+        int hh = ebcdec(pdu[dataIndex + 4]);
+        int mi = ebcdec(pdu[dataIndex + 5]);
+        int ss = ebcdec(pdu[dataIndex + 6]);
+        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        cal.set(yyyy, mm - 1, dd, hh, mi, ss);
+        //Log.d(TAG, "pdu cal=" + cal.getTimeInMillis() / 1000 + " " + cal.getTime().toLocaleString());
+
+        return cal;
     }
 
     /**
@@ -268,6 +295,7 @@ public class EmailObserverService extends Service {
                 //if (line.contains("getEmnMailbox")) {
                 if (line.substring(19).startsWith("D/WAP PUSH") && line.contains(": Rx: ")) {
                     Calendar ccal = getLogDate(line);
+                    //Log.d(TAG, "log cal=" + ccal.getTimeInMillis() / 1000 + " " + ccal.getTime().toLocaleString());
                     if (ccal.getTimeInMillis() <= mLastCheck.getTimeInMillis()) {
                         // チェック済
                         continue;
@@ -282,17 +310,23 @@ public class EmailObserverService extends Service {
                         int b = Integer.parseInt(data.substring(i, i + 2), 16);
                         baos.write(b);
                     }
-                    boolean ret = false;
+                    Calendar ncal = null;
                     try {
-                        ret = checkWapPdu(baos.toByteArray());
+                        ncal = checkWapPdu(baos.toByteArray());
                     } catch (IndexOutOfBoundsException e) {}
-                    if (!ret) {
+                    if (ncal == null) {
                         // メール受信ではなかった
                         MyLog.w(this, TAG, "Unexpected PDU: " + data);
                         continue;
                     }
 
-                    MyLog.i(this, TAG, "Received: " + data);
+                    Calendar cal = Calendar.getInstance();
+                    //Log.d(TAG, "cal=" + cal.getTimeInMillis() / 1000 + " " + cal.getTime().toLocaleString());
+                    long delay = (cal.getTimeInMillis() - ncal.getTimeInMillis()) / 1000;
+                    if (delay < 0) {
+                        delay = 0;
+                    }
+                    MyLog.i(this, TAG, "Notify: delayed=" + delay + "sec. pdu=" + data);
                     result = true;
                 }
             }
@@ -313,6 +347,30 @@ public class EmailObserverService extends Service {
         }
         startPolling();
         return result;
+    }
+
+    /**
+     * バイブレーションパターン取得
+     * 
+     * @param pattern パターン
+     * @param length 継続時間(秒)
+     * @return バイブレーションパターン
+     */
+    private long[] getVibratePattern(long[] pattern, long length) {
+        ArrayList<Long> arr = new ArrayList<Long>();
+        arr.add(new Long(0));
+        long rest = length * 1000;
+        while (rest > 0) {
+            for (int j = 0; j < pattern.length; j++) {
+                arr.add(new Long(pattern[j]));
+                rest -= pattern[j];
+            }
+        }
+        long[] vibrate = new long[arr.size()];
+        for (int i = 0; i < arr.size(); i++) {
+            vibrate[i] = arr.get(i);
+        }
+        return vibrate;
     }
 
     /**
@@ -346,7 +404,9 @@ public class EmailObserverService extends Service {
             notification.sound = Uri.parse(soundUri);
         }
         if (EmailNotifyPreferences.getVibration(this)) {
-            notification.defaults |= Notification.DEFAULT_VIBRATE;
+           notification.vibrate = getVibratePattern(
+                   new long[] { 250, 250, 250, 1000 },
+                   EmailNotifyPreferences.getVibrationLength(this));
         }
         notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
         notification.ledARGB = 0xff00ff00;

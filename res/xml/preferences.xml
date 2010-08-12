@@ -15,6 +15,10 @@
             android:summary="@string/pref_vibration_summary"
             android:title="@string/pref_vibration_title"
             android:defaultValue="true" />
+        <net.assemble.emailnotify.EmailNotifyVibrationLengthPreference
+            android:summary="@string/pref_vibration_length_summary"
+            android:title="@string/pref_vibration_length_title"
+            android:key="vibration_length" android:defaultValue="3" />
         <Preference android:summary="@string/pref_launch_app_summary"
             android:title="@string/pref_launch_app_title" android:key="launch_app" />
     </PreferenceCategory>

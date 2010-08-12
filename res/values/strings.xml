@@ -21,6 +21,8 @@
     <string name="pref_sound_summary">メール着信通知の通知音を選択します。</string>
     <string name="pref_vibration_title">バイブレーション</string>
     <string name="pref_vibration_summary">メール着信通知時にバイブレーションします。</string>
+    <string name="pref_vibration_length_title">バイブレーション時間</string>
+    <string name="pref_vibration_length_summary">バイブレーションの長さを指定します。</string>
     <string name="pref_launch_app_title">起動アプリ</string>
     <string name="pref_launch_app_is">通知クリック時に起動するアプリ:</string>
     <string name="pref_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>

@@ -22,6 +22,9 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_VIBRATION = "vibration";
     public static final boolean PREF_VIBRATION_DEFAULT = true;
 
+    public static final String PREF_KEY_VIBRATION_LENGTH = "vibration_length";
+    public static final int PREF_VIBRATION_LENGTH_DEFAULT = 3;
+
     public static final String PREF_KEY_KILL_EMAIL = "kill_email";
     public static final boolean PREF_KILL_EMAIL_DEFAULT = false;
 
@@ -62,6 +65,12 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_VIBRATION,
                 EmailNotifyPreferences.PREF_VIBRATION_DEFAULT);
+    }
+
+    public static int getVibrationLength(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getInt(
+                EmailNotifyPreferences.PREF_KEY_VIBRATION_LENGTH,
+                EmailNotifyPreferences.PREF_VIBRATION_LENGTH_DEFAULT);
     }
 
     public static boolean getKillEmail(Context ctx) {
