@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Email Notify</string>
     <string name="notify_text">メールが届いています。</string>
+    <string name="notification_message">Eメール着信を監視しています。</string>
     <string name="ok">OK</string>
     <string name="preferences">設定</string>
     <string name="log">ログ</string>
@@ -17,6 +18,8 @@
     <string name="pref_launch_title">アプリを起動</string>
     <string name="pref_launch_summary">メールが届いたときに自動的にアプリを起動します。</string>
     <string name="select_app">アプリ選択</string>
+    <string name="pref_notificationicon_title">監視アイコン</string>
+    <string name="pref_notificationicon_summary">通知バーに常にアイコンを表示します。</string>
     <string name="pref_sound_title">通知音</string>
     <string name="pref_sound_summary">メール着信通知の通知音を選択します。</string>
     <string name="pref_vibration_title">バイブレーション</string>

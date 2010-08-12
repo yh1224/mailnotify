@@ -5,6 +5,10 @@
             android:key="polling_interval" android:entries="@array/entries_polling_interval"
             android:entryValues="@array/entryvalues_polling_interval"
             android:defaultValue="300" />
+        <CheckBoxPreference android:key="notification_icon"
+            android:summary="@string/pref_notificationicon_summary"
+            android:title="@string/pref_notificationicon_title"
+            android:defaultValue="false" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_notification">
         <RingtonePreference android:key="sound"

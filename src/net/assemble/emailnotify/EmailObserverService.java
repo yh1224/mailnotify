@@ -10,8 +10,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import net.assemble.android.MyLog;
-
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -30,12 +28,17 @@ import android.widget.Toast;
 
 import com.android.internal.telephony.WspTypeDecoder;
 
+import net.assemble.android.MyLog;
+
 /**
  * メール監視サービス
  */
 public class EmailObserverService extends Service {
     private static final String TAG = "EmailNotify";
     private static final int DELAY_CHECK = 200; /* ms */
+    private static final int NOTIFICATIONID_ICON = 1;
+
+    private static boolean mNotificationIcon = false;
 
     private static ComponentName mService;
     private EmObserver mObserver;
@@ -61,6 +64,11 @@ public class EmailObserverService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
+        if (EmailNotifyPreferences.getNotificationIcon(this)) {
+            showNotificationIcon();
+        } else {
+            clearNotificationIcon();
+        }
         checkEmail();
     }
 
@@ -72,6 +80,37 @@ public class EmailObserverService extends Service {
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
+    }
+
+    /**
+     * 通知バーにアイコンを表示
+     */
+    private void showNotificationIcon() {
+        if (mNotificationIcon == true) {
+            return;
+        }
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification(R.drawable.notification_icon,
+                getResources().getString(R.string.app_name), System.currentTimeMillis());
+        Intent intent = new Intent(this, EmailNotifyActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        notification.setLatestEventInfo(this, getResources().getString(R.string.app_name),
+                getResources().getString(R.string.notification_message), contentIntent);
+        notification.flags |= Notification.FLAG_NO_CLEAR;
+        notificationManager.notify(NOTIFICATIONID_ICON, notification);
+        mNotificationIcon = true;
+    }
+
+    /**
+     * ノーティフィケーションバーのアイコンを消去
+     */
+    private void clearNotificationIcon() {
+        if (mNotificationIcon == false) {
+            return;
+        }
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATIONID_ICON);
+        mNotificationIcon = false;
     }
 
     /**

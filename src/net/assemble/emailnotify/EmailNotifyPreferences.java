@@ -16,6 +16,9 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_NOTIFY = "notify";
     public static final boolean PREF_NOTIFY_DEFAULT = true;
 
+    public static final String PREF_KEY_NOTIFICATION_ICON = "notification_icon";
+    public static final boolean PREF_NOTIFICATION_ICON_DEFAULT = false;
+
     public static final String PREF_KEY_SOUND = "sound";
     public static final String PREF_SOUND_DEFAULT = "content://settings/system/notification_sound";
 
@@ -53,6 +56,12 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_NOTIFY,
                 EmailNotifyPreferences.PREF_NOTIFY_DEFAULT);
+    }
+
+    public static boolean getNotificationIcon(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_NOTIFICATION_ICON,
+                EmailNotifyPreferences.PREF_NOTIFICATION_ICON_DEFAULT);
     }
 
     public static String getSound(Context ctx) {
