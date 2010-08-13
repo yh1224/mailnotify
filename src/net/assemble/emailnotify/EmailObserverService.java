@@ -96,7 +96,7 @@ public class EmailObserverService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
         notification.setLatestEventInfo(this, getResources().getString(R.string.app_name),
                 getResources().getString(R.string.notification_message), contentIntent);
-        notification.flags |= Notification.FLAG_NO_CLEAR;
+        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
         notificationManager.notify(NOTIFICATIONID_ICON, notification);
         mNotificationIcon = true;
     }
