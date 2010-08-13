@@ -13,6 +13,10 @@ import android.widget.TextView;
  *
  */
 public class EmailNotifyVibrationLengthPreference extends DialogPreference {
+    private static final int LENGTH_MIN = 1;
+    private static final int LENGTH_MAX = 30;
+    private static final String LENGTH_UNIT = "sec";
+
     private SeekBar mSeekBar;
     private TextView mLengthView;
 
@@ -37,12 +41,16 @@ public class EmailNotifyVibrationLengthPreference extends DialogPreference {
 
         mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
         mSeekBar.setProgress(mVibrationLength);
-        mSeekBar.setMax(30);
+        mSeekBar.setMax(LENGTH_MAX);
         mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mVibrationLength = mSeekBar.getProgress();
-                mLengthView.setText(mVibrationLength + "sec");
+                if (mVibrationLength < LENGTH_MIN) {
+                    mVibrationLength = LENGTH_MIN;
+                    mSeekBar.setProgress(mVibrationLength);
+                }
+                mLengthView.setText(mVibrationLength + LENGTH_UNIT);
             }
 
             @Override
