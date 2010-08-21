@@ -27,7 +27,6 @@
     <string name="pref_kill_email_title">Eメールアプリ起動抑止</string>
     <string name="pref_kill_email_summary">メール着信時にEメールアプリで自動受信させない。</string>
     <string name="pref_polling_interval_title">定期監視</string>
-    <string name="pref_polling_interval_summary">Xperia(SO-01B)以外では即時通知できないため、設定が必須となります。</string>
     <string name="pref_polling_interval_is">定期監視間隔</string>
     <string name="interval_none">定期監視しない</string>
     <string name="interval_1min">1分ごと</string>

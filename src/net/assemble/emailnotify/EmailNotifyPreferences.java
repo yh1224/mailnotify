@@ -2,6 +2,7 @@ package net.assemble.emailnotify;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
@@ -10,6 +11,8 @@ import android.preference.PreferenceManager;
  */
 public class EmailNotifyPreferences
 {
+    public static final String PREF_KEY_VERSION = "version";
+
     public static final String PREF_KEY_ENABLE = "enable";
     public static final boolean PREF_ENABLE_DEFAULT = true;
 
@@ -32,7 +35,18 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_LAUNCH_APP_CLASS = "launch_app_class_name";
 
     public static final String PREF_KEY_POLLING_INTERVAL = "polling_interval";
-    public static final String PREF_POLLING_INTERVAL_DEFAULT = "0";
+    public static final String PREF_POLLING_INTERVAL_DEFAULT = "300";
+
+    public static int getVersion(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getInt(
+                EmailNotifyPreferences.PREF_KEY_VERSION, 0);
+    }
+
+    public static void setVersion(Context ctx, int val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putInt(EmailNotifyPreferences.PREF_KEY_VERSION, val);
+        e.commit();
+    }
 
     public static boolean getEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
@@ -92,6 +106,17 @@ public class EmailNotifyPreferences
                 EmailNotifyPreferences.PREF_KEY_POLLING_INTERVAL,
                 EmailNotifyPreferences.PREF_POLLING_INTERVAL_DEFAULT);
         return Integer.parseInt(val);
+    }
+
+    public static void upgrade(Context ctx) {
+        if (getVersion(ctx) == 0) {
+            // 強制的にデフォルトにする
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+            Editor e = pref.edit();
+            e.putString(PREF_KEY_POLLING_INTERVAL, PREF_POLLING_INTERVAL_DEFAULT);
+            e.commit();
+        }
+        EmailNotifyPreferences.setVersion(ctx, 1);
     }
 
 }

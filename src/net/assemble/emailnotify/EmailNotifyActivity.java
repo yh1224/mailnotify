@@ -29,6 +29,8 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        EmailNotifyPreferences.upgrade(this);
+
         mEnableButton = (ToggleButton) findViewById(R.id.enable);
         mEnableButton.setOnClickListener(this);
 

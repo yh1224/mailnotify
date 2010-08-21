@@ -89,19 +89,14 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     component.getClassName());
         }
 
-        // ポーリング
+        // 定期監視
         String val = mPrefPolling.getValue();
         String[] entries = getResources().getStringArray(R.array.entries_polling_interval);
         String[] entryvalues = getResources().getStringArray(R.array.entryvalues_polling_interval);
         for (int i = 0; i < entries.length; i++) {
             if (val.equals(entryvalues[i])) {
-                if (i == 0) {
-                    // default
-                    mPrefPolling.setSummary(R.string.pref_polling_interval_summary);
-                } else {
-                    mPrefPolling.setSummary(getResources().getString(R.string.pref_polling_interval_is) +
-                            ": " + entries[i]);
-                }
+                mPrefPolling.setSummary(getResources().getString(R.string.pref_polling_interval_is) +
+                        ": " + entries[i]);
             }
         }
     }
