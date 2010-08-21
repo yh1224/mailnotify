@@ -7,10 +7,12 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import net.assemble.android.MyLog;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -375,9 +377,16 @@ public class EmailObserverService extends Service {
      * Eメールアプリを殺す
      */
     private void killEmailApp() {
-        //Log.d(TAG, "Killing email app.");
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        manager.restartPackage("com.android.email");
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
+        RunningTaskInfo task = tasks.get(0);
+        if (!task.baseActivity.getPackageName().equals("com.android.email")) {
+            // バックグラウンドで動作中の場合のみ
+            //Log.d(TAG, "active task = " + task.baseActivity.getPackageName());
+            if (EmailNotify.DEBUG) Log.d(TAG, "Killing email app.");
+            ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            manager.restartPackage("com.android.email");
+        }
     }
 
     /**
@@ -392,9 +401,9 @@ public class EmailObserverService extends Service {
             if (EmailNotifyPreferences.getLaunch(this)) {
                 doLaunch();
             }
-            if (EmailNotifyPreferences.getKillEmail(this)) {
-                killEmailApp();
-            }
+        }
+        if (EmailNotifyPreferences.getKillEmail(this)) {
+            killEmailApp();
         }
     }
 
