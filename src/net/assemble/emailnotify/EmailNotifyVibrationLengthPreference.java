@@ -13,10 +13,7 @@ import android.widget.TextView;
  *
  */
 public class EmailNotifyVibrationLengthPreference extends DialogPreference {
-    private static final int LENGTH_MIN = 1;
-    private static final int LENGTH_MAX = 30;
-    private static final String LENGTH_UNIT = "sec";
-
+    private Context mCtx;
     private SeekBar mSeekBar;
     private TextView mLengthView;
 
@@ -24,6 +21,7 @@ public class EmailNotifyVibrationLengthPreference extends DialogPreference {
 
     public EmailNotifyVibrationLengthPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mCtx = context;
 
         setDialogLayoutResource(R.layout.number_seekbar_dialog);
         setPositiveButtonText(android.R.string.ok);
@@ -41,16 +39,17 @@ public class EmailNotifyVibrationLengthPreference extends DialogPreference {
 
         mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
         mSeekBar.setProgress(mVibrationLength);
-        mSeekBar.setMax(LENGTH_MAX);
+        mSeekBar.setMax(EmailNotifyPreferences.PREF_VIBRATION_LENGTH_MAX);
         mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mVibrationLength = mSeekBar.getProgress();
-                if (mVibrationLength < LENGTH_MIN) {
-                    mVibrationLength = LENGTH_MIN;
+                if (mVibrationLength < EmailNotifyPreferences.PREF_VIBRATION_LENGTH_MIN) {
+                    mVibrationLength = EmailNotifyPreferences.PREF_VIBRATION_LENGTH_MIN;
                     mSeekBar.setProgress(mVibrationLength);
                 }
-                mLengthView.setText(mVibrationLength + LENGTH_UNIT);
+                mLengthView.setText(mVibrationLength +
+                        mCtx.getResources().getString(R.string.pref_vibration_length_unit));
             }
 
             @Override
@@ -59,7 +58,8 @@ public class EmailNotifyVibrationLengthPreference extends DialogPreference {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-        mLengthView.setText(mVibrationLength + "sec");
+        mLengthView.setText(mVibrationLength +
+                mCtx.getResources().getString(R.string.pref_vibration_length_unit));
     }
 
     @Override
@@ -73,7 +73,12 @@ public class EmailNotifyVibrationLengthPreference extends DialogPreference {
         }
     }
 
+    public int getValue() {
+        return mVibrationLength;
+    }
+
     protected static SeekBar getSeekBar(View dialogView) {
         return (SeekBar) dialogView.findViewById(R.id.seekbar);
     }
+    
 }

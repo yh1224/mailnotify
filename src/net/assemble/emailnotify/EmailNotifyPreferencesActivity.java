@@ -19,6 +19,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 {
     private Preference mPrefLaunchApp;
     private ListPreference mPrefPolling;
+    private ListPreference mPrefVibrationPattern;
+    private EmailNotifyVibrationLengthPreference mPrefVibrationLength;
+    private Preference mPrefTest;
     private SharedPreferences mPref;
 
     @Override
@@ -30,6 +33,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 
         mPrefLaunchApp = findPreference("launch_app");
         mPrefPolling = (ListPreference) findPreference("polling_interval");
+        mPrefVibrationPattern = (ListPreference) findPreference("vibration_pattern");
+        mPrefVibrationLength = (EmailNotifyVibrationLengthPreference) findPreference("vibration_length");
+        mPrefTest = (Preference) findPreference("notifytest");
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         updateSummary();
@@ -41,6 +47,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         if (preference == mPrefLaunchApp) {
             Intent intent = new Intent().setClass(this, EmailNotifyPreferencesLaunchAppActivity.class);
             startActivityForResult(intent, 1/*TODO*/);
+        } else if (preference == mPrefTest) {
+            EmailNotifyNotification.doNotify(this);
         }
         return true;
     }
@@ -78,6 +86,23 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     }
 
     /**
+     * 設定値から表示文字列を取得
+     * 
+     * @param val 設定値
+     * @param entries　表示文字列の配列
+     * @param entryvalues　設定値の配列
+     * @return
+     */
+    private String getEntryString(String val, String[] entries, String[] entryvalues) {
+        for (int i = 0; i < entries.length; i++) {
+            if (val.equals(entryvalues[i])) {
+                return entries[i];
+            }
+        }
+        return null;
+    }
+
+    /**
      * summaryを更新
      */
     private void updateSummary() {
@@ -89,7 +114,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     component.getClassName());
         }
 
-        // ポーリング
+        // ポーリング間隔
         String val = mPrefPolling.getValue();
         String[] entries = getResources().getStringArray(R.array.entries_polling_interval);
         String[] entryvalues = getResources().getStringArray(R.array.entryvalues_polling_interval);
@@ -104,6 +129,17 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 }
             }
         }
+
+        // バイブレーションパターン
+        mPrefVibrationPattern.setSummary(
+            getEntryString(mPrefVibrationPattern.getValue(),
+                getResources().getStringArray(R.array.entries_vibration_pattern),
+                getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
+
+        // バイブレーション時間
+        mPrefVibrationLength.setSummary(
+                mPrefVibrationLength.getValue() + 
+                getResources().getString(R.string.pref_vibration_length_unit));
     }
 
     /**

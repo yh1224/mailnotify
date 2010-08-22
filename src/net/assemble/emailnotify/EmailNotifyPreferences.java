@@ -25,8 +25,20 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_VIBRATION = "vibration";
     public static final boolean PREF_VIBRATION_DEFAULT = true;
 
+    public static final String PREF_KEY_VIBRATION_PATTERN = "vibration_pattern";
+    public static final String PREF_VIBRATION_PATTERN_DEFAULT = "0";
+    public static final long[][] PREF_VIBRATION_PATTERN = {
+        { 250, 250, 250, 1000 },        // パターン1
+        { 500, 250, 500, 1000 },        // パターン2
+        { 1000, 1000, 1000, 1000 },      // パターン3
+        { 2000, 500 },                  // パターン4
+        { 250, 250, 1000, 1000 },       // パターン5
+    };
+
     public static final String PREF_KEY_VIBRATION_LENGTH = "vibration_length";
     public static final int PREF_VIBRATION_LENGTH_DEFAULT = 3;
+    public static final int PREF_VIBRATION_LENGTH_MIN = 1;
+    public static final int PREF_VIBRATION_LENGTH_MAX = 30;
 
     public static final String PREF_KEY_KILL_EMAIL = "kill_email";
     public static final boolean PREF_KILL_EMAIL_DEFAULT = false;
@@ -74,6 +86,14 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_VIBRATION,
                 EmailNotifyPreferences.PREF_VIBRATION_DEFAULT);
+    }
+
+    public static long[] getVibrationPattern(Context ctx) {
+        String val = PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                EmailNotifyPreferences.PREF_KEY_VIBRATION_PATTERN, 
+                EmailNotifyPreferences.PREF_VIBRATION_PATTERN_DEFAULT);
+        int idx =Integer.parseInt(val);
+        return PREF_VIBRATION_PATTERN[idx];
     }
 
     public static int getVibrationLength(Context ctx) {

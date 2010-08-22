@@ -25,7 +25,7 @@
     <string name="pref_vibration_title">バイブレーション</string>
     <string name="pref_vibration_summary">メール着信通知時にバイブレーションします。</string>
     <string name="pref_vibration_length_title">バイブレーション時間</string>
-    <string name="pref_vibration_length_summary">バイブレーションの長さを指定します。</string>
+    <string name="pref_vibration_length_unit">秒</string>
     <string name="pref_launch_app_title">起動アプリ</string>
     <string name="pref_launch_app_is">通知クリック時に起動するアプリ:</string>
     <string name="pref_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
@@ -34,12 +34,19 @@
     <string name="pref_polling_interval_title">定期監視</string>
     <string name="pref_polling_interval_summary">Xperia(SO-01B)以外では即時通知できないため、設定が必須となります。</string>
     <string name="pref_polling_interval_is">定期監視間隔</string>
+    <string name="pref_vibration_pattern_title">バイブレーションパターン</string>
     <string name="interval_none">定期監視しない</string>
     <string name="interval_1min">1分ごと</string>
     <string name="interval_5min">5分ごと</string>
     <string name="interval_10min">10分ごと</string>
     <string name="interval_30min">30分ごと</string>
+    <string name="vibration_pattern_1">パターン1</string>
+    <string name="vibration_pattern_2">パターン2</string>
+    <string name="vibration_pattern_3">パターン3</string>
+    <string name="vibration_pattern_4">パターン4</string>
+    <string name="vibration_pattern_5">パターン5</string>
     <string name="enable">有効化</string>
+    <string name="notifytest">通知テスト</string>
     <string name="service_started">メール着信監視を開始しました。</string>
     <string name="service_stopped">メール着信監視を停止しました。</string>
 </resources>

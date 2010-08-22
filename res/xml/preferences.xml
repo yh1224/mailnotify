@@ -13,18 +13,24 @@
     <PreferenceCategory android:title="@string/preferences_notification">
         <RingtonePreference android:key="sound"
             android:title="@string/pref_sound_title" android:summary="@string/pref_sound_summary"
-            android:ringtoneType="notification"
-            android:defaultValue="content://settings/system/notification_sound" />
+            android:defaultValue="content://settings/system/notification_sound" android:ringtoneType="notification"/>
         <CheckBoxPreference android:key="vibration"
             android:summary="@string/pref_vibration_summary"
             android:title="@string/pref_vibration_title"
             android:defaultValue="true" />
+        <ListPreference android:key="vibration_pattern"
+            android:title="@string/pref_vibration_pattern_title"
+            android:entries="@array/entries_vibration_pattern"
+            android:entryValues="@array/entryvalues_vibration_pattern"
+            android:defaultValue="0" android:dependency="vibration" />
         <net.assemble.emailnotify.EmailNotifyVibrationLengthPreference
-            android:summary="@string/pref_vibration_length_summary"
             android:title="@string/pref_vibration_length_title"
-            android:key="vibration_length" android:defaultValue="3" />
+            android:key="vibration_length" android:defaultValue="3"
+            android:dependency="vibration" />
         <Preference android:summary="@string/pref_launch_app_summary"
             android:title="@string/pref_launch_app_title" android:key="launch_app" />
+        <Preference android:title="@string/notifytest"
+            android:key="notifytest" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_misc">
         <CheckBoxPreference android:key="kill_email"
