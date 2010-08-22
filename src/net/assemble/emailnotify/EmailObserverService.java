@@ -8,9 +8,11 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -79,7 +81,7 @@ public class EmailObserverService extends Service {
 
     /**
      * EBDDEC文字を数値に変換
-     * 
+     *
      * @param c EBDDEC文字
      * @return 数値
      */
@@ -211,7 +213,7 @@ public class EmailObserverService extends Service {
         for (int i = dataIndex; pdu[i] != 0; i++) {
             strLen++;
         }
-        byte[] m = new byte[strLen]; 
+        byte[] m = new byte[strLen];
         for (int i = 0; pdu[dataIndex + i] != 0; i++) {
             m[i] = pdu[dataIndex + i];
         }
@@ -372,9 +374,16 @@ public class EmailObserverService extends Service {
      * Eメールアプリを殺す
      */
     private void killEmailApp() {
-        //Log.d(TAG, "Killing email app.");
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        manager.restartPackage("com.android.email");
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
+        RunningTaskInfo task = tasks.get(0);
+        if (!task.baseActivity.getPackageName().equals("com.android.email")) {
+            // バックグラウンドで動作中の場合のみ
+            //Log.d(TAG, "active task = " + task.baseActivity.getPackageName());
+            if (EmailNotify.DEBUG) Log.d(TAG, "Killing email app.");
+            ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            manager.restartPackage("com.android.email");
+        }
     }
 
     /**
@@ -389,9 +398,9 @@ public class EmailObserverService extends Service {
             if (EmailNotifyPreferences.getLaunch(this)) {
                 doLaunch();
             }
-            if (EmailNotifyPreferences.getKillEmail(this)) {
-                killEmailApp();
-            }
+        }
+        if (EmailNotifyPreferences.getKillEmail(this)) {
+            killEmailApp();
         }
     }
 
