@@ -14,8 +14,6 @@ import net.assemble.android.MyLog;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
@@ -318,46 +316,6 @@ public class EmailObserverService extends Service {
     }
 
     /**
-     * 通知
-     */
-    private void doNotify() {
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.icon,
-                getResources().getString(R.string.app_name),
-                System.currentTimeMillis());
-
-        Intent intent = new Intent();
-        ComponentName component = EmailNotifyPreferences.getComponent(this);
-        if (component != null) {
-            intent.setComponent(component);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        } else {
-            intent.setClass(this, EmailNotifyActivity.class);
-        }
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        String message = getResources().getString(R.string.notify_text);
-//        Calendar cal = Calendar.getInstance();
-//        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
-//                + cal.get(Calendar.MINUTE) + ")";
-        notification.setLatestEventInfo(this,
-                getResources().getString(R.string.app_name),
-                message, contentIntent);
-        notification.defaults = 0;
-        String soundUri = EmailNotifyPreferences.getSound(this);
-        if (soundUri.startsWith("content:")) {
-            notification.sound = Uri.parse(soundUri);
-        }
-        if (EmailNotifyPreferences.getVibration(this)) {
-            notification.defaults |= Notification.DEFAULT_VIBRATE;
-        }
-        notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
-        notification.ledARGB = 0xff00ff00;
-        notification.ledOnMS = 200;
-        notification.ledOffMS = 2000;
-        notificationManager.notify(1, notification);
-    }
-
-    /**
      * アプリ起動
      */
     private void doLaunch() {
@@ -396,7 +354,7 @@ public class EmailObserverService extends Service {
         pending = false;
         if (checkIfMailReceived()) {
             if (EmailNotifyPreferences.getNotify(this)) {
-                doNotify();
+                EmailNotifyNotification.doNotify(this);
             }
             if (EmailNotifyPreferences.getLaunch(this)) {
                 doLaunch();
