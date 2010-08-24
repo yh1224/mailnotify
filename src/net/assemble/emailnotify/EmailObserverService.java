@@ -359,9 +359,9 @@ public class EmailObserverService extends Service {
             if (EmailNotifyPreferences.getLaunch(this)) {
                 doLaunch();
             }
-        }
-        if (EmailNotifyPreferences.getKillEmail(this)) {
-            killEmailApp();
+            if (EmailNotifyPreferences.getKillEmail(this)) {
+                killEmailApp();
+            }
         }
     }
 
