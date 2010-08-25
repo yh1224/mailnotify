@@ -108,10 +108,10 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
 
     private void updateService() {
         if (EmailNotifyPreferences.getEnable(this)) {
-            EmailObserverService.startService(this);
+            EmailNotifyService.startService(this);
             mEnableButton.setChecked(true);
         } else {
-            EmailObserverService.stopService(this);
+            EmailNotifyService.stopService(this);
             mEnableButton.setChecked(false);
         }
     }

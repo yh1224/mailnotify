@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Email Notify</string>
+    <string name="app_name">Email Notify (Free)</string>
     <string name="notify_text">メールが届いています。</string>
     <string name="ok">OK</string>
     <string name="preferences">設定</string>
@@ -12,8 +12,6 @@
     <string name="preferences_notification">通知設定</string>
     <string name="preferences_observe">メール着信監視設定</string>
     <string name="preferences_misc">その他の設定</string>
-    <string name="pref_notification_title">通知</string>
-    <string name="pref_notification_summary">メールが届いたことを通知バーに通知します。</string>
     <string name="pref_launch_title">アプリを起動</string>
     <string name="pref_launch_summary">メールが届いたときに自動的にアプリを起動します。</string>
     <string name="select_app">アプリ選択</string>
@@ -24,16 +22,6 @@
     <string name="pref_launch_app_title">起動アプリ</string>
     <string name="pref_launch_app_is">通知クリック時に起動するアプリ:</string>
     <string name="pref_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
-    <string name="pref_kill_email_title">Eメールアプリ起動抑止</string>
-    <string name="pref_kill_email_summary">メール着信時にEメールアプリで自動受信させない。</string>
-    <string name="pref_polling_interval_title">定期監視</string>
-    <string name="pref_polling_interval_summary">Xperia(SO-01B)以外では即時通知できないため、設定が必須となります。</string>
-    <string name="pref_polling_interval_is">定期監視間隔</string>
-    <string name="interval_none">定期監視しない</string>
-    <string name="interval_1min">1分ごと</string>
-    <string name="interval_5min">5分ごと</string>
-    <string name="interval_10min">10分ごと</string>
-    <string name="interval_30min">30分ごと</string>
     <string name="enable">有効化</string>
     <string name="service_started">メール着信監視を開始しました。</string>
     <string name="service_stopped">メール着信監視を停止しました。</string>
