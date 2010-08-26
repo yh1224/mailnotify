@@ -179,11 +179,11 @@ public class EmailNotifyService extends Service {
                 ", contentType=" + mimeType + "(" + binaryContentType + ")" +
                 ", dataIndex=" + dataIndex);
 
-        if (binaryContentType != 0x030a) {
-            return false;
+        if (binaryContentType == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL ||
+                binaryContentType == 0x030a) {
+            return true;
         }
-
-        return true;
+        return false;
     }
 
     /**
