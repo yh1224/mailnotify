@@ -1,10 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/preferences_observe">
-        <ListPreference android:title="@string/pref_polling_interval_title"
-            android:summary="@string/pref_polling_interval_summary"
-            android:key="polling_interval" android:entries="@array/entries_polling_interval"
-            android:entryValues="@array/entryvalues_polling_interval"
-            android:defaultValue="300" />
         <CheckBoxPreference android:key="notification_icon"
             android:summary="@string/pref_notificationicon_summary"
             android:title="@string/pref_notificationicon_title"
@@ -31,10 +26,5 @@
             android:title="@string/pref_launch_app_title" android:key="launch_app" />
         <Preference android:title="@string/notifytest"
             android:key="notifytest" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preferences_misc">
-        <CheckBoxPreference android:key="kill_email"
-            android:summary="@string/pref_kill_email_summary"
-            android:title="@string/pref_kill_email_title" />
     </PreferenceCategory>
 </PreferenceScreen>

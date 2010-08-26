@@ -18,7 +18,6 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     private Preference mPrefLaunchApp;
-    private ListPreference mPrefPolling;
     private ListPreference mPrefVibrationPattern;
     private EmailNotifyVibrationLengthPreference mPrefVibrationLength;
     private Preference mPrefTest;
@@ -32,7 +31,6 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         addPreferencesFromResource(R.xml.preferences);
 
         mPrefLaunchApp = findPreference("launch_app");
-        mPrefPolling = (ListPreference) findPreference("polling_interval");
         mPrefVibrationPattern = (ListPreference) findPreference("vibration_pattern");
         mPrefVibrationLength = (EmailNotifyVibrationLengthPreference) findPreference("vibration_length");
         mPrefTest = (Preference) findPreference("notifytest");
@@ -114,22 +112,6 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     component.getClassName());
         }
 
-        // ポーリング間隔
-        String val = mPrefPolling.getValue();
-        String[] entries = getResources().getStringArray(R.array.entries_polling_interval);
-        String[] entryvalues = getResources().getStringArray(R.array.entryvalues_polling_interval);
-        for (int i = 0; i < entries.length; i++) {
-            if (val.equals(entryvalues[i])) {
-                if (i == 0) {
-                    // default
-                    mPrefPolling.setSummary(R.string.pref_polling_interval_summary);
-                } else {
-                    mPrefPolling.setSummary(getResources().getString(R.string.pref_polling_interval_is) +
-                            ": " + entries[i]);
-                }
-            }
-        }
-
         // バイブレーションパターン
         mPrefVibrationPattern.setSummary(
             getEntryString(mPrefVibrationPattern.getValue(),
@@ -156,9 +138,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
      */
     private void updateService() {
         if (EmailNotifyPreferences.getEnable(this)) {
-            EmailObserverService.startService(this);
+            EmailNotifyService.startService(this);
         } else {
-            EmailObserverService.stopService(this);
+            EmailNotifyService.stopService(this);
         }
     }
 

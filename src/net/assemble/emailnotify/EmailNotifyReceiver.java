@@ -19,14 +19,14 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
         if (intent.getAction() != null) {
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(TAG, "EmailNotify restarted.");
-                EmailObserverService.startService(context);
+                EmailNotifyService.startService(context);
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)
                     || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
-                EmailObserverService.startService(context);
+                EmailNotifyService.startService(context);
             }
             return;
         }
 
-        EmailObserverService.startService(context);
+        EmailNotifyService.startService(context);
     }
 }

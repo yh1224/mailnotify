@@ -40,17 +40,11 @@ public class EmailNotifyPreferences
     public static final int PREF_VIBRATION_LENGTH_MIN = 1;
     public static final int PREF_VIBRATION_LENGTH_MAX = 30;
 
-    public static final String PREF_KEY_KILL_EMAIL = "kill_email";
-    public static final boolean PREF_KILL_EMAIL_DEFAULT = false;
-
     public static final String PREF_KEY_LAUNCH = "launch";
     public static final boolean PREF_LAUNCH_DEFAULT = false;
 
     public static final String PREF_KEY_LAUNCH_APP_PACKAGE = "launch_app_package_name";
     public static final String PREF_KEY_LAUNCH_APP_CLASS = "launch_app_class_name";
-
-    public static final String PREF_KEY_POLLING_INTERVAL = "polling_interval";
-    public static final String PREF_POLLING_INTERVAL_DEFAULT = "0";
 
     public static boolean getEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
@@ -102,12 +96,6 @@ public class EmailNotifyPreferences
                 EmailNotifyPreferences.PREF_VIBRATION_LENGTH_DEFAULT);
     }
 
-    public static boolean getKillEmail(Context ctx) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-                EmailNotifyPreferences.PREF_KEY_KILL_EMAIL,
-                EmailNotifyPreferences.PREF_KILL_EMAIL_DEFAULT);
-    }
-
     public static boolean getLaunch(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_LAUNCH,
@@ -123,13 +111,6 @@ public class EmailNotifyPreferences
             return null;
         }
         return new ComponentName(packageName, className);
-    }
-
-    public static int getPollingInterval(Context ctx) {
-        String val = PreferenceManager.getDefaultSharedPreferences(ctx).getString(
-                EmailNotifyPreferences.PREF_KEY_POLLING_INTERVAL,
-                EmailNotifyPreferences.PREF_POLLING_INTERVAL_DEFAULT);
-        return Integer.parseInt(val);
     }
 
 }
