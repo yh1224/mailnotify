@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Email Notify (Free)</string>
+    <string name="app_name">Mail Notify (Free)</string>
     <string name="notify_text">メールが届いています。</string>
     <string name="ok">OK</string>
     <string name="preferences">設定</string>
