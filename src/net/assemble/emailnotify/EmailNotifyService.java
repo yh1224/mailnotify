@@ -37,15 +37,15 @@ public class EmailNotifyService extends Service {
 
         // 起動前のものは通知しないようにする
         mLastCheck = Calendar.getInstance();
-
-        // リアルタイムログ監視開始
-        startLogCheckThread();
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-    }
+
+        // リアルタイムログ監視開始
+        startLogCheckThread();
+}
 
     public void onDestroy() {
         super.onDestroy();
@@ -270,11 +270,12 @@ public class EmailNotifyService extends Service {
                     }
                 }
                 bufferedReader.close();
+                if (EmailNotify.DEBUG) Log.d(TAG, "Log check thread stopped.");
+                mLogCheckThread = null;
             } catch (IOException e) {
                 MyLog.e(EmailNotifyService.this, TAG, "Unexpected error on check.");
+                stopSelf();
             }
-            if (EmailNotify.DEBUG) Log.d(TAG, "Log check thread stopped.");
-            mLogCheckThread = null;
         }
     }
 
