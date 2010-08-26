@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SimpleCursorAdapter;
 
-import net.assemble.emailnotify.R;
+import net.assemble.mailnotify.R;
 
 public class MyLogActivity extends ListActivity {
     private static final int LEVEL_DEFAULT = MyLog.LEVEL_INFO;

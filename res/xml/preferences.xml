@@ -18,7 +18,7 @@
             android:entries="@array/entries_vibration_pattern"
             android:entryValues="@array/entryvalues_vibration_pattern"
             android:defaultValue="0" android:dependency="vibration" />
-        <net.assemble.emailnotify.EmailNotifyVibrationLengthPreference
+        <net.assemble.mailnotify.EmailNotifyVibrationLengthPreference
             android:title="@string/pref_vibration_length_title"
             android:key="vibration_length" android:defaultValue="3"
             android:dependency="vibration" />

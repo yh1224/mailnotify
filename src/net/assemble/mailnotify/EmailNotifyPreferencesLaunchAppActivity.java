@@ -1,4 +1,4 @@
-package net.assemble.emailnotify;
+package net.assemble.mailnotify;
 
 import android.app.LauncherActivity;
 import android.content.Intent;

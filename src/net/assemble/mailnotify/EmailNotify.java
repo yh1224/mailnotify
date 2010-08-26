@@ -1,4 +1,4 @@
-package net.assemble.emailnotify;
+package net.assemble.mailnotify;
 
 public class EmailNotify {
     public static final boolean DEBUG = false; 

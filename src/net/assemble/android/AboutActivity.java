@@ -13,7 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import net.assemble.emailnotify.R;
+import net.assemble.mailnotify.R;
 
 public class AboutActivity extends Activity
 {

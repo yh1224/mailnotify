@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Email Notify</string>
+    <string name="app_name">Mail Notify</string>
     <string name="notify_text">メールが届いています。</string>
-    <string name="notification_message">Eメール着信を監視しています。</string>
+    <string name="notification_message">メール着信を監視しています。</string>
     <string name="ok">OK</string>
     <string name="preferences">設定</string>
     <string name="log">ログ</string>
