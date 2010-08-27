@@ -57,6 +57,9 @@ public class EmailNotifyService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        // 通知アイコン
+        EmailNotifyNotification.clearNotificationIcon(this);
+
         // リアルタイムログ監視停止
         stopLogCheckThread();
     }
