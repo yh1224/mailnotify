@@ -168,7 +168,7 @@ public class EmailNotifyService extends Service {
         index += pduDecoder.getDecodedDataLength();
         int dataIndex = headerStartIndex + headerLength;
 
-        Log.d(TAG ,"Receieved WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
+        Log.d(TAG ,"Received WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
                 ", contentType=" + mimeType + "(" + binaryContentType + ")" +
                 ", dataIndex=" + dataIndex);
 
@@ -202,7 +202,7 @@ public class EmailNotifyService extends Service {
 
     /**
      * ログ行をチェック
-     * 
+     *
      * @param line ログ文字列
      * @return true:新規メール受信通知
      */
@@ -302,7 +302,7 @@ public class EmailNotifyService extends Service {
         }
         mStopLogCheckThread = true;
     }
-    
+
 
     /**
      * サービス動作有無取得
@@ -323,10 +323,10 @@ public class EmailNotifyService extends Service {
         boolean restart = EmailNotifyService.isActive();
         mService = ctx.startService(new Intent(ctx, EmailNotifyService.class));
         if (mService == null) {
-            Log.e(TAG, "EmailObserverService could not start!");
+            Log.e(TAG, "EmailNotifyService could not start!");
             result = false;
         } else {
-            Log.d(TAG, "EmailObserverService started: " + mService);
+            Log.d(TAG, "EmailNotifyService started: " + mService);
             result = true;
         }
         if (!restart && result) {
@@ -345,9 +345,9 @@ public class EmailNotifyService extends Service {
             i.setComponent(mService);
             boolean res = ctx.stopService(i);
             if (res == false) {
-                Log.e(TAG, "EmailObserverService could not stop!");
+                Log.e(TAG, "EmailNotifyService could not stop!");
             } else {
-                Log.d(TAG, "EmailObserverService stopped: " + mService);
+                Log.d(TAG, "EmailNotifyService stopped: " + mService);
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
                 MyLog.i(ctx, TAG, "Service stopped.");
                 mService = null;
