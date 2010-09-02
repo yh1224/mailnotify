@@ -70,126 +70,6 @@ public class EmailNotifyService extends Service {
     }
 
     /**
-     * WAP PDU解析 (基本ぱくり)
-     *
-     * frameworks/base/telephony/java/com/android/internal/telephony/WapPushOverSms.java
-     * WapPushOverSms#dispatchWapPdu()
-     *
-     * @param pdu WAP PDU
-     * @return true:メールを受信した
-     */
-    private boolean checkWapPdu(byte[] pdu) {
-        WspTypeDecoder pduDecoder = new WspTypeDecoder(pdu);
-
-        int index = 0;
-        int transactionId = pdu[index++] & 0xFF;
-        int pduType = pdu[index++] & 0xFF;
-        int headerLength = 0;
-
-        if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
-                (pduType != WspTypeDecoder.PDU_TYPE_CONFIRMED_PUSH)) {
-            Log.w(TAG, "Received non-PUSH WAP PDU. Type = " + pduType);
-            return false;
-        }
-
-        pduDecoder = new WspTypeDecoder(pdu);
-
-        /**
-         * Parse HeaderLen(unsigned integer).
-         * From wap-230-wsp-20010705-a section 8.1.2
-         * The maximum size of a uintvar is 32 bits.
-         * So it will be encoded in no more than 5 octets.
-         */
-        if (pduDecoder.decodeUintvarInteger(index) == false) {
-            Log.w(TAG, "Received PDU. Header Length error.");
-            return false;
-        }
-        headerLength = (int)pduDecoder.getValue32();
-        index += pduDecoder.getDecodedDataLength();
-
-        int headerStartIndex = index;
-
-        /**
-         * Parse Content-Type.
-         * From wap-230-wsp-20010705-a section 8.4.2.24
-         *
-         * Content-type-value = Constrained-media | Content-general-form
-         * Content-general-form = Value-length Media-type
-         * Media-type = (Well-known-media | Extension-Media) *(Parameter)
-         * Value-length = Short-length | (Length-quote Length)
-         * Short-length = <Any octet 0-30>   (octet <= WAP_PDU_SHORT_LENGTH_MAX)
-         * Length-quote = <Octet 31>         (WAP_PDU_LENGTH_QUOTE)
-         * Length = Uintvar-integer
-         */
-        if (pduDecoder.decodeContentType(index) == false) {
-            Log.w(TAG, "Received PDU. Header Content-Type error.");
-            return false;
-        }
-        int binaryContentType;
-        String mimeType = pduDecoder.getValueString();
-        if (mimeType == null) {
-            binaryContentType = (int)pduDecoder.getValue32();
-            switch (binaryContentType) {
-                case WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML:
-                    mimeType = WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML;
-                    break;
-                case WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML:
-                    mimeType = WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML;
-                    break;
-                case WspTypeDecoder.CONTENT_TYPE_B_PUSH_SI:
-                    mimeType = WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI;
-                    break;
-                case WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL:
-                    mimeType = WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL;
-                    break;
-                case WspTypeDecoder.CONTENT_TYPE_B_PUSH_CO:
-                    mimeType = WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO;
-                    break;
-                case WspTypeDecoder.CONTENT_TYPE_B_MMS:
-                    mimeType = WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS;
-                    break;
-                case 0x030a:
-                    mimeType = "application/vnd.wap.emn+wbxml";
-                    break;
-                default:
-                    Log.w(TAG, "Received PDU. Unsupported Content-Type = " + binaryContentType);
-                    return false;
-            }
-        } else {
-            if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML)) {
-                binaryContentType = WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML;
-            } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML)) {
-                binaryContentType = WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML;
-            } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI)) {
-                binaryContentType = WspTypeDecoder.CONTENT_TYPE_B_PUSH_SI;
-            } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL)) {
-                binaryContentType = WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL;
-            } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO)) {
-                binaryContentType = WspTypeDecoder.CONTENT_TYPE_B_PUSH_CO;
-            } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS)) {
-                binaryContentType = WspTypeDecoder.CONTENT_TYPE_B_MMS;
-            } else if (mimeType.equals("application/vnd.wap.emn+wbxml")) {
-                binaryContentType = 0x030a;
-            } else {
-                Log.w(TAG, "Received PDU. Unknown Content-Type = " + mimeType);
-                return false;
-            }
-        }
-        index += pduDecoder.getDecodedDataLength();
-        int dataIndex = headerStartIndex + headerLength;
-
-        Log.d(TAG ,"Received WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
-                ", contentType=" + mimeType + "(" + binaryContentType + ")" +
-                ", dataIndex=" + dataIndex);
-
-        if (binaryContentType == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL ||
-                binaryContentType == 0x030a) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * ログ日時解析
      * @param line ログ行
      * @return 日時
@@ -214,15 +94,15 @@ public class EmailNotifyService extends Service {
      * ログ行をチェック
      *
      * @param line ログ文字列
-     * @return true:新規メール受信通知
+     * @return WapPdu WAP PDU (null:メール通知ではない)
      */
-    private boolean checkLogLine(String line) {
+    private WapPdu checkLogLine(String line) {
         if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
         if (line.substring(19).startsWith("D/WAP PUSH") && line.contains(": Rx: ")) {
             Calendar ccal = getLogDate(line);
             if (ccal.getTimeInMillis() <= mLastCheck.getTimeInMillis()) {
                 // チェック済
-                return false;
+                return null;
             }
             mLastCheck = ccal;
 
@@ -234,20 +114,18 @@ public class EmailNotifyService extends Service {
                 int b = Integer.parseInt(data.substring(i, i + 2), 16);
                 baos.write(b);
             }
-            boolean ret = false;
-            try {
-                ret = checkWapPdu(baos.toByteArray());
-            } catch (IndexOutOfBoundsException e) {}
-            if (!ret) {
+
+            WapPdu pdu = new WapPdu(baos.toByteArray());
+            if (!pdu.decode()) {
                 // メール受信ではなかった
                 MyLog.w(this, TAG, "Unexpected PDU: " + data);
-                return false;
+                return null;
             }
 
             MyLog.i(this, TAG, "Received: " + data);
-            return true;
+            return pdu;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -275,8 +153,17 @@ public class EmailNotifyService extends Service {
                     if (mStopLogCheckThread) {
                         break;
                     }
-                    if (checkLogLine(line)) {
-                        EmailNotifyNotification.doNotify(EmailNotifyService.this);
+                    WapPdu pdu = checkLogLine(line); 
+                    if (pdu != null) {
+                        int type = pdu.getBinaryContentType();
+                        if (type == 0x030a && EmailNotifyPreferences.getServiceOmaEmn(EmailNotifyService.this)) {
+                            EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                        }
+                        // TODO: ここではなくインテントで受信すればよい。
+                        else if (type == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL && 
+                                EmailNotifyPreferences.getServiceImode(EmailNotifyService.this)) {
+                            EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                        }
                     }
                 }
                 bufferedReader.close();

@@ -11,6 +11,7 @@
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
     <string name="buy">購入</string>
     <string name="preferences_notification">通知設定</string>
+    <string name="preferences_service">メールサービス設定</string>
     <string name="preferences_observe">メール着信監視設定</string>
     <string name="preferences_misc">その他の設定</string>
     <string name="pref_launch_title">アプリを起動</string>
@@ -18,6 +19,10 @@
     <string name="select_app">アプリ選択</string>
     <string name="pref_notificationicon_title">監視アイコン</string>
     <string name="pref_notificationicon_summary">通知バーに常にアイコンを表示します。</string>
+    <string name="pref_service_omaemn_title">spモード/mopera U</string>
+    <string name="pref_service_omaemn_summary">spモードメール/mopera Uメールを通知します。</string>
+    <string name="pref_service_imode_title">iモードメール</string>
+    <string name="pref_service_imode_summary">実験的な対応です。動作しない場合があります。</string>
     <string name="pref_sound_title">通知音</string>
     <string name="pref_sound_summary">メール着信通知の通知音を選択します。</string>
     <string name="pref_vibration_title">バイブレーション</string>

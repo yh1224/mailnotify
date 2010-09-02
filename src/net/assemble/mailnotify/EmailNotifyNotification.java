@@ -44,6 +44,13 @@ public class EmailNotifyNotification {
      * 通知
      */
     public static void doNotify(Context ctx) {
+        doNotify(ctx, null);
+    }
+
+    /**
+     * 通知
+     */
+    public static void doNotify(Context ctx, String mailbox) {
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.icon,
                 ctx.getResources().getString(R.string.app_name),
@@ -59,6 +66,9 @@ public class EmailNotifyNotification {
         }
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
         String message = ctx.getResources().getString(R.string.notify_text);
+        if (mailbox != null) {
+            message += "\n" + mailbox;
+        }
 //        Calendar cal = Calendar.getInstance();
 //        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
 //                + cal.get(Calendar.MINUTE) + ")";

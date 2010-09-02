@@ -19,6 +19,12 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_NOTIFICATION_ICON = "notification_icon";
     public static final boolean PREF_NOTIFICATION_ICON_DEFAULT = false;
 
+    public static final String PREF_KEY_SERVICE_OMAEMN = "service_omaemn";
+    public static final boolean PREF_SERVICE_OMAEMN_DEFAULT = true;
+
+    public static final String PREF_KEY_SERVICE_IMODE = "service_imode";
+    public static final boolean PREF_SERVICE_IMODE_DEFAULT = false;
+
     public static final String PREF_KEY_SOUND = "sound";
     public static final String PREF_SOUND_DEFAULT = "content://settings/system/notification_sound";
 
@@ -68,6 +74,18 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_NOTIFICATION_ICON,
                 EmailNotifyPreferences.PREF_NOTIFICATION_ICON_DEFAULT);
+    }
+
+    public static boolean getServiceOmaEmn(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_SERVICE_OMAEMN,
+                EmailNotifyPreferences.PREF_SERVICE_OMAEMN_DEFAULT);
+    }
+
+    public static boolean getServiceImode(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_SERVICE_IMODE,
+                EmailNotifyPreferences.PREF_SERVICE_IMODE_DEFAULT);
     }
 
     public static String getSound(Context ctx) {
