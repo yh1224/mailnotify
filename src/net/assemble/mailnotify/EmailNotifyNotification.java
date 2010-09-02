@@ -52,29 +52,33 @@ public class EmailNotifyNotification {
      */
     public static void doNotify(Context ctx, String mailbox) {
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.icon,
-                ctx.getResources().getString(R.string.app_name),
-                System.currentTimeMillis());
-
-        Intent intent = new Intent();
-        ComponentName component = EmailNotifyPreferences.getComponent(ctx);
-        if (component != null) {
-            intent.setComponent(component);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Notification notification;
+        if (EmailNotifyPreferences.getNotifyView(ctx)) {
+            notification = new Notification(R.drawable.icon,
+                          ctx.getResources().getString(R.string.app_name),
+                          System.currentTimeMillis());
+            Intent intent = new Intent();
+            ComponentName component = EmailNotifyPreferences.getComponent(ctx);
+            if (component != null) {
+                intent.setComponent(component);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            } else {
+                intent.setClass(ctx, EmailNotifyActivity.class);
+            }
+            PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
+            String message = ctx.getResources().getString(R.string.notify_text);
+            if (mailbox != null) {
+                message += "\n" + mailbox;
+            }
+//          Calendar cal = Calendar.getInstance();
+//          message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
+//                  + cal.get(Calendar.MINUTE) + ")";
+            notification.setLatestEventInfo(ctx,
+                    ctx.getResources().getString(R.string.app_name),
+                    message, contentIntent);
         } else {
-            intent.setClass(ctx, EmailNotifyActivity.class);
+            notification = new Notification();
         }
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
-        String message = ctx.getResources().getString(R.string.notify_text);
-        if (mailbox != null) {
-            message += "\n" + mailbox;
-        }
-//        Calendar cal = Calendar.getInstance();
-//        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
-//                + cal.get(Calendar.MINUTE) + ")";
-        notification.setLatestEventInfo(ctx,
-                ctx.getResources().getString(R.string.app_name),
-                message, contentIntent);
         notification.defaults = 0;
         String soundUri = EmailNotifyPreferences.getSound(ctx);
         if (soundUri.startsWith("content:")) {
@@ -85,10 +89,13 @@ public class EmailNotifyNotification {
                    EmailNotifyPreferences.getVibrationPattern(ctx),
                    EmailNotifyPreferences.getVibrationLength(ctx));
         }
-        notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
-        notification.ledARGB = 0xff00ff00;
-        notification.ledOnMS = 200;
-        notification.ledOffMS = 2000;
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        if (EmailNotifyPreferences.getNotifyLed(ctx)) {
+            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+            notification.ledARGB = EmailNotifyPreferences.getLedColor(ctx);
+            notification.ledOnMS = 200;
+            notification.ledOffMS = 2000;
+        }
         notificationManager.notify(NOTIFICATIONID_EMAIL, notification);
     }
 

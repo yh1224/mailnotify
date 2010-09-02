@@ -25,6 +25,9 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_SERVICE_IMODE = "service_imode";
     public static final boolean PREF_SERVICE_IMODE_DEFAULT = false;
 
+    public static final String PREF_KEY_NOTIFY_VIEW = "notify_view";
+    public static final boolean PREF_NOTIFY_VIEW_DEFAULT = true;
+
     public static final String PREF_KEY_SOUND = "sound";
     public static final String PREF_SOUND_DEFAULT = "content://settings/system/notification_sound";
 
@@ -45,6 +48,12 @@ public class EmailNotifyPreferences
     public static final int PREF_VIBRATION_LENGTH_DEFAULT = 3;
     public static final int PREF_VIBRATION_LENGTH_MIN = 1;
     public static final int PREF_VIBRATION_LENGTH_MAX = 30;
+
+    public static final String PREF_KEY_NOTIFY_LED = "notify_led";
+    public static final boolean PREF_NOTIFY_LED_DEFAULT = true;
+
+    public static final String PREF_KEY_LED_COLOR = "led_color";
+    public static final String PREF_LED_COLOR_DEFAULT = "ff00ff00";
 
     public static final String PREF_KEY_LAUNCH = "launch";
     public static final boolean PREF_LAUNCH_DEFAULT = false;
@@ -88,6 +97,12 @@ public class EmailNotifyPreferences
                 EmailNotifyPreferences.PREF_SERVICE_IMODE_DEFAULT);
     }
 
+    public static boolean getNotifyView(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_NOTIFY_VIEW,
+                EmailNotifyPreferences.PREF_NOTIFY_VIEW_DEFAULT);
+    }
+
     public static String getSound(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
                 EmailNotifyPreferences.PREF_KEY_SOUND,
@@ -112,6 +127,24 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getInt(
                 EmailNotifyPreferences.PREF_KEY_VIBRATION_LENGTH,
                 EmailNotifyPreferences.PREF_VIBRATION_LENGTH_DEFAULT);
+    }
+
+    public static boolean getNotifyLed(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_NOTIFY_LED,
+                EmailNotifyPreferences.PREF_NOTIFY_LED_DEFAULT);
+    }
+
+    public static int getLedColor(Context ctx) {
+        String color = PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                EmailNotifyPreferences.PREF_KEY_LED_COLOR,
+                EmailNotifyPreferences.PREF_LED_COLOR_DEFAULT);
+        int argb = 0;
+        for(int i = 0; i < color.length(); i += 2){
+            argb *= 256;
+            argb += Integer.parseInt(color.substring(i, i + 2), 16);
+        }
+        return argb;
     }
 
     public static boolean getLaunch(Context ctx) {
