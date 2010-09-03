@@ -1,5 +1,9 @@
 package net.assemble.mailnotify;
 
+import net.assemble.android.MyLog;
+
+import com.android.internal.telephony.WspTypeDecoder;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +21,21 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
         }
 
         if (intent.getAction() != null) {
-            if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            // WAP PUSH
+            if (intent.getAction().equals("android.provider.Telephony.WAP_PUSH_RECEIVED")) {
+                byte[] data = intent.getByteArrayExtra("data");
+                WapPdu pdu = new WapPdu(WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL, data);
+                if (!pdu.decode()) {
+                    MyLog.w(context, TAG, "Unexpected PDU: " + pdu.getHexString());
+                    return;
+                }
+                MyLog.i(context, TAG ,"Received: mailbox=" + pdu.getMailbox() + " (" + pdu.getHexString() + ")");
+                if (EmailNotifyPreferences.getServiceImode(context)) {
+                    EmailNotifyNotification.doNotify(context, pdu.getMailbox());
+                }
+            }
+            // Restart
+            else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(TAG, "EmailNotify restarted.");
                 EmailNotifyService.startService(context);
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)
@@ -29,4 +47,5 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
 
         EmailNotifyService.startService(context);
     }
+
 }

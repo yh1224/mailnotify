@@ -22,6 +22,12 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_SERVICE_OMAEMN = "service_omaemn";
     public static final boolean PREF_SERVICE_OMAEMN_DEFAULT = true;
 
+    public static final String PREF_KEY_SERVICE_SPMODE = "service_spmode";
+    public static final boolean PREF_SERVICE_SPMODE_DEFAULT = true;
+
+    public static final String PREF_KEY_SERVICE_MOPERA = "service_mopera";
+    public static final boolean PREF_SERVICE_MOPERA_DEFAULT = true;
+
     public static final String PREF_KEY_SERVICE_IMODE = "service_imode";
     public static final boolean PREF_SERVICE_IMODE_DEFAULT = false;
 
@@ -89,6 +95,18 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_SERVICE_OMAEMN,
                 EmailNotifyPreferences.PREF_SERVICE_OMAEMN_DEFAULT);
+    }
+
+    public static boolean getServiceSpmode(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_SERVICE_SPMODE,
+                EmailNotifyPreferences.PREF_SERVICE_SPMODE_DEFAULT);
+    }
+
+    public static boolean getServiceMopera(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_SERVICE_MOPERA,
+                EmailNotifyPreferences.PREF_SERVICE_MOPERA_DEFAULT);
     }
 
     public static boolean getServiceImode(Context ctx) {

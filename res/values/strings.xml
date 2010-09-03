@@ -21,6 +21,10 @@
     <string name="pref_notificationicon_summary">通知バーに常にアイコンを表示します。</string>
     <string name="pref_service_omaemn_title">spモード/mopera U</string>
     <string name="pref_service_omaemn_summary">spモードメール/mopera Uメールを通知します。</string>
+    <string name="pref_service_spmode_title">spモードメール</string>
+    <string name="pref_service_spmode_summary">spモードメールの着信を通知します。</string>
+    <string name="pref_service_mopera_title">mopera Uメール</string>
+    <string name="pref_service_mopera_summary">mopera Uメールの着信を通知します。</string>
     <string name="pref_service_imode_title">iモードメール</string>
     <string name="pref_service_imode_summary">実験的な対応です。動作しない場合があります。</string>
     <string name="pref_sound_title">通知音</string>

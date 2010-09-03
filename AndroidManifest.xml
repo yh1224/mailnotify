@@ -20,6 +20,10 @@
                 <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.slc" />
+            </intent-filter>
         </receiver>
         <service android:name=".EmailNotifyService" />
         <activity android:name="net.assemble.android.MyLogActivity" />
@@ -28,5 +32,6 @@
     </application>
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-sdk android:minSdkVersion="4" />
 </manifest>

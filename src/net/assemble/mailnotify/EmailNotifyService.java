@@ -98,7 +98,7 @@ public class EmailNotifyService extends Service {
      */
     private WapPdu checkLogLine(String line) {
         if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
-        if (line.substring(19).startsWith("D/WAP PUSH") && line.contains(": Rx: ")) {
+        if (line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
             if (ccal.getTimeInMillis() <= mLastCheck.getTimeInMillis()) {
                 // チェック済
@@ -106,24 +106,29 @@ public class EmailNotifyService extends Service {
             }
             mLastCheck = ccal;
 
-            String data = line.split(": Rx: ")[1];
-
-            // データ解析
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            for (int i = 0; i < data.length(); i += 2){
-                int b = Integer.parseInt(data.substring(i, i + 2), 16);
-                baos.write(b);
+            // LYNX(SH-01B)対応
+            if (line.endsWith(": Receive EMN")) {
+                MyLog.i(this, TAG, "Received EMN");
+                return new WapPdu(0x030a);
             }
 
-            WapPdu pdu = new WapPdu(baos.toByteArray());
-            if (!pdu.decode()) {
-                // メール受信ではなかった
-                MyLog.w(this, TAG, "Unexpected PDU: " + data);
-                return null;
+            if (line.contains(": Rx: ")) {
+                String data = line.split(": Rx: ")[1];
+    
+                // データ解析
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                for (int i = 0; i < data.length(); i += 2){
+                    int b = Integer.parseInt(data.substring(i, i + 2), 16);
+                    baos.write(b);
+                }
+                WapPdu pdu = new WapPdu(baos.toByteArray());
+                if (!pdu.decode()) {
+                    MyLog.w(this, TAG, "Unexpected PDU: " + data);
+                    return null;
+                }
+                MyLog.i(this, TAG, "Received: mailbox=" + pdu.getMailbox() + " (" + data + ")");
+                return pdu;
             }
-
-            MyLog.i(this, TAG, "Received: " + data);
-            return pdu;
         }
         return null;
     }
@@ -156,13 +161,19 @@ public class EmailNotifyService extends Service {
                     WapPdu pdu = checkLogLine(line); 
                     if (pdu != null) {
                         int type = pdu.getBinaryContentType();
-                        if (type == 0x030a && EmailNotifyPreferences.getServiceOmaEmn(EmailNotifyService.this)) {
-                            EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                        if (type == 0x030a) {
+                            if (pdu.getMailbox().endsWith("docomo.ne.jp") &&
+                                    EmailNotifyPreferences.getServiceSpmode(EmailNotifyService.this)) {
+                                EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                            } else if (pdu.getMailbox().endsWith("mopera.net") &&
+                                    EmailNotifyPreferences.getServiceMopera(EmailNotifyService.this)) {
+                                EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                            }
                         }
-                        // TODO: ここではなくインテントで受信すればよい。
+                        // ここではなくインテントで受信するよう変更
                         else if (type == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL && 
                                 EmailNotifyPreferences.getServiceImode(EmailNotifyService.this)) {
-                            EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                            //EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                         }
                     }
                 }

@@ -6,9 +6,13 @@
             android:defaultValue="false" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_service">
-        <CheckBoxPreference android:key="service_omaemn"
-            android:summary="@string/pref_service_omaemn_summary"
-            android:title="@string/pref_service_omaemn_title"
+        <CheckBoxPreference android:key="service_spmode"
+            android:summary="@string/pref_service_spmode_summary"
+            android:title="@string/pref_service_spmode_title"
+            android:defaultValue="true" />
+        <CheckBoxPreference android:key="service_mopera"
+            android:summary="@string/pref_service_mopera_summary"
+            android:title="@string/pref_service_mopera_title"
             android:defaultValue="true" />
         <CheckBoxPreference android:key="service_imode"
             android:summary="@string/pref_service_imode_summary"
