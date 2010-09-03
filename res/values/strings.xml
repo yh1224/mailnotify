@@ -33,11 +33,11 @@
     <string name="pref_vibration_summary">メール着信通知時にバイブレーションします。</string>
     <string name="pref_vibration_length_title">バイブレーション時間</string>
     <string name="pref_vibration_length_unit">秒</string>
-    <string name="pref_notify_view_title">通知バー</string>
-    <string name="pref_notify_view_summary">通知バーにアイコンを表示します。</string>
     <string name="pref_notify_led_title">LED</string>
     <string name="pref_notify_led_summary">LEDを点滅します。</string>
     <string name="pref_led_color_title">LEDの色</string>
+    <string name="pref_notify_view_title">通知バー</string>
+    <string name="pref_notify_view_summary">通知バーにアイコンを表示します。</string>
     <string name="pref_launch_app_title">起動アプリ</string>
     <string name="pref_launch_app_is">通知クリック時に起動するアプリ:</string>
     <string name="pref_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>

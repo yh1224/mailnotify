@@ -37,19 +37,19 @@
             android:title="@string/pref_vibration_length_title"
             android:key="vibration_length" android:defaultValue="3"
             android:dependency="vibration" />
-        <CheckBoxPreference android:key="notify_view"
-            android:summary="@string/pref_notify_view_summary"
-            android:title="@string/pref_notify_view_title"
-            android:defaultValue="true" />
         <CheckBoxPreference android:key="notify_led"
             android:summary="@string/pref_notify_led_summary"
             android:title="@string/pref_notify_led_title"
-            android:defaultValue="true" android:dependency="notify_view" />
+            android:defaultValue="true" />
         <ListPreference android:key="led_color"
             android:title="@string/pref_led_color_title"
             android:entries="@array/entries_led_color"
             android:entryValues="@array/entryvalues_led_color"
             android:defaultValue="ff00ff00" android:dependency="notify_led" />
+        <CheckBoxPreference android:key="notify_view"
+            android:summary="@string/pref_notify_view_summary"
+            android:title="@string/pref_notify_view_title"
+            android:defaultValue="true" />
         <Preference android:summary="@string/pref_launch_app_summary"
             android:title="@string/pref_launch_app_title" android:key="launch_app"
             android:dependency="notify_view" />
