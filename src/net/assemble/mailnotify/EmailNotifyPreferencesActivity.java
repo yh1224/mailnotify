@@ -20,6 +20,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefLaunchApp;
     private ListPreference mPrefVibrationPattern;
     private EmailNotifyVibrationLengthPreference mPrefVibrationLength;
+    private ListPreference mPrefLedColor;
     private Preference mPrefTest;
     private SharedPreferences mPref;
 
@@ -33,6 +34,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefLaunchApp = findPreference("launch_app");
         mPrefVibrationPattern = (ListPreference) findPreference("vibration_pattern");
         mPrefVibrationLength = (EmailNotifyVibrationLengthPreference) findPreference("vibration_length");
+        mPrefLedColor = (ListPreference) findPreference("led_color");
         mPrefTest = (Preference) findPreference("notifytest");
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -122,6 +124,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefVibrationLength.setSummary(
                 mPrefVibrationLength.getValue() + 
                 getResources().getString(R.string.pref_vibration_length_unit));
+
+        // LED色
+        mPrefLedColor.setSummary(
+            getEntryString(mPrefLedColor.getValue(),
+                getResources().getStringArray(R.array.entries_led_color),
+                getResources().getStringArray(R.array.entryvalues_led_color)));
     }
 
     /**

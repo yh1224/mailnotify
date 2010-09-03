@@ -43,7 +43,6 @@
             android:defaultValue="true" android:dependency="notify_view" />
         <ListPreference android:key="led_color"
             android:title="@string/pref_led_color_title"
-            android:summary="@string/pref_led_color_summary"
             android:entries="@array/entries_led_color"
             android:entryValues="@array/entryvalues_led_color"
             android:defaultValue="ff00ff00" android:dependency="notify_led" />
