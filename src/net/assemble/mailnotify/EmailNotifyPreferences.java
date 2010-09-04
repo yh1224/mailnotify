@@ -32,7 +32,7 @@ public class EmailNotifyPreferences
     public static final boolean PREF_SERVICE_IMODE_DEFAULT = false;
 
     public static final String PREF_KEY_SERVICE_ANY = "service_any";
-    public static final boolean PREF_SERVICE_ANY_DEFAULT = false;
+    public static final boolean PREF_SERVICE_ANY_DEFAULT = true;
 
     public static final String PREF_KEY_NOTIFY_VIEW = "notify_view";
     public static final boolean PREF_NOTIFY_VIEW_DEFAULT = true;
