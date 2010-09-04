@@ -170,11 +170,11 @@ public class EmailNotifyService extends Service {
                     WapPdu pdu = checkLogLine(line);
                     if (pdu != null) {
                         int type = pdu.getBinaryContentType();
-                        if (type == 0x030a && pdu.getMailbox().endsWith("docomo.ne.jp")) {
+                        if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
                             if (EmailNotifyPreferences.getServiceSpmode(EmailNotifyService.this)) {
                                 EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                             }
-                        } else if (type == 0x030a && pdu.getMailbox().endsWith("mopera.net")) {
+                        } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
                             if (EmailNotifyPreferences.getServiceMopera(EmailNotifyService.this)) {
                                 EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                             }
