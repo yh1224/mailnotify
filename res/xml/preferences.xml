@@ -18,6 +18,10 @@
             android:summary="@string/pref_service_imode_summary"
             android:title="@string/pref_service_imode_title"
             android:defaultValue="false" />
+        <CheckBoxPreference android:key="service_any"
+            android:summary="@string/pref_service_any_summary"
+            android:title="@string/pref_service_any_title"
+            android:defaultValue="false" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_notification">
         <RingtonePreference android:key="sound"

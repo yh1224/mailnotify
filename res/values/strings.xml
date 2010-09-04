@@ -27,6 +27,8 @@
     <string name="pref_service_mopera_summary">mopera Uメールの着信を通知します。</string>
     <string name="pref_service_imode_title">iモードメール</string>
     <string name="pref_service_imode_summary">実験的な対応です。動作しない場合があります。</string>
+    <string name="pref_service_any_title">その他</string>
+    <string name="pref_service_any_summary">上記のサービス以外(解析に失敗した場合を含む)でも通知します。</string>
     <string name="pref_sound_title">通知音</string>
     <string name="pref_sound_summary">メール着信通知の通知音を選択します。</string>
     <string name="pref_vibration_title">バイブレーション</string>

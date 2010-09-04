@@ -126,6 +126,14 @@ public class EmailNotifyService extends Service {
                     MyLog.w(this, TAG, "Unexpected PDU: " + data);
                     return null;
                 }
+                if (pdu.getBinaryContentType() == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL) {
+                    // application/vnd.wap.slc は、Receiverで受信する ので無視
+                    if (EmailNotify.DEBUG) {
+                        Log.d(TAG, "Received PDU: " + data);
+                        Log.i(TAG, "Received: " + pdu.getMailbox());
+                    }
+                    return null;
+                }
                 MyLog.d(this, TAG, "Received PDU: " + data);
                 MyLog.i(this, TAG, "Received: " + pdu.getMailbox());
                 return pdu;
@@ -162,19 +170,16 @@ public class EmailNotifyService extends Service {
                     WapPdu pdu = checkLogLine(line);
                     if (pdu != null) {
                         int type = pdu.getBinaryContentType();
-                        if (type == 0x030a) {
-                            if (pdu.getMailbox().endsWith("docomo.ne.jp") &&
-                                    EmailNotifyPreferences.getServiceSpmode(EmailNotifyService.this)) {
-                                EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
-                            } else if (pdu.getMailbox().endsWith("mopera.net") &&
-                                    EmailNotifyPreferences.getServiceMopera(EmailNotifyService.this)) {
+                        if (type == 0x030a && pdu.getMailbox().endsWith("docomo.ne.jp")) {
+                            if (EmailNotifyPreferences.getServiceSpmode(EmailNotifyService.this)) {
                                 EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                             }
-                        }
-                        // ここではなくインテントで受信するよう変更
-                        else if (type == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL &&
-                                EmailNotifyPreferences.getServiceImode(EmailNotifyService.this)) {
-                            //EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                        } else if (type == 0x030a && pdu.getMailbox().endsWith("mopera.net")) {
+                            if (EmailNotifyPreferences.getServiceMopera(EmailNotifyService.this)) {
+                                EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                            }
+                        } else if (EmailNotifyPreferences.getServiceAny(EmailNotifyService.this)) {
+                            EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                         }
                     }
                 }
