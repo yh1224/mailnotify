@@ -184,6 +184,7 @@ public class EmailNotifyService extends Service {
                     }
                 }
                 bufferedReader.close();
+                process.destroy();
                 if (EmailNotify.DEBUG) Log.d(TAG, "Log check thread stopped.");
                 mLogCheckThread = null;
             } catch (IOException e) {
