@@ -29,7 +29,8 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                     MyLog.w(context, TAG, "Unexpected PDU: " + pdu.getHexString());
                     return;
                 }
-                MyLog.i(context, TAG ,"Received: mailbox=" + pdu.getMailbox() + " (" + pdu.getHexString() + ")");
+                MyLog.d(context, TAG ,"Received PDU: " + pdu.getHexString());
+                MyLog.i(context, TAG ,"Received: " + pdu.getMailbox());
                 if (EmailNotifyPreferences.getServiceImode(context)) {
                     EmailNotifyNotification.doNotify(context, pdu.getMailbox());
                 }

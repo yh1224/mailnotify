@@ -114,7 +114,7 @@ public class EmailNotifyService extends Service {
 
             if (line.contains(": Rx: ")) {
                 String data = line.split(": Rx: ")[1];
-    
+
                 // データ解析
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 for (int i = 0; i < data.length(); i += 2){
@@ -126,7 +126,8 @@ public class EmailNotifyService extends Service {
                     MyLog.w(this, TAG, "Unexpected PDU: " + data);
                     return null;
                 }
-                MyLog.i(this, TAG, "Received: mailbox=" + pdu.getMailbox() + " (" + data + ")");
+                MyLog.d(this, TAG, "Received PDU: " + data);
+                MyLog.i(this, TAG, "Received: " + pdu.getMailbox());
                 return pdu;
             }
         }
@@ -158,7 +159,7 @@ public class EmailNotifyService extends Service {
                     if (mStopLogCheckThread) {
                         break;
                     }
-                    WapPdu pdu = checkLogLine(line); 
+                    WapPdu pdu = checkLogLine(line);
                     if (pdu != null) {
                         int type = pdu.getBinaryContentType();
                         if (type == 0x030a) {
@@ -171,7 +172,7 @@ public class EmailNotifyService extends Service {
                             }
                         }
                         // ここではなくインテントで受信するよう変更
-                        else if (type == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL && 
+                        else if (type == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL &&
                                 EmailNotifyPreferences.getServiceImode(EmailNotifyService.this)) {
                             //EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                         }

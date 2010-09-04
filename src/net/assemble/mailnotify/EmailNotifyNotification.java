@@ -2,6 +2,8 @@ package net.assemble.mailnotify;
 
 import java.util.ArrayList;
 
+import net.assemble.android.MyLog;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 public class EmailNotifyNotification {
+    private static final String TAG = "EmailNotify";
     private static final int NOTIFICATIONID_ICON = 1;
     private static final int NOTIFICATIONID_EMAIL = 2;
 
@@ -97,6 +100,7 @@ public class EmailNotifyNotification {
             notification.ledOffMS = 2000;
         }
         notificationManager.notify(NOTIFICATIONID_EMAIL, notification);
+        MyLog.d(ctx, TAG, "Notify: " + mailbox);
     }
 
     /**
