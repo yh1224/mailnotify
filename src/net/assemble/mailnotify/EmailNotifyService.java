@@ -148,7 +148,7 @@ public class EmailNotifyService extends Service {
     private class LogCheckThread extends Thread {
         @Override
         public void run() {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Log check thread started.");
+            MyLog.d(EmailNotifyService.this, TAG, "Starting log check thread.");
             try {
                 ArrayList<String> commandLine = new ArrayList<String>();
                 commandLine.add("logcat");
@@ -185,10 +185,10 @@ public class EmailNotifyService extends Service {
                 }
                 bufferedReader.close();
                 process.destroy();
-                if (EmailNotify.DEBUG) Log.d(TAG, "Log check thread stopped.");
+                MyLog.d(EmailNotifyService.this, TAG, "Exiting log check thread.");
                 mLogCheckThread = null;
             } catch (IOException e) {
-                MyLog.e(EmailNotifyService.this, TAG, "Unexpected error on check.");
+                MyLog.e(EmailNotifyService.this, TAG, "Unexpected error on log checking.");
                 stopSelf();
             }
         }
@@ -238,7 +238,7 @@ public class EmailNotifyService extends Service {
         boolean restart = EmailNotifyService.isActive();
         mService = ctx.startService(new Intent(ctx, EmailNotifyService.class));
         if (mService == null) {
-            Log.e(TAG, "EmailNotifyService could not start!");
+            MyLog.e(ctx, TAG, "Service start failed!");
             result = false;
         } else {
             Log.d(TAG, "EmailNotifyService started: " + mService);
