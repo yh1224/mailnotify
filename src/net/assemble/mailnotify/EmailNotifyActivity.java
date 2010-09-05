@@ -21,7 +21,7 @@ import net.assemble.android.MyLog;
 import net.assemble.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
-    private static final String MARKET_URL = "http://market.android.com/search?q=net.assemble.emailnotify2";
+    private static final String MARKET_URL = "http://market.android.com/search?q=net.assemble.mailnotify";
 
     private ToggleButton mEnableButton;
 
@@ -47,6 +47,17 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             }, null));
         } catch (IOException e) {}
 
+        // ライセンスフラグ設定
+        //  有料版を使ったことがある場合は購入メニューを表示させない
+        if (!EmailNotify.FREE_VERSION) {
+            EmailNotifyPreferences.setLicense(this, true);
+        }
+
+        // 有効期限チェック
+        if (!EmailNotify.checkExpiration(this)) {
+            EmailNotifyPreferences.setEnable(this, false);
+        }
+
         updateService();
     }
 
@@ -57,18 +68,20 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
-        // Upgradeメニュー (FREE版のみ)
+        // 購入メニュー (FREE版のみ)
         if (EmailNotify.FREE_VERSION) {
-            MenuItem menuBuy = menu.add(R.string.buy);
-            menuBuy.setIcon(android.R.drawable.ic_menu_more);
-            menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL));
-                    startActivity(intent);
-                    return true;
-                }
-            });
+            if (!EmailNotifyPreferences.getLicense(this)) {
+                MenuItem menuBuy = menu.add(R.string.buy);
+                menuBuy.setIcon(android.R.drawable.ic_menu_more);
+                menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL));
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+            }
         }
 
         return true;

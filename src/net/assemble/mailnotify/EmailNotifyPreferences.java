@@ -10,6 +10,9 @@ import android.preference.PreferenceManager;
  */
 public class EmailNotifyPreferences
 {
+    public static final String PREF_KEY_LICENSE = "license";
+    public static final boolean PREF_LICENSE_DEFAULT = false;
+
     public static final String PREF_KEY_ENABLE = "enable";
     public static final boolean PREF_ENABLE_DEFAULT = true;
 
@@ -79,6 +82,18 @@ public class EmailNotifyPreferences
     public static void setEnable(Context ctx, boolean val) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(EmailNotifyPreferences.PREF_KEY_ENABLE, val);
+        e.commit();
+    }
+
+    public static boolean getLicense(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                EmailNotifyPreferences.PREF_KEY_LICENSE,
+                EmailNotifyPreferences.PREF_LICENSE_DEFAULT);
+    }
+
+    public static void setLicense(Context ctx, boolean val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putBoolean(EmailNotifyPreferences.PREF_KEY_LICENSE, val);
         e.commit();
     }
 

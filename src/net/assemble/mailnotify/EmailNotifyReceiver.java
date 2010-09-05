@@ -20,6 +20,12 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
             return;
         }
 
+        // 有効期限チェック
+        if (!EmailNotify.checkExpiration(context)) {
+            EmailNotifyPreferences.setEnable(context, false);
+            return;
+        }
+
         if (intent.getAction() != null) {
             // WAP PUSH
             if (intent.getAction().equals("android.provider.Telephony.WAP_PUSH_RECEIVED")) {
