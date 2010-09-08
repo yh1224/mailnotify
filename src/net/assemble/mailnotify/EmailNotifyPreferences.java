@@ -73,6 +73,9 @@ public class EmailNotifyPreferences
     public static final String PREF_KEY_LAUNCH_APP_PACKAGE = "launch_app_package_name";
     public static final String PREF_KEY_LAUNCH_APP_CLASS = "launch_app_class_name";
 
+    public static final String PREF_KEY_LAST_CHECK = "last_check";
+    public static final long PREF_LAST_CHECK_DEFAULT = 0;
+
     public static boolean getEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 EmailNotifyPreferences.PREF_KEY_ENABLE,
@@ -204,6 +207,18 @@ public class EmailNotifyPreferences
             return null;
         }
         return new ComponentName(packageName, className);
+    }
+
+    public static long getLastCheck(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getLong(
+                EmailNotifyPreferences.PREF_KEY_LAST_CHECK,
+                EmailNotifyPreferences.PREF_LAST_CHECK_DEFAULT);
+    }
+
+    public static void setLastCheck(Context ctx, long val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putLong(EmailNotifyPreferences.PREF_KEY_LAST_CHECK, val);
+        e.commit();
     }
 
 }
