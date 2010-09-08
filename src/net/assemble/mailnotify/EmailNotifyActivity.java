@@ -21,7 +21,7 @@ import net.assemble.android.MyLog;
 import net.assemble.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
-    private static final String MARKET_URL = "http://market.android.com/search?q=net.assemble.mailnotify";
+    private static final String MARKET_URL = "market://search?q=net.assemble.mailnotify";
 
     private ToggleButton mEnableButton;
 
