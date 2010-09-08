@@ -26,32 +26,52 @@ public class EmailNotifyService extends Service {
     private static final String TAG = "EmailNotify";
 
     private static ComponentName mService;
+    private static boolean mActive = false;
 
     private LogCheckThread mLogCheckThread;
     private boolean mStopLogCheckThread;
-    private Calendar mLastCheck;
+    private long mLastCheck;
 
     @Override
     public void onCreate() {
+        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onCreate()");
         super.onCreate();
+        mActive = true;
 
-        // 起動前のものは通知しないようにする
-        mLastCheck = Calendar.getInstance();
+        // すでに通知したものは通知しないようにする
+        mLastCheck = EmailNotifyPreferences.getLastCheck(this);
+        if (EmailNotify.DEBUG) Log.d(TAG, "Last notify: " + mLastCheck);
+        if (mLastCheck == 0) {
+            // 前回通知日時が存在しない場合、サービス開始以前を通知しない。
+            mLastCheck = Calendar.getInstance().getTimeInMillis();
+            EmailNotifyPreferences.setLastCheck(this, mLastCheck);
+        }
+
+        // リアルタイムログ監視開始
+        startLogCheckThread();
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
+        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onStart()");
         super.onStart(intent, startId);
+        mActive = true;
 
         // リアルタイムログ監視開始
         startLogCheckThread();
     }
 
     public void onDestroy() {
+        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onDestroy()");
         super.onDestroy();
+        mActive = false;
 
         // リアルタイムログ監視停止
         stopLogCheckThread();
+
+        // 正常に停止した場合は、次に開始するまでに受信した通知は
+        // 通知しないようにするため、前回通知日時をクリアする。
+        EmailNotifyPreferences.setLastCheck(this, 0);
     }
 
     @Override
@@ -90,11 +110,11 @@ public class EmailNotifyService extends Service {
         if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
         if (line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
-            if (ccal.getTimeInMillis() <= mLastCheck.getTimeInMillis()) {
+            if (ccal.getTimeInMillis() <= mLastCheck) {
                 // チェック済
                 return null;
             }
-            mLastCheck = ccal;
+            mLastCheck = ccal.getTimeInMillis();
 
             // LYNX(SH-01B)対応
             if (line.endsWith(": Receive EMN")) {
@@ -138,7 +158,8 @@ public class EmailNotifyService extends Service {
     private class LogCheckThread extends Thread {
         @Override
         public void run() {
-            MyLog.d(EmailNotifyService.this, TAG, "Starting log check thread.");
+            Context ctx = EmailNotifyService.this;
+            MyLog.d(ctx, TAG, "Starting log check thread.");
             try {
                 ArrayList<String> commandLine = new ArrayList<String>();
                 commandLine.add("logcat");
@@ -159,15 +180,17 @@ public class EmailNotifyService extends Service {
                     }
                     WapPdu pdu = checkLogLine(line);
                     if (pdu != null) {
+                        // 最後に通知した日時を保持しておく
+                        EmailNotifyPreferences.setLastCheck(ctx, mLastCheck);
                         EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
                     }
                 }
                 bufferedReader.close();
                 process.destroy();
-                MyLog.d(EmailNotifyService.this, TAG, "Exiting log check thread.");
+                MyLog.d(ctx, TAG, "Exiting log check thread.");
                 mLogCheckThread = null;
             } catch (IOException e) {
-                MyLog.e(EmailNotifyService.this, TAG, "Unexpected error on log checking.");
+                MyLog.e(ctx, TAG, "Unexpected error on log checking.");
                 stopSelf();
             }
         }
@@ -199,22 +222,11 @@ public class EmailNotifyService extends Service {
 
 
     /**
-     * サービス動作有無取得
-     */
-    public static boolean isActive() {
-        if (mService != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * サービス開始
      */
     public static boolean startService(Context ctx) {
         boolean result;
-        boolean restart = EmailNotifyService.isActive();
+        boolean restart = mActive;
         mService = ctx.startService(new Intent(ctx, EmailNotifyService.class));
         if (mService == null) {
             MyLog.e(ctx, TAG, "Service start failed!");
