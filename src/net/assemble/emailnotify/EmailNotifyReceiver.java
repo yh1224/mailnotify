@@ -1,5 +1,9 @@
 package net.assemble.emailnotify;
 
+import net.assemble.android.MyLog;
+
+import com.android.internal.telephony.WspTypeDecoder;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +21,26 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
         }
 
         if (intent.getAction() != null) {
-            if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            // WAP PUSH
+            if (intent.getAction().equals("android.provider.Telephony.WAP_PUSH_RECEIVED")) {
+                byte[] data = intent.getByteArrayExtra("data");
+                WapPdu pdu = new WapPdu(WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL, data);
+                if (!pdu.decode()) {
+                    MyLog.w(context, TAG, "Unexpected PDU: " + pdu.getHexString());
+                    return;
+                }
+                MyLog.d(context, TAG ,"Received PDU: " + pdu.getHexString());
+                MyLog.i(context, TAG ,"Received: " + pdu.getMailbox());
+                if (pdu.getMailbox() != null && pdu.getMailbox().contains("docomo.ne.jp")) {
+                    if (EmailNotifyPreferences.getServiceImode(context)) {
+                        EmailNotifyNotification.doNotify(context, "docomo.ne.jp");
+                    }
+                } else {
+                    EmailNotifyNotification.doNotify(context, pdu.getMailbox());
+                }
+            }
+            // Restart
+            else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(TAG, "EmailNotify restarted.");
                 EmailNotifyService.startService(context);
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)

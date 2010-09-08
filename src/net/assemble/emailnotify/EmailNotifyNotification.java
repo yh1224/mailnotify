@@ -1,5 +1,6 @@
 package net.assemble.emailnotify;
 
+import net.assemble.android.MyLog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,14 +10,24 @@ import android.content.Intent;
 import android.net.Uri;
 
 public class EmailNotifyNotification {
+    private static final String TAG = "EmailNotify";
     private static final int NOTIFICATIONID_EMAIL = 2;
 
     /**
      * 通知
      */
     public static void doNotify(Context ctx) {
+        doNotify(ctx, null);
+    }
+
+    /**
+     * 通知
+     */
+    public static void doNotify(Context ctx, String mailbox) {
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.icon,
+        Notification notification;
+
+        notification = new Notification(R.drawable.icon,
                 ctx.getResources().getString(R.string.app_name),
                 System.currentTimeMillis());
 
@@ -30,6 +41,9 @@ public class EmailNotifyNotification {
         }
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
         String message = ctx.getResources().getString(R.string.notify_text);
+        if (mailbox != null) {
+            message += "\n" + mailbox;
+        }
 //        Calendar cal = Calendar.getInstance();
 //        message += " (" + cal.get(Calendar.HOUR_OF_DAY) + ":"
 //                + cal.get(Calendar.MINUTE) + ")";
@@ -49,6 +63,7 @@ public class EmailNotifyNotification {
         notification.ledOnMS = 200;
         notification.ledOffMS = 2000;
         notificationManager.notify(NOTIFICATIONID_EMAIL, notification);
+        MyLog.d(ctx, TAG, "Notify: " + mailbox);
     }
 
 }
