@@ -36,7 +36,6 @@ public class EmailNotifyService extends Service {
     public void onCreate() {
         if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onCreate()");
         super.onCreate();
-        mActive = true;
 
         // すでに通知したものは通知しないようにする
         mLastCheck = EmailNotifyPreferences.getLastCheck(this);
@@ -46,6 +45,18 @@ public class EmailNotifyService extends Service {
             mLastCheck = Calendar.getInstance().getTimeInMillis();
             EmailNotifyPreferences.setLastCheck(this, mLastCheck);
         }
+        startCheck();
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onStart()");
+        super.onStart(intent, startId);
+        startCheck();
+    }
+
+    public void startCheck() {
+        mActive = true;
 
         // 常駐アイコン
         if (EmailNotifyPreferences.getNotificationIcon(this)) {
@@ -53,16 +64,6 @@ public class EmailNotifyService extends Service {
         } else {
             EmailNotifyNotification.clearNotificationIcon(this);
         }
-
-        // リアルタイムログ監視開始
-        startLogCheckThread();
-    }
-
-    @Override
-    public void onStart(Intent intent, int startId) {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onStart()");
-        super.onStart(intent, startId);
-        mActive = true;
 
         // リアルタイムログ監視開始
         startLogCheckThread();
