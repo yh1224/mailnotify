@@ -196,14 +196,14 @@ public class EmailNotifyService extends Service {
                         int type = pdu.getBinaryContentType();
                         if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
                             if (EmailNotifyPreferences.getServiceSpmode(ctx)) {
-                                EmailNotifyNotification.doNotify(ctx, pdu.getMailbox());
+                                EmailNotifyNotification.showNotify(ctx, pdu.getMailbox());
                             }
                         } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
                             if (EmailNotifyPreferences.getServiceMopera(ctx)) {
-                                EmailNotifyNotification.doNotify(ctx, pdu.getMailbox());
+                                EmailNotifyNotification.showNotify(ctx, pdu.getMailbox());
                             }
                         } else if (EmailNotifyPreferences.getServiceAny(ctx)) {
-                            EmailNotifyNotification.doNotify(ctx, pdu.getMailbox());
+                            EmailNotifyNotification.showNotify(ctx, pdu.getMailbox());
                         }
                     }
                 }

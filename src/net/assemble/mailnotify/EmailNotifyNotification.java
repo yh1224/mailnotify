@@ -22,7 +22,7 @@ public class EmailNotifyNotification {
 
     /**
      * バイブレーションパターン取得
-     * 
+     *
      * @param pattern パターン
      * @param length 継続時間(秒)
      * @return バイブレーションパターン
@@ -47,14 +47,14 @@ public class EmailNotifyNotification {
     /**
      * 通知
      */
-    public static void doNotify(Context ctx) {
-        doNotify(ctx, null);
+    public static void showNotify(Context ctx) {
+        showNotify(ctx, null);
     }
 
     /**
      * 通知
      */
-    public static void doNotify(Context ctx, String mailbox) {
+    public static void showNotify(Context ctx, String mailbox) {
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification;
         if (EmailNotifyPreferences.getNotifyView(ctx)) {
@@ -111,7 +111,7 @@ public class EmailNotifyNotification {
         if (mNotificationIcon != false) {
             return;
         }
-        NotificationManager notificationManager = (NotificationManager) 
+        NotificationManager notificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.notification_icon,
                 ctx.getResources().getString(R.string.app_name), System.currentTimeMillis());
