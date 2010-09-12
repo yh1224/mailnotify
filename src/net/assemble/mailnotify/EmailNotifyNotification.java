@@ -153,7 +153,7 @@ public class EmailNotifyNotification {
                 ctx.getResources().getString(R.string.app_name),
                 message, contentIntent);
         notification.defaults = Notification.DEFAULT_ALL;
-        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_SHOW_LIGHTS;
+        notification.flags = Notification.FLAG_SHOW_LIGHTS;
         notificationManager.notify(NOTIFICATIONID_EXPIRED, notification);
     }
 
