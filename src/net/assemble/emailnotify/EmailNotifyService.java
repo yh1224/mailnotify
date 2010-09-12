@@ -182,7 +182,7 @@ public class EmailNotifyService extends Service {
                     if (pdu != null) {
                         // 最後に通知した日時を保持しておく
                         EmailNotifyPreferences.setLastCheck(ctx, mLastCheck);
-                        EmailNotifyNotification.doNotify(EmailNotifyService.this, pdu.getMailbox());
+                        EmailNotifyNotification.showNotify(EmailNotifyService.this, pdu.getMailbox());
                     }
                 }
                 bufferedReader.close();

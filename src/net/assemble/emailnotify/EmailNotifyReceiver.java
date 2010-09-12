@@ -33,10 +33,10 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                 MyLog.i(context, TAG ,"Received: " + pdu.getMailbox());
                 if (pdu.getMailbox() != null && pdu.getMailbox().contains("docomo.ne.jp")) {
                     if (EmailNotifyPreferences.getServiceImode(context)) {
-                        EmailNotifyNotification.doNotify(context, "docomo.ne.jp");
+                        EmailNotifyNotification.showNotify(context, "docomo.ne.jp");
                     }
                 } else {
-                    EmailNotifyNotification.doNotify(context, pdu.getMailbox());
+                    EmailNotifyNotification.showNotify(context, pdu.getMailbox());
                 }
             }
             // Restart

@@ -16,14 +16,14 @@ public class EmailNotifyNotification {
     /**
      * 通知
      */
-    public static void doNotify(Context ctx) {
-        doNotify(ctx, null);
+    public static void showNotify(Context ctx) {
+        showNotify(ctx, null);
     }
 
     /**
      * 通知
      */
-    public static void doNotify(Context ctx, String mailbox) {
+    public static void showNotify(Context ctx, String mailbox) {
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification;
 
