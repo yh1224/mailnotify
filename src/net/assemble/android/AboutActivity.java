@@ -17,6 +17,8 @@ import net.assemble.emailnotify.R;
 
 public class AboutActivity extends Activity
 {
+    private String mTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +27,14 @@ public class AboutActivity extends Activity
 
         setContentView(R.layout.about);
 
+        // タイトル
+        mTitle = getResources().getString(R.string.app_name);
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-            setTitle(getResources().getString(R.string.app_name) + " ver." + pi.versionName);
+            mTitle += " ver." + pi.versionName;
         } catch (NameNotFoundException e) {}
+        setTitle(mTitle);
+
         getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
                 R.drawable.icon);
 
@@ -55,9 +61,9 @@ public class AboutActivity extends Activity
         btn_feedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(
                         "mailto:" + getResources().getString(R.string.feedback_to)));
-                intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+                intent.putExtra(Intent.EXTRA_SUBJECT, mTitle);
                 startActivity(intent);
             }
         });
