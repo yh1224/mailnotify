@@ -13,6 +13,8 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,14 +30,23 @@ public class EmailNotifyService extends Service {
     private static ComponentName mService;
     private static boolean mActive = false;
 
+    private EmailNotifyScreenReceiver mScreenReceiver;
     private LogCheckThread mLogCheckThread;
     private boolean mStopLogCheckThread;
     private long mLastCheck;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate() {
         if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onCreate()");
         super.onCreate();
+
+        // プリファレンスのバージョンアップ
+        EmailNotifyPreferences.upgarde(this);
+
+        // ACTION_SCREEN_ON レシーバの登録
+        mScreenReceiver = new EmailNotifyScreenReceiver();
+        registerReceiver(mScreenReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
         // すでに通知したものは通知しないようにする
         mLastCheck = EmailNotifyPreferences.getLastCheck(this);
@@ -60,9 +71,9 @@ public class EmailNotifyService extends Service {
 
         // 常駐アイコン
         if (EmailNotifyPreferences.getNotificationIcon(this)) {
-            EmailNotifyNotification.showNotificationIcon(this);
+            EmailNotificationManager.showNotificationIcon(this);
         } else {
-            EmailNotifyNotification.clearNotificationIcon(this);
+            EmailNotificationManager.clearNotificationIcon(this);
         }
 
         // リアルタイムログ監視開始
@@ -75,7 +86,10 @@ public class EmailNotifyService extends Service {
         mActive = false;
 
         // 通知アイコン
-        EmailNotifyNotification.clearNotificationIcon(this);
+        EmailNotificationManager.clearNotificationIcon(this);
+
+        // レシーバ解除
+        unregisterReceiver(mScreenReceiver);
 
         // リアルタイムログ監視停止
         stopLogCheckThread();
@@ -167,10 +181,12 @@ public class EmailNotifyService extends Service {
      * リアルタイムログ監視スレッド
      */
     private class LogCheckThread extends Thread {
+        private Context mCtx;
+
         @Override
         public void run() {
-            Context ctx = EmailNotifyService.this;
-            MyLog.d(ctx, TAG, "Starting log check thread.");
+            mCtx = EmailNotifyService.this;
+            MyLog.d(mCtx, TAG, "Starting log check thread.");
             try {
                 ArrayList<String> commandLine = new ArrayList<String>();
                 commandLine.add("logcat");
@@ -189,32 +205,48 @@ public class EmailNotifyService extends Service {
                     if (mStopLogCheckThread) {
                         break;
                     }
-                    WapPdu pdu = checkLogLine(line);
+                    final WapPdu pdu = checkLogLine(line);
                     if (pdu != null) {
                         // 最後に通知した日時を保持しておく
-                        EmailNotifyPreferences.setLastCheck(ctx, mLastCheck);
+                        EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
                         int type = pdu.getBinaryContentType();
                         if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
-                            if (EmailNotifyPreferences.getServiceSpmode(ctx)) {
-                                EmailNotifyNotification.showNotify(ctx, pdu.getMailbox());
+                            if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
+                                notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
                             }
                         } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
-                            if (EmailNotifyPreferences.getServiceMopera(ctx)) {
-                                EmailNotifyNotification.showNotify(ctx, pdu.getMailbox());
+                            if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
+                                notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
                             }
-                        } else if (EmailNotifyPreferences.getServiceAny(ctx)) {
-                            EmailNotifyNotification.showNotify(ctx, pdu.getMailbox());
+                        } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
+                            notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
                         }
                     }
                 }
                 bufferedReader.close();
                 process.destroy();
-                MyLog.d(ctx, TAG, "Exiting log check thread.");
+                MyLog.d(mCtx, TAG, "Exiting log check thread.");
                 mLogCheckThread = null;
             } catch (IOException e) {
-                MyLog.e(ctx, TAG, "Unexpected error on log checking.");
+                MyLog.e(mCtx, TAG, "Unexpected error on log checking.");
                 stopSelf();
             }
+        }
+
+        /**
+         * メール着信通知
+         *
+         * 通知後にタイマをかけるので、元スレッドで実行する。
+         *
+         * @param pdu PDU
+         */
+        private void notify(final WapPdu pdu, final String service) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EmailNotificationManager.showNotification(mCtx, service, pdu.getMailbox());
+                }
+            });
         }
     }
 
@@ -254,7 +286,7 @@ public class EmailNotifyService extends Service {
             MyLog.e(ctx, TAG, "Service start failed!");
             result = false;
         } else {
-            Log.d(TAG, "EmailNotifyService started: " + mService);
+            if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService started: " + mService);
             result = true;
         }
         if (!restart && result) {
@@ -275,7 +307,7 @@ public class EmailNotifyService extends Service {
             if (res == false) {
                 Log.e(TAG, "EmailNotifyService could not stop!");
             } else {
-                Log.d(TAG, "EmailNotifyService stopped: " + mService);
+                if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService stopped: " + mService);
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
                 MyLog.i(ctx, TAG, "Service stopped.");
                 mService = null;

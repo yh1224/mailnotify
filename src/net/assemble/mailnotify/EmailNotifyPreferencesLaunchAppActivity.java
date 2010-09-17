@@ -7,11 +7,15 @@ import android.view.View;
 import android.widget.ListView;
 
 public class EmailNotifyPreferencesLaunchAppActivity extends LauncherActivity {
-
+    private String mService;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.select_app);
+        
+        Intent intent = getIntent();
+        mService = intent.getStringExtra("service");
     }
 
     @Override
@@ -29,6 +33,7 @@ public class EmailNotifyPreferencesLaunchAppActivity extends LauncherActivity {
         Intent intent = new Intent();
         intent.putExtra("package_name", app_intent.getComponent().getPackageName());
         intent.putExtra("class_name", app_intent.getComponent().getClassName());
+        intent.putExtra("service", mService);
         setResult(RESULT_OK, intent);
         finish();
     }

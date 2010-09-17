@@ -12,11 +12,11 @@ public class EmailNotify {
 
     public static final boolean DEBUG = false;
     public static final boolean FREE_VERSION = false;
-    public static final String FREE_EXPIRES = "2010/9/30"; 
+    public static final String FREE_EXPIRES = "2010/09/26";
 
     /**
      * 有効期限チェック
-     * 
+     *
      * @param ctx Context
      * @return true:期限内 false:期限切れ
      */
@@ -27,7 +27,7 @@ public class EmailNotify {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
                 Date expire_date = sdf.parse(EmailNotify.FREE_EXPIRES);
                 if (today.compareTo(expire_date) > 0) {
-                    EmailNotifyNotification.showExpiredNotify(ctx);
+                    EmailNotificationManager.showExpiredNotification(ctx);
                     Log.d(TAG, "Expired.");
                     return false;
                 } else {

@@ -60,20 +60,20 @@ public class WapPdu {
     public boolean decode() {
         if (mimeType == null) {
             WspTypeDecoder pduDecoder = new WspTypeDecoder(wapData);
-            
+
             int index = 0;
             int transactionId = wapData[index++] & 0xFF;
             int pduType = wapData[index++] & 0xFF;
             int headerLength = 0;
-    
+
             try {
                 if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
                         (pduType != WspTypeDecoder.PDU_TYPE_CONFIRMED_PUSH)) {
                     Log.w(TAG, "Received non-PUSH WAP PDU. Type = " + pduType);                    return false;
                 }
-        
+
                 pduDecoder = new WspTypeDecoder(wapData);
-        
+
                 /**
                  * Parse HeaderLen(unsigned integer).
                  * From wap-230-wsp-20010705-a section 8.1.2
@@ -86,9 +86,9 @@ public class WapPdu {
                 }
                 headerLength = (int)pduDecoder.getValue32();
                 index += pduDecoder.getDecodedDataLength();
-        
+
                 int headerStartIndex = index;
-        
+
                 /**
                  * Parse Content-Type.
                  * From wap-230-wsp-20010705-a section 8.4.2.24
@@ -114,7 +114,7 @@ public class WapPdu {
                 }
                 index += pduDecoder.getDecodedDataLength();
                 dataIndex = headerStartIndex + headerLength;
-        
+
                 Log.d(TAG ,"Received WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
                         ", contentType=" + mimeType + "(" + binaryContentType + ")" +
                         ", dataIndex=" + dataIndex);
@@ -129,7 +129,7 @@ public class WapPdu {
 
     /**
      * ボディ部のデコード処理
-     * 
+     *
      * mailbox属性を取得する。
      */
     public void decodeBody() {
@@ -143,7 +143,7 @@ public class WapPdu {
                     for (int i = dataIndex + 7; wapData[i] != 0; i++) {
                         strLen++;
                     }
-                    byte[] m = new byte[strLen]; 
+                    byte[] m = new byte[strLen];
                     for (int i = 0; i < strLen; i++) {
                         m[i] = wapData[dataIndex + 7 + i];
                     }
@@ -170,13 +170,13 @@ public class WapPdu {
                 //Log.d(TAG, "mailbox: " + mailbox);
             } else if (binaryContentType == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL) {
                 // mailbox取得
-                if (wapData[dataIndex + 5] == 9) {  // mailbox attribute 
+                if (wapData[dataIndex + 5] == 9) {  // mailbox attribute
                     // imap://
                     int strLen = 0;
                     for (int i = dataIndex + 7; wapData[i] != 0; i++) {
                         strLen++;
                     }
-                    byte[] m = new byte[strLen]; 
+                    byte[] m = new byte[strLen];
                     for (int i = 0; i < strLen; i++) {
                         m[i] = wapData[dataIndex + 7 + i];
                     }
@@ -190,7 +190,7 @@ public class WapPdu {
 
     /**
      * Content-Type変換 (バイナリ値→文字列)
-     * 
+     *
      * @param ctype バイナリ値
      * @return 文字列
      */
@@ -215,11 +215,11 @@ public class WapPdu {
             return null;
         }
     }
-    
+
     /**
      * Content-Type変換 (文字列→バイナリ値)
-     * 
-     * @param mimeType 文字列 
+     *
+     * @param mimeType 文字列
      * @return バイナリ値
      */
     private int convertContentType(String mimeType) {
