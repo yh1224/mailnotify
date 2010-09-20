@@ -1,6 +1,5 @@
 package net.assemble.mailnotify;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
@@ -114,20 +113,19 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
-        if (preference == mPrefNotifyLaunchAppMopera) {
-            Intent intent = new Intent().setClass(this, EmailNotifyPreferencesLaunchAppActivity.class);
-            intent.putExtra("service", EmailNotifyPreferences.SERVICE_MOPERA);
-            startActivityForResult(intent, REQUEST_LAUNCH_APP);
-        } else if (preference == mPrefNotifyLaunchAppSpmode) {
-            Intent intent = new Intent().setClass(this, EmailNotifyPreferencesLaunchAppActivity.class);
-            intent.putExtra("service", EmailNotifyPreferences.SERVICE_SPMODE);
-            startActivityForResult(intent, REQUEST_LAUNCH_APP);
-        } else if (preference == mPrefNotifyLaunchAppImode) {
-            Intent intent = new Intent().setClass(this, EmailNotifyPreferencesLaunchAppActivity.class);
-            intent.putExtra("service", EmailNotifyPreferences.SERVICE_IMODE);
-            startActivityForResult(intent, REQUEST_LAUNCH_APP);
-        } else if (preference == mPrefNotifyLaunchApp) {
-            Intent intent = new Intent().setClass(this, EmailNotifyPreferencesLaunchAppActivity.class);
+        if (preference == mPrefNotifyLaunchAppMopera ||
+                preference == mPrefNotifyLaunchAppSpmode ||
+                preference == mPrefNotifyLaunchAppImode ||
+                preference == mPrefNotifyLaunchApp) {
+            Intent intent = new Intent();
+            intent.setClass(this, EmailNotifySelectAppActivity.class);
+            if (preference == mPrefNotifyLaunchAppMopera) {
+                intent.putExtra("service", EmailNotifyPreferences.SERVICE_MOPERA);
+            } else if (preference == mPrefNotifyLaunchAppSpmode) {
+                intent.putExtra("service", EmailNotifyPreferences.SERVICE_SPMODE);
+            } else if (preference == mPrefNotifyLaunchAppImode) {
+                intent.putExtra("service", EmailNotifyPreferences.SERVICE_IMODE);
+            }
             startActivityForResult(intent, REQUEST_LAUNCH_APP);
         } else if (preference == mPrefTestNotifyMopera) {
             EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
@@ -158,11 +156,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_LAUNCH_APP) {
             if (resultCode == RESULT_OK) {
+                String appName = data.getStringExtra("app_name");
                 String packageName = data.getStringExtra("package_name");
                 String className = data.getStringExtra("class_name");
                 String service = data.getStringExtra("service");
                 EmailNotifyPreferences.setNotifyLaunchApp(EmailNotifyPreferencesActivity.this,
-                        service, packageName, className);
+                        service, appName, packageName, className);
                 updateSummary();
             }
         } else {
@@ -191,7 +190,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
      * summaryを更新
      */
     private void updateSummary() {
-        ComponentName component;
+        String launchAppName;
 
         // mopera Uメール通知設定
         mPrefNotifyVibrationPatternMopera.setSummary(
@@ -205,11 +204,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             getEntryString(mPrefNotifyLedColorMopera.getValue(),
                 getResources().getStringArray(R.array.entries_led_color),
                 getResources().getStringArray(R.array.entryvalues_led_color)));
-        component = EmailNotifyPreferences.getNotifyLaunchApp(this, EmailNotifyPreferences.SERVICE_MOPERA);
-        if (component != null) {
+        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_MOPERA);
+        if (launchAppName != null) {
             mPrefNotifyLaunchAppMopera.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" +
-                    component.getClassName());
+                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
         }
         mPrefNotifyRenotifyIntervalMopera.setSummary(
                 mPrefNotifyRenotifyIntervalMopera.getValue() +
@@ -235,11 +233,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             getEntryString(mPrefNotifyLedColorSpmode.getValue(),
                 getResources().getStringArray(R.array.entries_led_color),
                 getResources().getStringArray(R.array.entryvalues_led_color)));
-        component = EmailNotifyPreferences.getNotifyLaunchApp(this, EmailNotifyPreferences.SERVICE_SPMODE);
-        if (component != null) {
+        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_SPMODE);
+        if (launchAppName != null) {
             mPrefNotifyLaunchAppSpmode.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" +
-                    component.getClassName());
+                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
         }
         mPrefNotifyRenotifyIntervalSpmode.setSummary(
                 mPrefNotifyRenotifyIntervalSpmode.getValue() +
@@ -265,11 +262,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             getEntryString(mPrefNotifyLedColorImode.getValue(),
                 getResources().getStringArray(R.array.entries_led_color),
                 getResources().getStringArray(R.array.entryvalues_led_color)));
-        component = EmailNotifyPreferences.getNotifyLaunchApp(this, EmailNotifyPreferences.SERVICE_IMODE);
-        if (component != null) {
+        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_IMODE);
+        if (launchAppName != null) {
             mPrefNotifyLaunchAppImode.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" +
-                    component.getClassName());
+                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
         }
         mPrefNotifyRenotifyIntervalImode.setSummary(
                 mPrefNotifyRenotifyIntervalImode.getValue() +
@@ -295,11 +291,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             getEntryString(mPrefNotifyLedColor.getValue(),
                 getResources().getStringArray(R.array.entries_led_color),
                 getResources().getStringArray(R.array.entryvalues_led_color)));
-        component = EmailNotifyPreferences.getNotifyLaunchApp(this, null);
-        if (component != null) {
+        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, null);
+        if (launchAppName != null) {
             mPrefNotifyLaunchApp.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" +
-                    component.getClassName());
+                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
         }
         mPrefNotifyRenotifyInterval.setSummary(
                 mPrefNotifyRenotifyInterval.getValue() +

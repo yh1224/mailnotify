@@ -96,6 +96,7 @@
     <string name="pref_notify_stop_on_screen_summary">電源ボタンを押したときに通知音を停止します。</string>
     <string name="pref_group_notify_test">通知テスト</string>
     <string name="pref_group_experimental">試験的な実装 (Experimental)</string>
+    <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
     <string name="enable">有効化</string>
     <string name="test_notify">通知テスト</string>
     <string name="service_started">メール着信監視を開始しました。</string>

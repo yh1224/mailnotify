@@ -12,7 +12,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EmailNotifyPreferencesActivity" />
-        <activity android:name=".EmailNotifyPreferencesLaunchAppActivity"
+        <activity android:name=".EmailNotifySelectAppActivity"
             android:theme="@android:style/Theme.Dialog" />
         <receiver android:name=".EmailNotifyReceiver">
             <intent-filter>

@@ -12,12 +12,13 @@ import android.preference.PreferenceManager;
 public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
-    private static final int CURRENT_PREFERENCE_VERSION = 1;
+    private static final int CURRENT_PREFERENCE_VERSION = 2;
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
     public static final String SERVICE_IMODE = "imode";
     public static final String SERVICE_OTHER = "other";
+    public static final String[] SERVICES = { SERVICE_MOPERA, SERVICE_SPMODE, SERVICE_IMODE };
 
     public static final String PREF_LICENSED_KEY = "licensed";
     public static final boolean PREF_LICENSED_DEFAULT = false;
@@ -80,6 +81,7 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_VIEW_KEY = "notify_view";
     public static final boolean PREF_NOTIFY_VIEW_DEFAULT = true;
 
+    public static final String PREF_NOTIFY_LAUNCH_APP_NAME_KEY = "notify_launch_app_name";
     public static final String PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY = "notify_launch_app_package_name";
     public static final String PREF_NOTIFY_LAUNCH_APP_CLASS_KEY = "notify_launch_app_class_name";
 
@@ -335,9 +337,21 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * 起動アプリ名を取得
+     */
+    public static String getNotifyLaunchAppName(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, service), null);
+        } else {
+            return pref.getString(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, null);
+        }
+    }
+
+    /**
      * 起動アプリ設定を取得
      */
-    public static ComponentName getNotifyLaunchApp(Context ctx, String service) {
+    public static ComponentName getNotifyLaunchAppComponent(Context ctx, String service) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
         String packageName;
         String className;
@@ -357,13 +371,15 @@ public class EmailNotifyPreferences
     /**
      * 起動アプリ設定を保存
      */
-    public static void setNotifyLaunchApp(Context ctx, String service, String packageName, String className) {
+    public static void setNotifyLaunchApp(Context ctx, String service, String appName, String packageName, String className) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
         Editor e = pref.edit();
         if (service != null) {
+            e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, service), appName);
             e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, service), packageName);
             e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_CLASS_KEY, service), className);
         } else {
+            e.putString(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, appName);
             e.putString(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, packageName);
             e.putString(PREF_NOTIFY_LAUNCH_APP_CLASS_KEY, className);
         }
@@ -454,6 +470,7 @@ public class EmailNotifyPreferences
         if (ver < CURRENT_PREFERENCE_VERSION) {
             Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
             if (ver == 0) {
+                // キー名称を変更
                 e.putBoolean(PREF_LICENSED_KEY, pref.getBoolean("licence", PREF_LICENSED_DEFAULT));
                 e.putBoolean(PREF_ENABLE_KEY, pref.getBoolean("enable", PREF_ENABLE_DEFAULT));
                 e.putString(PREF_NOTIFY_SOUND_KEY, pref.getString("sound", PREF_NOTIFY_SOUND_DEFAULT));
@@ -467,6 +484,14 @@ public class EmailNotifyPreferences
                 e.putBoolean(PREF_NOTIFY_RENOTIFY_KEY, pref.getBoolean("renotify", PREF_NOTIFY_RENOTIFY_DEFAULT));
                 e.putInt(PREF_NOTIFY_RENOTIFY_INTERVAL_KEY, pref.getInt("renotify_interval", PREF_NOTIFY_RENOTIFY_INTERVAL_DEFAULT));
                 e.putInt(PREF_NOTIFY_RENOTIFY_COUNT_KEY, pref.getInt("renotify_count", PREF_NOTIFY_RENOTIFY_COUNT_DEFAULT));
+            }
+            if (ver < 2) {
+                // 起動アプリ名を保存するようにした。旧設定からはパッケージ名をコピー。
+                e.putString(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, pref.getString(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, null));
+                for (int i = 0; i < SERVICES.length; i++) {
+                    e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, SERVICES[i]),
+                            pref.getString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, SERVICES[i]), null));
+                }
             }
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);
             e.commit();

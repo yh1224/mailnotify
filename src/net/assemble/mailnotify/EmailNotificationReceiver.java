@@ -38,7 +38,7 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
 
                 // アプリ起動
                 Intent launchIntent = new Intent();
-                ComponentName component = EmailNotifyPreferences.getNotifyLaunchApp(ctx, service);
+                ComponentName component = EmailNotifyPreferences.getNotifyLaunchAppComponent(ctx, service);
                 if (component != null) {
                     launchIntent.setComponent(component);
                 } else {
