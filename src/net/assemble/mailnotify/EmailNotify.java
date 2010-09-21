@@ -10,9 +10,10 @@ import android.util.Log;
 public class EmailNotify {
     private static final String TAG = "EmailNotify";
 
+    public static final String MARKET_URL = "market://details?id=net.assemble.mailnotify";
     public static final boolean DEBUG = false;
     public static final boolean FREE_VERSION = false;
-    public static final String FREE_EXPIRES = "2010/09/26";
+    public static final String FREE_EXPIRES = "2010/10/03";
 
     /**
      * 有効期限チェック
@@ -20,6 +21,7 @@ public class EmailNotify {
      * @param ctx Context
      * @return true:期限内 false:期限切れ
      */
+    @SuppressWarnings("unused")
     public static boolean checkExpiration(Context ctx) {
         if (FREE_VERSION && FREE_EXPIRES != null) {
             Date today = new Date();
