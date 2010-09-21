@@ -21,8 +21,6 @@ import net.assemble.android.MyLog;
 import net.assemble.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
-    private static final String MARKET_URL = "market://search?q=net.assemble.mailnotify";
-
     private ToggleButton mEnableButton;
 
     @Override
@@ -64,7 +62,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(EmailNotify.MARKET_URL));
                     startActivity(intent);
                     return true;
                 }
