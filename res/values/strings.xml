@@ -4,7 +4,9 @@
     <string name="notify_text">メールが届いています。</string>
     <string name="mail_unit">通</string>
     <string name="notification_message">メール着信を監視しています。</string>
+    <string name="warning">警告</string>
     <string name="ok">OK</string>
+    <string name="cancel">キャンセル</string>
     <string name="preferences">設定</string>
     <string name="log">ログ</string>
     <string name="about">バージョン情報</string>
@@ -20,7 +22,8 @@
     <string name="pref_service_spmode_title">spモードメール</string>
     <string name="pref_service_spmode_summary">spモードメールの着信を通知します。</string>
     <string name="pref_service_imode_title">iモードメール</string>
-    <string name="pref_service_imode_summary">仮対応です。通知が来ない場合がありますのでご注意ください。</string>
+    <string name="pref_service_imode_summary">iモードメールの着信を通知します。(サポート対象外)</string>
+    <string name="pref_service_imode_warning">iモードメールに対する通知は確実ではありませんのでご了承ください。\n\n- 3G接続中には通知が届かないようです。\n- iモード.netへのログイン通知メールも通知されます。</string>
     <string name="pref_service_other_title">その他</string>
     <string name="pref_service_other_summary">上記のサービス以外(解析できなかった場合を含む)でも通知します。</string>
     <string name="pref_notify_mopera_title">mopera Uメール通知設定</string>
@@ -48,7 +51,8 @@
     <string name="pref_group_notify_sound">サウンド設定</string>
     <string name="pref_notify_sound_title">通知音</string>
     <string name="pref_notify_sound_summary">メール着信通知の通知音を選択します。</string>
-    <string name="pref_notify_sound_length_title">通知音の最大長</string>
+    <string name="pref_notify_sound_length_title">通知音の再生時間</string>
+    <string name="pref_notify_sound_length_summary">短い通知音だけでなく、着信音/アラーム音も選択可能にします。</string>
     <string name="pref_notify_sound_length_unit">秒</string>
     <string name="pref_notify_sound_length_zero">選択した通知音の長さに従う</string>
     <string name="pref_group_notify_vibration">バイブレーション設定</string>

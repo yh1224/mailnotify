@@ -1,9 +1,12 @@
 package net.assemble.mailnotify;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -127,6 +130,24 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 intent.putExtra("service", EmailNotifyPreferences.SERVICE_IMODE);
             }
             startActivityForResult(intent, REQUEST_LAUNCH_APP);
+        } else if (preference == findPreference("service_imode")) {
+            final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
+            if (checkbox.isChecked()) {
+                // iモードメール警告
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.warning);
+                builder.setMessage(getResources().getString(R.string.pref_service_imode_warning));
+                builder.setPositiveButton(R.string.ok, null);
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        checkbox.setChecked(false);
+                    }
+                });
+                builder.setCancelable(true);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
         } else if (preference == mPrefTestNotifyMopera) {
             EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
         } else if (preference == mPrefTestNotifySpmode) {
@@ -311,7 +332,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         // その他
         if (mPrefNotifySoundLength.getValue() == 0) {
             mPrefNotifySoundLength.setSummary(
-                    getResources().getString(R.string.pref_notify_sound_length_zero));
+                    getResources().getString(R.string.pref_notify_sound_length_summary));
             // 通知音長が設定されていない場合は、通知音のみ選択可能。
             mPrefNotifySoundMopera.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
             mPrefNotifySoundSpmode.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
