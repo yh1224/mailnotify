@@ -138,6 +138,7 @@ public class EmailNotification {
             notification.ledOnMS = 200;
             notification.ledOffMS = 2000;
         }
+        notification.number = mMailCount;
         notificationManager.notify(mNotificationId, notification);
 
         if (!sound) {
