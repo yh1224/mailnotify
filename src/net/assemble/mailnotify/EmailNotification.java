@@ -116,6 +116,7 @@ public class EmailNotification {
             notification = new Notification();
         }
         notification.defaults = 0;
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
         if (sound) {
             String soundUri = EmailNotifyPreferences.getNotifySound(mCtx, mService);
             if (soundUri.startsWith("content:")) {
@@ -130,13 +131,12 @@ public class EmailNotification {
                             EmailNotifyPreferences.getNotifyVibrationLength(mCtx, mService));
                 }
             }
-        }
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
-        if (EmailNotifyPreferences.getNotifyLed(mCtx, mService)) {
-            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-            notification.ledARGB = EmailNotifyPreferences.getNotifyLedColor(mCtx, mService);
-            notification.ledOnMS = 200;
-            notification.ledOffMS = 2000;
+            if (EmailNotifyPreferences.getNotifyLed(mCtx, mService)) {
+                notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+                notification.ledARGB = EmailNotifyPreferences.getNotifyLedColor(mCtx, mService);
+                notification.ledOnMS = 200;
+                notification.ledOffMS = 2000;
+            }
         }
         if (mMailCount > 1) {
             notification.number = mMailCount;
