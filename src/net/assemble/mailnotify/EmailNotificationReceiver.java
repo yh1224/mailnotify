@@ -1,10 +1,8 @@
 package net.assemble.mailnotify;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 /**
@@ -29,21 +27,9 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
             if (action.startsWith(ACTION_NOTIFY_LAUNCH)) {
                 // 通知停止
                 EmailNotificationManager.clearNotification(mailbox);
-
-                if (EmailNotifyPreferences.getNotifyDisableWifi(ctx, service)) {
-                    // Wi-Fi無効化
-                    WifiManager wifi = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
-                    wifi.setWifiEnabled(false);
-                }
-
-                // アプリ起動
-                Intent launchIntent = new Intent();
-                ComponentName component = EmailNotifyPreferences.getNotifyLaunchAppComponent(ctx, service);
-                if (component != null) {
-                    launchIntent.setComponent(component);
-                } else {
-                    launchIntent.setClass(ctx, EmailNotifyActivity.class);
-                }
+                Intent launchIntent = new Intent().setClass(ctx, EmailNotifyLaunchActivity.class);
+                launchIntent.putExtra("service", service);
+                launchIntent.putExtra("mailbox", mailbox);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ctx.startActivity(launchIntent);
             } else if (action.startsWith(ACTION_NOTIFY_CANCEL)) {

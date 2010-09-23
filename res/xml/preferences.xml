@@ -377,8 +377,8 @@
             android:title="@string/pref_notify_stop_on_screen_title"
             android:summary="@string/pref_notify_stop_on_screen_summary"
             android:defaultValue="false" />
-        <CheckBoxPreference android:key="notify_disable_wifi_spmode"
-            android:summary="@string/pref_notify_disable_wifi_summary"
-            android:title="@string/pref_notify_disable_wifi_title" />
+        <CheckBoxPreference android:key="notify_auto_connect_spmode"
+            android:summary="@string/pref_notify_auto_connect_spmode_summary"
+            android:title="@string/pref_notify_auto_connect_spmode_title" />
     </PreferenceCategory>
 </PreferenceScreen>

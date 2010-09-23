@@ -133,20 +133,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else if (preference == findPreference("service_imode")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
-                // iモードメール警告
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.warning);
-                builder.setMessage(getResources().getString(R.string.pref_service_imode_warning));
-                builder.setPositiveButton(R.string.ok, null);
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        checkbox.setChecked(false);
-                    }
-                });
-                builder.setCancelable(true);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                alertMessage(getResources().getString(R.string.pref_service_imode_warning), checkbox);
+            }
+        } else if (preference == findPreference("notify_auto_connect_spmode")) {
+            final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
+            if (checkbox.isChecked()) {
+                alertMessage(getResources().getString(R.string.pref_notify_auto_connect_spmode_warning), checkbox);
             }
         } else if (preference == mPrefTestNotifyMopera) {
             EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
@@ -158,6 +150,23 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test");
         }
         return true;
+    }
+
+    private void alertMessage(String message, final CheckBoxPreference checkbox) {
+        // iモードメール警告
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.warning);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.ok, null);
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                checkbox.setChecked(false);
+            }
+        });
+        builder.setCancelable(true);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override

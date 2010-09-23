@@ -94,8 +94,8 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_RENOTIFY_COUNT_KEY = "notify_renotify_count";
     public static final int PREF_NOTIFY_RENOTIFY_COUNT_DEFAULT = 5;
 
-    public static final String PREF_NOTIFY_DISABLE_WIFI_KEY = "notify_disable_wifi";
-    public static final boolean PREF_NOTIFY_DISABLE_WIFI_DEFAULT = false;
+    public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
+    public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
 
     public static final String PREF_LAST_CHECK_KEY = "last_check";
     public static final long PREF_LAST_CHECK_DEFAULT = 0;
@@ -439,16 +439,17 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * WiFi無効化設定を取得
+     * 自動接続設定を取得
      */
-    public static boolean getNotifyDisableWifi(Context ctx, String service) {
+    public static boolean getNotifyAutoConnect(Context ctx, String service) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        if (service != null && isNotifyCustomized(ctx, service)) {
-            return pref.getBoolean(getServiceKey(PREF_NOTIFY_DISABLE_WIFI_KEY, service),
-                PREF_NOTIFY_DISABLE_WIFI_DEFAULT);
+        // TODO: 試験実装中のため、サービス毎設定の有効無効に結び付けない。
+        if (service != null/* && isNotifyCustomized(ctx, service)*/) {
+            return pref.getBoolean(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_KEY, service),
+                PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
         } else {
-            return pref.getBoolean(PREF_NOTIFY_DISABLE_WIFI_KEY,
-                PREF_NOTIFY_DISABLE_WIFI_DEFAULT);
+            return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_KEY,
+                PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
         }
     }
 

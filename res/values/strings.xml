@@ -13,6 +13,9 @@
     <string name="feedback">報告</string>
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
     <string name="buy">購入</string>
+    <string name="enabling_3g">データネットワークの接続を待機しています...</string>
+    <string name="disabling_wifi">Wi-Fiを無効化しています...</string>
+    <string name="launch_app">アプリ起動</string>
     <string name="pref_group_observe">メール着信監視設定</string>
     <string name="pref_notification_icon_title">監視アイコン</string>
     <string name="pref_notification_icon_summary">通知バーに常にアイコンを表示します。</string>
@@ -86,8 +89,9 @@
     <string name="pref_notify_launch_app_is">通知クリック時に起動するアプリ:</string>
     <string name="pref_notify_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
     <string name="select_app">アプリ選択</string>
-    <string name="pref_notify_disable_wifi_title">Wi-Fi無効化 (spモード)</string>
-    <string name="pref_notify_disable_wifi_summary">通知をクリックしたときにWi-Fiを無効にします。</string>
+    <string name="pref_notify_auto_connect_spmode_title">spモード自動接続</string>
+    <string name="pref_notify_auto_connect_spmode_summary">spモードメール通知をクリックしたときにspモードに自動接続します。</string>
+    <string name="pref_notify_auto_connect_spmode_warning">通知クリック時にWi-Fiを無効化、spモードAPNを有効にしてアプリを起動します。自動的に元の状態には戻りませんのでご注意ください。またデータネットワークの有効化については以下のアプリの方式に対応していますが、各アプリでの有効/無効表示に正しく反映されない場合があります。また他のアプリで正常に動作しない場合はご報告ください。\n- APNdroid\n- Extended Control\n- Quick Settings</string>
     <string name="pref_group_notify_renotify">再通知設定</string>
     <string name="pref_notify_renotify_title">再通知</string>
     <string name="pref_notify_renotify_summary">通知を消去するまで定期的に再通知します。</string>
