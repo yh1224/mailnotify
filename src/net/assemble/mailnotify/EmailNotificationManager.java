@@ -1,4 +1,4 @@
-package net.assemble.mailnotify;
+ package net.assemble.mailnotify;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,8 @@ import android.content.Intent;
 public class EmailNotificationManager {
     public static final int NOTIFICATIONID_ICON = 1;
     public static final int NOTIFICATIONID_EXPIRED = 2;
-    public static final int NOTIFICATIONID_EMAIL_START = 3;
+    public static final int NOTIFICATIONID_RESTORE_NETWORK = 3;
+    public static final int NOTIFICATIONID_EMAIL_START = 4;
 
     private static boolean mNotificationIcon = false;
     private static ArrayList<EmailNotification> mNotifications = new ArrayList<EmailNotification>();
@@ -113,7 +114,29 @@ public class EmailNotificationManager {
     }
 
     /**
-     * 通知バーにアイコンを表示
+     * ネットワーク復元アイコンを表示
+     */
+    public static void showRestoreNetworkIcon(Context ctx) {
+        NotificationManager notificationManager = (NotificationManager)
+                ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification(R.drawable.restore,
+                ctx.getResources().getString(R.string.app_name), System.currentTimeMillis());
+        Intent restoreIntent = new Intent(ctx, EmailNotifyLaunchActivity.class);
+        restoreIntent.setAction(EmailNotifyLaunchActivity.ACTION_RESTORE_NETWORK);
+        restoreIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notification.setLatestEventInfo(ctx, ctx.getResources().getString(R.string.restore_network),
+                ctx.getResources().getString(R.string.restore_network_message),
+                PendingIntent.getActivity(ctx, 0, restoreIntent, 0));
+        Intent deleteIntent = new Intent(ctx, EmailNotifyLaunchActivity.class);
+        deleteIntent.setAction(EmailNotifyLaunchActivity.ACTION_KEEP_NETWORK);
+        deleteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notification.deleteIntent = PendingIntent.getActivity(ctx, 0, deleteIntent, 0);
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(NOTIFICATIONID_RESTORE_NETWORK, notification);
+    }
+
+    /**
+     * 常駐アイコンを表示
      */
     public static void showNotificationIcon(Context ctx) {
         if (mNotificationIcon != false) {
@@ -127,13 +150,13 @@ public class EmailNotificationManager {
         PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
         notification.setLatestEventInfo(ctx, ctx.getResources().getString(R.string.app_name),
                 ctx.getResources().getString(R.string.notification_message), contentIntent);
-        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
+        notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
         notificationManager.notify(NOTIFICATIONID_ICON, notification);
         mNotificationIcon = true;
     }
 
     /**
-     * ノーティフィケーションバーのアイコンを消去
+     * 常駐アイコンを消去
      */
     public static void clearNotificationIcon(Context ctx) {
         if (mNotificationIcon == false) {
@@ -146,7 +169,7 @@ public class EmailNotificationManager {
     }
 
     /**
-     * 通知
+     * 期限超過通知
      */
     public static void showExpiredNotification(Context ctx) {
         NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);

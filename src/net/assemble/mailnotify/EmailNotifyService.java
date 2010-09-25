@@ -42,7 +42,10 @@ public class EmailNotifyService extends Service {
         super.onCreate();
 
         // プリファレンスのバージョンアップ
-        EmailNotifyPreferences.upgarde(this);
+        EmailNotifyPreferences.upgrade(this);
+
+        // ネットワーク復元情報を消去
+        EmailNotifyPreferences.unsetNetworkInfo(this);
 
         // ACTION_SCREEN_ON レシーバの登録
         mScreenReceiver = new EmailNotifyScreenReceiver();

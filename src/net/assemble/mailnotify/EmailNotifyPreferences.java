@@ -97,8 +97,14 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
 
+    // 最終チェック日時保存用
     public static final String PREF_LAST_CHECK_KEY = "last_check";
-    public static final long PREF_LAST_CHECK_DEFAULT = 0;
+    
+    // ネットワーク復元情報保存用
+    public static final String PREF_NETWORK_SAVE_KEY = "network_save";
+    public static final String PREF_NETWORK_SAVE_APN_KEY_KEY = "network_save_apn_key";
+    public static final String PREF_NETWORK_SAVE_APN_SUFFIX_KEY = "network_save_apn_suffix";
+    public static final String PREF_NETWORK_SAVE_WIFI_ENABLE_KEY = "network_save_wifi_enable";
 
     /**
      * 有効フラグを取得
@@ -430,15 +436,6 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * 前回通知日時を取得
-     */
-    public static long getLastCheck(Context ctx) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getLong(
-                PREF_LAST_CHECK_KEY,
-                PREF_LAST_CHECK_DEFAULT);
-    }
-
-    /**
      * 自動接続設定を取得
      */
     public static boolean getNotifyAutoConnect(Context ctx, String service) {
@@ -454,6 +451,14 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * 前回通知日時を取得
+     */
+    public static long getLastCheck(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getLong(
+                PREF_LAST_CHECK_KEY, 0);
+    }
+
+    /**
      * 前回通知日時を保存
      */
     public static void setLastCheck(Context ctx, long val) {
@@ -463,9 +468,78 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * ネットワーク復元情報の有無を取得
+     */
+    public static boolean hasNetworkSave(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_NETWORK_SAVE_KEY, false);
+    }
+
+    /**
+     * ネットワーク復元情報：APNキーを取得
+     */
+    public static String getNetworkSaveApnKey(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                PREF_NETWORK_SAVE_APN_KEY_KEY, null);
+    }
+
+    /**
+     * ネットワーク復元情報：APNサフィックスを取得
+     */
+    public static String getNetworkSaveApnSuffix(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                PREF_NETWORK_SAVE_APN_SUFFIX_KEY, null);
+    }
+
+    /**
+     * ネットワーク復元情報：Wi-Fi状態を取得
+     */
+    public static boolean getNetworkSaveWifiEnable(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_NETWORK_SAVE_WIFI_ENABLE_KEY, false);
+    }
+
+    /**
+     * ネットワーク復元情報有無を保存
+     */
+    public static void saveNetworkInfo(Context ctx) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putBoolean(PREF_NETWORK_SAVE_KEY, true);
+        e.commit();
+    }
+
+    /**
+     * ネットワーク復元情報：APN情報を保存
+     */
+    public static void saveNetworkApnInfo(Context ctx, String key, String suffix) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putString(PREF_NETWORK_SAVE_APN_KEY_KEY, key);
+        e.putString(PREF_NETWORK_SAVE_APN_SUFFIX_KEY, suffix);
+        e.commit();
+    }
+
+    /**
+     * ネットワーク復元情報：Wi-Fi情報を保存
+     */
+    public static void saveNetworkWifiInfo(Context ctx, boolean enable) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putBoolean(PREF_NETWORK_SAVE_WIFI_ENABLE_KEY, enable);
+        e.commit();
+    }
+
+    /**
+     * ネットワーク復元情報を消去
+     */
+    public static void unsetNetworkInfo(Context ctx) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putBoolean(PREF_NETWORK_SAVE_KEY, false);
+        e.commit();
+    }
+
+    /**
      * プリファレンスのアップグレード
      */
-    public static void upgarde(Context ctx) {
+    public static void upgrade(Context ctx) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
         int ver = pref.getInt(PREF_PREFERENCE_VERSION_KEY, 0);
         if (ver < CURRENT_PREFERENCE_VERSION) {

@@ -23,10 +23,16 @@ import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import net.assemble.android.MyLog;
 
 public class EmailNotifyLaunchActivity extends Activity {
     private static final String TAG = "EmailNotify";
     private static final String SPMODE_APN = "spmode.ne.jp";
+
+    public static final String ACTION_RESTORE_NETWORK = "net.assemble.mailnotify.action.RESTORE_NETWORK";
+    public static final String ACTION_KEEP_NETWORK = "net.assemble.mailnotify.action.KEEP_NETWORK";
 
     private ConnectivityManager mConnManager;
     private WifiManager mWifiManager;
@@ -48,6 +54,18 @@ public class EmailNotifyLaunchActivity extends Activity {
         mTelManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
         Intent intent = getIntent();
+        if (intent.getAction() != null) {
+            // ネットワーク復元
+            if (intent.getAction().equals(ACTION_RESTORE_NETWORK)) {
+                restoreNetwork();
+                Toast.makeText(this, R.string.restored_network, Toast.LENGTH_LONG).show();
+            }
+
+            // ネットワーク復元情報を消去
+            EmailNotifyPreferences.unsetNetworkInfo(this);
+            finish();
+            return;
+        }
         mService = intent.getStringExtra("service");
         mMailbox = intent.getStringExtra("mailbox");
 
@@ -55,18 +73,27 @@ public class EmailNotifyLaunchActivity extends Activity {
         EmailNotificationManager.clearNotification(mMailbox);
 
         // 自動接続設定
-        if (EmailNotifyPreferences.getNotifyAutoConnect(this, mService)) {
-            NetworkInfo mobileNetworkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            if (!mobileNetworkInfo.isConnected()) {
-                if (mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
-                    // Wi-Fiが有効であれば無効化
+        if (EmailNotifyPreferences.getNotifyAutoConnect(this, mService) &&
+                !EmailNotifyPreferences.hasNetworkSave(this)) {
+            // Wi-Fi無効化
+            boolean wifiChanged = disableWifi();
+
+            // APN有効化 (現状spモードのみ)
+            boolean apnChanged = enableAPN(SPMODE_APN);
+
+            if (wifiChanged || apnChanged) {
+                // プログレスダイアログ表示
+                if (wifiChanged) {
                     showProgress(getResources().getText(R.string.disabling_wifi));
-                    disableWifi();
                 } else {
                     showProgress(getResources().getText(R.string.enabling_3g));
                 }
-                // APNを有効化する (現状spモードのみ)
-                enableAPN(SPMODE_APN);
+
+                // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
+                EmailNotifyPreferences.saveNetworkInfo(this);
+
+                // 復元用の通知を表示
+                EmailNotificationManager.showRestoreNetworkIcon(this);
 
                 // 3G状態リスナ登録
                 mStateListener = new PhoneStateListener() {
@@ -76,6 +103,8 @@ public class EmailNotifyLaunchActivity extends Activity {
                         if (EmailNotify.DEBUG) Log.d(TAG, "DataConnectionState changed: " + state);
                         if (state == TelephonyManager.DATA_CONNECTED) {
                             if (EmailNotify.DEBUG) Log.d(TAG, "Mobile network connected.");
+                            Toast.makeText(EmailNotifyLaunchActivity.this,
+                                    R.string.connected_network, Toast.LENGTH_LONG).show();
                             launchApp();
                             finish();
                         }
@@ -83,6 +112,8 @@ public class EmailNotifyLaunchActivity extends Activity {
                 };
                 mTelManager.listen(mStateListener, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
                 return;
+            } else {
+                if (EmailNotify.DEBUG) Log.d(TAG, "No need to modify network configuration.");
             }
         }
 
@@ -114,48 +145,62 @@ public class EmailNotifyLaunchActivity extends Activity {
 
     /**
      * Wi-Fi無効化
+     *
+     * @return true:無効化した false:何もしてない(すでに無効)
      */
-    private void disableWifi() {
-        if (EmailNotify.DEBUG) Log.d(TAG, "Disabling Wi-Fi...");
-        // Wi-Fiレシーバ登録
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context ctx, Intent intent) {
-                if (EmailNotify.DEBUG) Log.d(TAG, "received intent: " + intent.getAction());
-                if (EmailNotify.DEBUG) logIntent(intent);
-                if (intent.getAction().equals("android.net.wifi.WIFI_STATE_CHANGED")) {
-                    int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
-                    if (wifiState == WifiManager.WIFI_STATE_DISABLED) {
-                        if (EmailNotify.DEBUG) Log.d(TAG, "Wi-Fi disabled.");
-                        unregisterReceiver(mReceiver);
-                        mReceiver = null;
-                        showProgress(getResources().getText(R.string.enabling_3g));
-                    }
-                } else if (intent.getAction().equals("android.net.wifi.STATE_CHANGE")) {
-                    NetworkInfo networkInfo = (NetworkInfo) intent.getExtras().get(WifiManager.EXTRA_NETWORK_INFO);
-                    if (!networkInfo.isConnected()) {
-                        if (EmailNotify.DEBUG) Log.d(TAG, "Wi-Fi disconnected.");
-                        // ??
+    private boolean disableWifi() {
+        boolean wifiEnabled = mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED;
+
+        // Wi-Fiが有効であれば無効化
+        if (wifiEnabled) {
+            if (EmailNotify.DEBUG) Log.d(TAG, "Disabling Wi-Fi...");
+
+            // Wi-Fiレシーバ登録
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context ctx, Intent intent) {
+                    if (EmailNotify.DEBUG) Log.d(TAG, "received intent: " + intent.getAction());
+                    if (EmailNotify.DEBUG) logIntent(intent);
+                    if (intent.getAction().equals("android.net.wifi.WIFI_STATE_CHANGED")) {
+                        int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+                        if (wifiState == WifiManager.WIFI_STATE_DISABLED) {
+                            if (EmailNotify.DEBUG) Log.d(TAG, "Wi-Fi disabled.");
+                            if (mReceiver != null) {
+                                unregisterReceiver(mReceiver);
+                                mReceiver = null;
+                                showProgress(getResources().getText(R.string.enabling_3g));
+                            }
+                        }
                     }
                 }
-            }
-        };
-        registerReceiver(mReceiver, new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
-        registerReceiver(mReceiver, new IntentFilter("android.net.wifi.STATE_CHANGE"));
-        mWifiManager.setWifiEnabled(false);
+            };
+            registerReceiver(mReceiver, new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
+            mWifiManager.setWifiEnabled(false);
+            MyLog.d(this, TAG, "Wi-Fi disabled.");
+        } else {
+            if (EmailNotify.DEBUG) Log.d(TAG, "Wi-Fi is already disabled.");
+        }
+
+        // ネットワーク復元情報(Wi-Fi)を保存
+        EmailNotifyPreferences.saveNetworkWifiInfo(this, wifiEnabled);
+
+        return wifiEnabled;
     }
 
     /**
-     * TODO: APN有効化
+     * APN有効化
+     *
+     * @return true:設定を変更した false:何もしなかった
      */
-    private void enableAPN(String target_apn) {
-        if (EmailNotify.DEBUG) Log.d(TAG, "Enabling spmode...");
+    private boolean enableAPN(String target_apn) {
+        boolean changed = false;
         ContentResolver resolver = getContentResolver();
         ContentValues values;
         Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] {"_id", "apn", "type"}, null, null, null);
 
         // APNのkeyと付加文字列検索 (ex:apndroid)
+        if (EmailNotify.DEBUG) Log.d(TAG, "Checking for enable APN...");
         String apnKey = null;
         String extraStr = null;
         if (cursor.moveToFirst()) {
@@ -189,6 +234,7 @@ public class EmailNotifyLaunchActivity extends Activity {
         }
 
         if (extraStr != null) {
+            if (EmailNotify.DEBUG) Log.d(TAG, "Enabling APNs...");
             // Activate APNs
             if (cursor.moveToFirst()) {
                 do {
@@ -212,22 +258,47 @@ public class EmailNotifyLaunchActivity extends Activity {
                     // APN設定をもとに戻す
                     values = new ContentValues();
                     values.put("apn", new_apn);
-                    values.put("type",  new_type);
+                    values.put("type", new_type);
                     Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
                     resolver.update(url, values, null, null);
-                    if (EmailNotify.DEBUG) Log.d(TAG, "Updated APN setting: apn=" + new_apn + ", type=" + new_type);
+                    changed = true;
+                    MyLog.d(this, TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
                 } while (cursor.moveToNext());
             }
         }
+        cursor.close();
+
+        String prevApnKey = null;
         if (apnKey != null) {
-            // 接続先APNを設定
-            values = new ContentValues();
-            values.put("apn_id", apnKey);
-            resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
-            if (EmailNotify.DEBUG) Log.d(TAG, "Set default APN key: " + apnKey);
+            if (EmailNotify.DEBUG) Log.d(TAG, "Activating APN...");
+
+            // 現在の接続先を取得
+            cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
+                    new String[] {"_id"}, null, null, null);
+            if (cursor.moveToFirst()) {
+                prevApnKey = cursor.getString(0);
+                if (EmailNotify.DEBUG) Log.d(TAG, "Current APN ID: " + prevApnKey);
+            }
+            cursor.close();
+
+            if (prevApnKey == null || !prevApnKey.equals(apnKey)) {
+                // 接続先APNを変更
+                values = new ContentValues();
+                values.put("apn_id", apnKey);
+                resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
+                changed = true;
+                if (EmailNotify.DEBUG) Log.d(TAG, "Set default APN key: " + apnKey);
+                MyLog.d(this, TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
+            }
         }
 
-        cursor.close();
+        if (changed) {
+            // ネットワーク復元情報(APN)を保存
+            EmailNotifyPreferences.saveNetworkApnInfo(this, prevApnKey, extraStr);
+        } else {
+            if (EmailNotify.DEBUG) Log.d(TAG, "APN is already active.");
+        }
+        return changed;
     }
 
     /**
@@ -282,6 +353,70 @@ public class EmailNotifyLaunchActivity extends Activity {
         }
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    /**
+     * ネットワークを復元する
+     */
+    private void restoreNetwork() {
+        if (EmailNotifyPreferences.hasNetworkSave(this)) {
+            if (EmailNotify.DEBUG) Log.d(TAG, "Restoring network...");
+
+            String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(this);
+            String apnSuffix = EmailNotifyPreferences.getNetworkSaveApnSuffix(this);
+            boolean wifiEnable = EmailNotifyPreferences.getNetworkSaveWifiEnable(this);
+            if (EmailNotify.DEBUG) Log.d(TAG, "Saved: apnKey=" + apnKey + ", apnSuffix=" + apnSuffix + ", wifiEnable=" + wifiEnable);
+
+            ContentResolver resolver = getContentResolver();
+            ContentValues values;
+
+            if (apnSuffix != null) {
+                Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
+                        new String[] {"_id", "apn", "type"}, null, null, null);
+
+                // APN設定を復元
+                if (cursor.moveToFirst()) {
+                    do {
+                        String key = cursor.getString(0);
+                        String apn = cursor.getString(1);
+                        String type = cursor.getString(2);
+
+                        if (apn.startsWith(apnSuffix) || type.startsWith(apnSuffix) ||
+                                apn.endsWith(apnSuffix) || type.endsWith(apnSuffix)) {
+                            // すでに無効化されているので何もしない
+                            if (EmailNotify.DEBUG) Log.d(TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                            continue;
+                        }
+
+                        String new_apn = apn + apnSuffix;
+                        String new_type = type + apnSuffix;
+
+                        values = new ContentValues();
+                        values.put("apn", new_apn);
+                        values.put("type", new_type);
+                        Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
+                        resolver.update(url, values, null, null);
+                        MyLog.d(this, TAG, "APN disabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+
+            // 接続先APNを復元
+            if (apnKey != null) {
+                values = new ContentValues();
+                values.put("apn_id", apnKey);
+                resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
+                MyLog.d(this, TAG, "APN restored: -> " + apnKey);
+            }
+
+            // Wi-Fi状態を復元
+            if (wifiEnable) {
+                if (EmailNotify.DEBUG) Log.d(TAG, "Enabling Wi-Fi...");
+                mWifiManager.setWifiEnabled(true);
+                MyLog.d(this, TAG, "Wi-Fi enabled.");
+            }
+        }
     }
 
     private static void logIntent(Intent intent) {
