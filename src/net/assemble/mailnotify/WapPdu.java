@@ -12,7 +12,7 @@ public class WapPdu {
 
     private String mimeType;
     private int binaryContentType;
-    private String mailBox = null;
+    private String mailBox = "unknown";
 
     /**
      * Constructor
