@@ -86,14 +86,9 @@ public class EmailNotification {
     /**
      * 通知
      */
-    public void doNotify(boolean sound) {
+    public void doNotify() {
         NotificationManager notificationManager = (NotificationManager)
             mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (!sound) {
-            // TODO: 音停止時は一旦通知を消す
-            notificationManager.cancel(mNotificationId);
-        }
 
         Notification notification;
         if (EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
@@ -112,42 +107,38 @@ public class EmailNotification {
                     message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
             notification.deleteIntent =
                     getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_CANCEL);
+            if (mMailCount > 1) {
+                notification.number = mMailCount;
+            }
         } else {
             notification = new Notification();
         }
         notification.defaults = 0;
         notification.flags = Notification.FLAG_AUTO_CANCEL;
-        if (sound) {
-            String soundUri = EmailNotifyPreferences.getNotifySound(mCtx, mService);
-            if (soundUri.startsWith("content:")) {
-                notification.sound = Uri.parse(soundUri);
-            }
-            if (EmailNotifyPreferences.getNotifyVibration(mCtx, mService)) {
-                AudioManager audio = (AudioManager) mCtx.getSystemService(Context.AUDIO_SERVICE);
-                if (!(EmailNotifyPreferences.getNotifyVibrationManneronly(mCtx, mService) &&
-                        audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)) {
-                    notification.vibrate = getVibrate(
-                            EmailNotifyPreferences.getNotifyVibrationPattern(mCtx, mService),
-                            EmailNotifyPreferences.getNotifyVibrationLength(mCtx, mService));
-                }
-            }
-            if (EmailNotifyPreferences.getNotifyLed(mCtx, mService)) {
-                notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-                notification.ledARGB = EmailNotifyPreferences.getNotifyLedColor(mCtx, mService);
-                notification.ledOnMS = 200;
-                notification.ledOffMS = 2000;
-            }
-        }
-        if (mMailCount > 1) {
-            notification.number = mMailCount;
+        if (EmailNotifyPreferences.getNotifyLed(mCtx, mService)) {
+            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+            notification.ledARGB = EmailNotifyPreferences.getNotifyLedColor(mCtx, mService);
+            notification.ledOnMS = 200;
+            notification.ledOffMS = 2000;
         }
         notificationManager.notify(mNotificationId, notification);
 
-        if (!sound) {
-            // 音停止時はここまで
-            if (EmailNotify.DEBUG) Log.d(TAG, "Notify sound stopped. (notificationId=" + mNotificationId + ")");
-            return;
+        // 通知音・バイブレーションは別途
+        Notification notification2 = new Notification();
+        String soundUri = EmailNotifyPreferences.getNotifySound(mCtx, mService);
+        if (soundUri.startsWith("content:")) {
+            notification2.sound = Uri.parse(soundUri);
         }
+        if (EmailNotifyPreferences.getNotifyVibration(mCtx, mService)) {
+            AudioManager audio = (AudioManager) mCtx.getSystemService(Context.AUDIO_SERVICE);
+            if (!(EmailNotifyPreferences.getNotifyVibrationManneronly(mCtx, mService) &&
+                    audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)) {
+                notification2.vibrate = getVibrate(
+                        EmailNotifyPreferences.getNotifyVibrationPattern(mCtx, mService),
+                        EmailNotifyPreferences.getNotifyVibrationLength(mCtx, mService));
+            }
+        }
+        notificationManager.notify(mNotificationId + 1, notification2);
 
         mNotifyCount++;
         MyLog.d(mCtx, TAG, "Notified: " + mMailbox);
@@ -187,7 +178,16 @@ public class EmailNotification {
     public void start() {
         mCal = Calendar.getInstance();
         mMailCount++;
-        doNotify(true);
+        doNotify();
+    }
+
+    /**
+     * 通知音・バイブレーションだけ停止
+     */
+    public void stopSound() {
+        NotificationManager notificationManager =
+            (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(mNotificationId + 1);
     }
 
     /**
@@ -203,6 +203,7 @@ public class EmailNotification {
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId);
+        notificationManager.cancel(mNotificationId + 1);
     }
 
     /**

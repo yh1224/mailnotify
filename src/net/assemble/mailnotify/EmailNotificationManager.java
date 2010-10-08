@@ -1,4 +1,4 @@
- package net.assemble.mailnotify;
+package net.assemble.mailnotify;
 
 import java.util.ArrayList;
 
@@ -13,6 +13,7 @@ public class EmailNotificationManager {
     public static final int NOTIFICATIONID_EXPIRED = 2;
     public static final int NOTIFICATIONID_RESTORE_NETWORK = 3;
     public static final int NOTIFICATIONID_EMAIL_START = 4;
+    public static final int NOTIFICATIONID_EMAIL_STEP = 2;
 
     private static boolean mNotificationIcon = false;
     private static ArrayList<EmailNotification> mNotifications = new ArrayList<EmailNotification>();
@@ -62,7 +63,7 @@ public class EmailNotificationManager {
         for (int i = 0; i < mNotifications.size(); i++) {
             EmailNotification emn = mNotifications.get(i);
             if (id <= emn.getNotificationId()) {
-                id = emn.getNotificationId() + 1;
+                id = emn.getNotificationId() + NOTIFICATIONID_EMAIL_STEP;
             }
         }
         return id;
@@ -76,8 +77,7 @@ public class EmailNotificationManager {
     public static void stopNotification(String mailbox) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
-            // 音なしで再通知
-            emn.doNotify(false);
+            emn.stopSound();
         }
     }
 
@@ -87,7 +87,7 @@ public class EmailNotificationManager {
     public static void stopAllNotifications() {
         for (int i = 0; i < mNotifications.size(); i++) {
             EmailNotification emn = mNotifications.get(i);
-            emn.doNotify(false);
+            emn.stopSound();
         }
     }
 
@@ -99,7 +99,7 @@ public class EmailNotificationManager {
     public static void renotifyNotification(String mailbox) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
-            emn.doNotify(true);
+            emn.doNotify();
         }
     }
 
