@@ -208,10 +208,10 @@ public class EmailNotifyLaunchActivity extends Activity {
                 String key = cursor.getString(0);
                 String apn = cursor.getString(1);
                 String type = cursor.getString(2);
-                if (EmailNotify.DEBUG) Log.d(TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
+                if (EmailNotify.DEBUG) MyLog.d(this, TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
 
                 if (apn.equals(target_apn)) {
-                    if (EmailNotify.DEBUG) Log.d(TAG, "Found valid APN.");
+                    if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found valid APN.");
                     apnKey = key;
                     break;
                 }
@@ -220,21 +220,21 @@ public class EmailNotifyLaunchActivity extends Activity {
                     if (type.endsWith(ex)) {
                         apnKey = key;
                         extraStr = ex;
-                        if (EmailNotify.DEBUG) Log.d(TAG, "Found extra suffix: " + extraStr);
+                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found extra suffix: " + extraStr);
                     }
                 } else if (apn.endsWith(target_apn)) {
                     String ex = apn.substring(0, apn.length() - target_apn.length());
                     if (type.startsWith(ex)) {
                         apnKey = key;
                         extraStr = ex;
-                        if (EmailNotify.DEBUG) Log.d(TAG, "Found extra prefix: " + extraStr);
+                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found extra prefix: " + extraStr);
                     }
                 }
             } while (cursor.moveToNext());
         }
 
         if (extraStr != null) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Enabling APNs...");
+            if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Enabling APNs...");
             // Activate APNs
             if (cursor.moveToFirst()) {
                 do {
@@ -251,7 +251,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                         new_apn = apn.substring(0, apn.length() - extraStr.length());
                         new_type = type.substring(0, type.length() - extraStr.length());
                     } else {
-                        if (EmailNotify.DEBUG) Log.d(TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                         continue;
                     }
 
@@ -270,14 +270,14 @@ public class EmailNotifyLaunchActivity extends Activity {
 
         String prevApnKey = null;
         if (apnKey != null) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Activating APN...");
+            if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Activating APN...");
 
             // 現在の接続先を取得
             cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
                     new String[] {"_id"}, null, null, null);
             if (cursor.moveToFirst()) {
                 prevApnKey = cursor.getString(0);
-                if (EmailNotify.DEBUG) Log.d(TAG, "Current APN ID: " + prevApnKey);
+                if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Current APN ID: " + prevApnKey);
             }
             cursor.close();
 
@@ -287,7 +287,6 @@ public class EmailNotifyLaunchActivity extends Activity {
                 values.put("apn_id", apnKey);
                 resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
                 changed = true;
-                if (EmailNotify.DEBUG) Log.d(TAG, "Set default APN key: " + apnKey);
                 MyLog.d(this, TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
             }
         }
@@ -384,7 +383,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                         if (apn.startsWith(apnSuffix) || type.startsWith(apnSuffix) ||
                                 apn.endsWith(apnSuffix) || type.endsWith(apnSuffix)) {
                             // すでに無効化されているので何もしない
-                            if (EmailNotify.DEBUG) Log.d(TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                            if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                             continue;
                         }
 
