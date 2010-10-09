@@ -182,6 +182,8 @@ public class WapPdu {
                     }
                     mailBox = "imap://" + new String(m, 0);
                 }
+            } else {
+                mailBox = "unknown (" + getContentType() + ")";
             }
         } catch (IndexOutOfBoundsException e) {
             Log.w(TAG, "PDU analyze error.");
@@ -210,9 +212,13 @@ public class WapPdu {
             return WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS;
         case 0x030a:
             return "application/vnd.wap.emn+wbxml";
+        case 0x0310:
+            return "application/vnd.docomo.pf";
+        case 0x0311:
+            return "application/vnd.docomo.ub";
         default:
             Log.w(TAG, "Unknown Content-Type = " + binaryContentType);
-            return null;
+            return "unknown";
         }
     }
 
@@ -237,6 +243,10 @@ public class WapPdu {
             return WspTypeDecoder.CONTENT_TYPE_B_MMS;
         } else if (mimeType.equals("application/vnd.wap.emn+wbxml")) {
             return 0x030a;
+        } else if (mimeType.equals("application/vnd.docomo.pf")) {
+            return 0x0310;
+        } else if (mimeType.equals("application/vnd.docomo.ub")) {
+            return 0x0311;
         } else {
             Log.w(TAG, "Unknown Content-Type = " + mimeType);
             return 0;
