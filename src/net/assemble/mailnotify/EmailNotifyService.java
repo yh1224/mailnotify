@@ -135,7 +135,7 @@ public class EmailNotifyService extends Service {
      * @return WapPdu WAP PDU (null:メール通知ではない)
      */
     private WapPdu checkLogLine(String line) {
-        if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
+        //if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
         if (line.length() >= 19 && line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
             if (ccal.getTimeInMillis() <= mLastCheck) {
