@@ -99,7 +99,7 @@ public class EmailNotifyPreferences
 
     // 最終チェック日時保存用
     public static final String PREF_LAST_CHECK_KEY = "last_check";
-    
+
     // ネットワーク復元情報保存用
     public static final String PREF_NETWORK_SAVE_KEY = "network_save";
     public static final String PREF_NETWORK_SAVE_APN_KEY_KEY = "network_save_apn_key";
@@ -533,6 +533,9 @@ public class EmailNotifyPreferences
     public static void unsetNetworkInfo(Context ctx) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_NETWORK_SAVE_KEY, false);
+        e.remove(PREF_NETWORK_SAVE_APN_KEY_KEY);
+        e.remove(PREF_NETWORK_SAVE_APN_SUFFIX_KEY);
+        e.remove(PREF_NETWORK_SAVE_WIFI_ENABLE_KEY);
         e.commit();
     }
 
