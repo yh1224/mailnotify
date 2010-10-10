@@ -133,13 +133,38 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else if (preference == findPreference("service_imode")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
-                alertMessage(getResources().getString(R.string.pref_service_imode_warning), checkbox);
+                alertMessage(R.string.pref_service_imode_warning, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        checkbox.setChecked(false);
+                    }
+                });
+            }
+        } else if (preference == findPreference("notify_view") ||
+                preference == findPreference("notify_view_mopera") ||
+                preference == findPreference("notify_view_spmode") ||
+                preference == findPreference("notify_view_imode")) {
+            final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
+            if (!checkbox.isChecked()) {
+                alertMessage(R.string.pref_notify_view_warning, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        checkbox.setChecked(true);
+                    }
+                });
             }
         } else if (preference == findPreference("notify_auto_connect_spmode")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
-                alertMessage(getResources().getString(R.string.pref_notify_auto_connect_spmode_warning), checkbox);
+                alertMessage(R.string.pref_notify_auto_connect_spmode_warning, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        checkbox.setChecked(false);
+                    }
+                });
             }
+        } else if (preference == findPreference("notify_sound_length")) {
+            alertMessage(R.string.pref_notify_sound_length_warning, null);
         } else if (preference == mPrefTestNotifyMopera) {
             EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
         } else if (preference == mPrefTestNotifySpmode) {
@@ -152,19 +177,27 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         return true;
     }
 
-    private void alertMessage(String message, final CheckBoxPreference checkbox) {
-        // iモードメール警告
+    /**
+     * 警告をダイアログ表示
+     * 
+     * @param message 表示するメッセージのリソースID
+     * @param negativeListener キャンセルされた場合のリスナ
+     */
+    private void alertMessage(int msgResId, DialogInterface.OnCancelListener negativeListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.warning);
-        builder.setMessage(message);
+        builder.setMessage(getResources().getString(msgResId));
         builder.setPositiveButton(R.string.ok, null);
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                checkbox.setChecked(false);
-            }
-        });
-        builder.setCancelable(true);
+        if (negativeListener != null) {
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.setCancelable(true);
+            builder.setOnCancelListener(negativeListener);
+        }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
