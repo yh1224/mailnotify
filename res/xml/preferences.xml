@@ -186,8 +186,7 @@
                 </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_mopera"
-                        android:title="@string/test_notify"
-                        android:dependency="notify_custom_mopera" />
+                        android:title="@string/test_notify" />
                 </PreferenceCategory>
             </PreferenceScreen>
 
@@ -274,8 +273,7 @@
                 </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_spmode"
-                        android:title="@string/test_notify"
-                        android:dependency="notify_custom_spmode" />
+                        android:title="@string/test_notify" />
                 </PreferenceCategory>
             </PreferenceScreen>
 
@@ -362,8 +360,7 @@
                 </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_imode"
-                        android:title="@string/test_notify"
-                        android:dependency="notify_custom_imode" />
+                        android:title="@string/test_notify" />
                 </PreferenceCategory>
             </PreferenceScreen>
         </PreferenceScreen>
