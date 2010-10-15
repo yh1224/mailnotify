@@ -215,11 +215,25 @@ public class EmailNotifyService extends Service {
                         int type = pdu.getBinaryContentType();
                         if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
                             if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
-                                notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
+                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE); 
+                                if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
+                                    // 既に通知済み
+                                    MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
+                                } /*TODO: まずはチェックのみ。 else*/ {
+                                    notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
+                                    EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getTimestampString());
+                                }
                             }
                         } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
                             if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
-                                notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
+                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA); 
+                                if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
+                                    // 既に通知済み
+                                    MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
+                                } /*TODO: まずはチェックのみ。 else*/ {
+                                    notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
+                                    EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getTimestampString());
+                                }
                             }
                         } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
                             notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
@@ -247,7 +261,7 @@ public class EmailNotifyService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    EmailNotificationManager.showNotification(mCtx, service, pdu.getMailbox());
+                    EmailNotificationManager.showNotification(mCtx, service, pdu.getMailbox(), pdu.getTimestampDate());
                 }
             });
         }

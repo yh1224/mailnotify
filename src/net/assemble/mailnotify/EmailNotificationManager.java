@@ -1,6 +1,7 @@
 package net.assemble.mailnotify;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,12 +22,12 @@ public class EmailNotificationManager {
     /**
      * メール着信通知
      */
-    public static void showNotification(Context ctx, String service, String mailbox) {
+    public static void showNotification(Context ctx, String service, String mailbox, Date date) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
             emn.stop();
         } else {
-            emn = new EmailNotification(ctx, service, mailbox, getNextNotificationId());
+            emn = new EmailNotification(ctx, service, mailbox, date, getNextNotificationId());
             mNotifications.add(emn);
         }
         emn.start();

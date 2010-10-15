@@ -39,11 +39,11 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                 MyLog.i(ctx, TAG ,"Received: " + pdu.getMailbox());
                 if (pdu.getMailbox() != null && pdu.getMailbox().contains("docomo.ne.jp")) {
                     if (EmailNotifyPreferences.getServiceImode(ctx)) {
-                        EmailNotificationManager.showNotification(ctx, EmailNotifyPreferences.SERVICE_IMODE, "docomo.ne.jp");
+                        EmailNotificationManager.showNotification(ctx, EmailNotifyPreferences.SERVICE_IMODE, "docomo.ne.jp", null);
                     }
                 } else {
                     if (EmailNotifyPreferences.getServiceOther(ctx)) {
-                        EmailNotificationManager.showNotification(ctx, EmailNotifyPreferences.SERVICE_OTHER, pdu.getMailbox());
+                        EmailNotificationManager.showNotification(ctx, EmailNotifyPreferences.SERVICE_OTHER, pdu.getMailbox(), null);
                     }
                 }
             }

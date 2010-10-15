@@ -3,6 +3,7 @@ package net.assemble.mailnotify;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import net.assemble.android.MyLog;
 
@@ -24,9 +25,9 @@ public class EmailNotification {
     private static final String TAG = "EmailNotify";
 
     private Context mCtx;
-    private Calendar mCal;
     private String mMailbox;
     private String mService;
+    private Date mDate;
     private int mNotificationId;
     private int mMailCount;
     private int mNotifyCount;
@@ -39,10 +40,15 @@ public class EmailNotification {
      * @param ctx Context
      * @param mailbox メールボックス名
      */
-    public EmailNotification(Context ctx, String service, String mailbox, int notificationId) {
+    public EmailNotification(Context ctx, String service, String mailbox, Date date, int notificationId) {
         mCtx = ctx;
         mService = service;
         mMailbox = mailbox;
+        if (date == null) {
+            mDate = Calendar.getInstance().getTime();
+        } else {
+            mDate = date;
+        }
         mNotificationId = notificationId;
         mMailCount = 0;
         mNotifyCount = 0;
@@ -96,7 +102,7 @@ public class EmailNotification {
                     mCtx.getResources().getString(R.string.app_name),
                     System.currentTimeMillis());
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm ");
-            String message = sdf.format(mCal.getTime()) +
+            String message = sdf.format(mDate) +
                 mCtx.getResources().getString(R.string.notify_text) + " (" +
                 mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
             if (mMailbox != null) {
@@ -176,7 +182,6 @@ public class EmailNotification {
      * 通知を開始
      */
     public void start() {
-        mCal = Calendar.getInstance();
         mMailCount++;
         doNotify();
     }

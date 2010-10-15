@@ -166,13 +166,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else if (preference == findPreference("notify_sound_length")) {
             alertMessage(R.string.pref_notify_sound_length_warning, null);
         } else if (preference == mPrefTestNotifyMopera) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
+            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U", null);
         } else if (preference == mPrefTestNotifySpmode) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_SPMODE, "Test for sp-mode");
+            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_SPMODE, "Test for sp-mode", null);
         } else if (preference == mPrefTestNotifyImode) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_IMODE, "Test for i-mode");
+            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_IMODE, "Test for i-mode", null);
         } else if (preference == mPrefTestNotify) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test");
+            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test", null);
         }
         return true;
     }

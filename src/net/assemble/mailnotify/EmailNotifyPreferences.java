@@ -100,6 +100,9 @@ public class EmailNotifyPreferences
     // 最終チェック日時保存用
     public static final String PREF_LAST_CHECK_KEY = "last_check";
 
+    // 最終メール通知日時保存用
+    public static final String PREF_LAST_TIMESTAMP_KEY = "last_timestamp";
+
     // ネットワーク復元情報保存用
     public static final String PREF_NETWORK_SAVE_KEY = "network_save";
     public static final String PREF_NETWORK_SAVE_APN_KEY_KEY = "network_save_apn_key";
@@ -451,7 +454,7 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * 前回通知日時を取得
+     * 前回チェック日時を取得
      */
     public static long getLastCheck(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getLong(
@@ -459,11 +462,28 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * 前回通知日時を保存
+     * 前回チェック日時を保存
      */
     public static void setLastCheck(Context ctx, long val) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putLong(PREF_LAST_CHECK_KEY, val);
+        e.commit();
+    }
+
+    /**
+     * 前回通知日時を取得
+     */
+    public static String getLastTimestamp(Context ctx, String service) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                getServiceKey(PREF_LAST_TIMESTAMP_KEY, service), null);
+    }
+
+    /**
+     * 前回通知日時を保存
+     */
+    public static void setLastTimestamp(Context ctx, String service, String val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putString(getServiceKey(PREF_LAST_TIMESTAMP_KEY, service), val);
         e.commit();
     }
 

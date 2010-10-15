@@ -1,5 +1,9 @@
 package net.assemble.mailnotify;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.util.Log;
 
 import com.android.internal.telephony.WspTypeDecoder;
@@ -13,6 +17,7 @@ public class WapPdu {
     private String mimeType;
     private int binaryContentType;
     private String mailBox = "unknown";
+    private byte[] timestamp = null;
 
     /**
      * Constructor
@@ -133,54 +138,76 @@ public class WapPdu {
      * mailbox属性を取得する。
      */
     public void decodeBody() {
+        int index = dataIndex;
         try {
             // TODO: 超決めうちデコード
             if (binaryContentType == 0x030a) {  // application/vnd.wap.emn+wbxml
+	            index += 5;
                 // mailbox取得
-                if (wapData[dataIndex + 5] == 7) {  // mailbox attribute
+                if (wapData[index] == 0x07) {  // mailbox attribute
+                    index += 2;
                     // mailat:
                     int strLen = 0;
-                    for (int i = dataIndex + 7; wapData[i] != 0; i++) {
+                    for (int i = index; wapData[i] != 0; i++) {
                         strLen++;
                     }
                     byte[] m = new byte[strLen];
                     for (int i = 0; i < strLen; i++) {
-                        m[i] = wapData[dataIndex + 7 + i];
+                        m[i] = wapData[index + i];
                     }
                     mailBox = "mailat:" + new String(m, 0);
-                    int tld = wapData[dataIndex + 7 + strLen + 1];
+                    index += strLen + 1;
+                    int tld = wapData[index];
                     if (tld < 0) {
-                        tld += 256;
+                        tld += 0x100;
+                        switch (tld) {
+                        case 0x85:
+                            mailBox += ".com";
+                            break;
+                        case 0x86:
+                            mailBox += ".edu";
+                            break;
+                        case 0x87:
+                            mailBox += ".net";
+                            break;
+                        case 0x88:
+                            mailBox += ".org";
+                            break;
+                        }
+                        index++;
                     }
-                    switch (tld) {
-                    case 0x85:
-                        mailBox += ".com";
-                        break;
-                    case 0x86:
-                        mailBox += ".edu";
-                        break;
-                    case 0x87:
-                        mailBox += ".net";
-                        break;
-                    case 0x88:
-                        mailBox += ".org";
-                        break;
-                    }
+                    //Log.d(TAG, "mailbox=" + mailBox);
                 }
-                //Log.d(TAG, "mailbox: " + mailbox);
+                // timestamp取得
+                if (wapData[index] == 0x05) {  // timestamp attribute
+                    if (wapData[index + 1] + 0x100 == 0xc3) {
+                        index += 2;
+                        int tsLen = wapData[index];  
+                        timestamp = new byte[tsLen];
+                        index++;
+                        for (int i = 0; i < tsLen; i++) {
+                            timestamp[i] = wapData[index + i];
+                        }
+                        index += tsLen;
+                    }
+                    //Log.d(TAG, "timestampe=" + byte2hex(timestamp));
+                }
             } else if (binaryContentType == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL) {
+                index += 5;
                 // mailbox取得
-                if (wapData[dataIndex + 5] == 9) {  // mailbox attribute
+                if (wapData[index] == 0x09) {  // mailbox attribute
+                    index += 2;
                     // imap://
                     int strLen = 0;
-                    for (int i = dataIndex + 7; wapData[i] != 0; i++) {
+                    for (int i = index; wapData[i] != 0; i++) {
                         strLen++;
                     }
                     byte[] m = new byte[strLen];
                     for (int i = 0; i < strLen; i++) {
-                        m[i] = wapData[dataIndex + 7 + i];
+                        m[i] = wapData[index + i];
                     }
                     mailBox = "imap://" + new String(m, 0);
+                    index += strLen;
                 }
             } else {
                 mailBox = "unknown (" + getContentType() + ")";
@@ -281,14 +308,55 @@ public class WapPdu {
     }
 
     /**
+     * デコードされたボディのtimestamp属性を取得
+     *
+     * @return timestamp属性
+     */
+    public String getTimestampString() {
+        if (timestamp != null) {
+            return byte2hex(timestamp);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * デコードされたボディのtimestamp属性をDate型で取得
+     *
+     * @return timestamp属性
+     */
+    public Date getTimestampDate() {
+        Date date = null;
+        if (timestamp != null) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDDhhmmss z");
+                date = sdf.parse(byte2hex(timestamp) + " GMT");
+            } catch (ParseException e) {
+                Log.w(TAG, "Unexpected timestamp: " + byte2hex(timestamp));
+            }
+        }
+        return date;
+    }
+
+    /**
      * データの16進数文字列を取得
      *
      * @return 16進数文字列
      */
     public String getHexString() {
-        StringBuffer strbuf = new StringBuffer(wapData.length * 2);
-        for (int i = 0; i < wapData.length; i++) {
-            int bt = wapData[i] & 0xff;
+        return byte2hex(wapData);
+    }
+
+    /**
+     * データの16進数文字列を取得
+     *
+     * @param data バイナリデータ
+     * @return 16進数文字列
+     */
+    private String byte2hex(byte[] data) {
+        StringBuffer strbuf = new StringBuffer(data.length * 2);
+        for (int i = 0; i < data.length; i++) {
+            int bt = data[i] & 0xff;
             if (bt < 0x10) {
                 strbuf.append("0");
             }
