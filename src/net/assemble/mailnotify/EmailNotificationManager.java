@@ -25,7 +25,7 @@ public class EmailNotificationManager {
     public static void showNotification(Context ctx, String service, String mailbox, Date date) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
-            emn.stop();
+            emn.clear();
         } else {
             emn = new EmailNotification(ctx, service, mailbox, date, getNextNotificationId());
             mNotifications.add(emn);
@@ -75,7 +75,7 @@ public class EmailNotificationManager {
      *
      * @param mailbox メールボックス名
      */
-    public static void stopNotification(String mailbox) {
+    public static void stopNotificationSound(String mailbox) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
             emn.stopSound();
@@ -83,12 +83,12 @@ public class EmailNotificationManager {
     }
 
     /**
-     * メール着信音停止(すべて)
+     * メール通知停止(すべて)
      */
     public static void stopAllNotifications() {
         for (int i = 0; i < mNotifications.size(); i++) {
             EmailNotification emn = mNotifications.get(i);
-            emn.stopSound();
+            emn.stop();
         }
     }
 
@@ -110,7 +110,7 @@ public class EmailNotificationManager {
     public static void clearNotification(String mailbox) {
         EmailNotification emn = getNotification(mailbox, true);
         if (emn != null) {
-            emn.stop();
+            emn.clear();
         }
     }
 

@@ -155,7 +155,7 @@ public class EmailNotification {
         int soundLen = EmailNotifyPreferences.getNotifySoundLength(mCtx, mService);
         if (soundLen > 0) {
             long next = SystemClock.elapsedRealtime() + soundLen * 1000;
-            mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP);
+            mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP_SOUND);
             AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
             if (EmailNotify.DEBUG) Log.d(TAG, "Started stop timer for " + mMailbox);
@@ -193,10 +193,11 @@ public class EmailNotification {
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId + 1);
+        if (EmailNotify.DEBUG) Log.d(TAG, "Stopped sound for " + mMailbox);
     }
 
     /**
-     * 通知を停止
+     * 通知音・バイブレーション・再通知を停止
      */
     public void stop() {
         if (mRenotifyIntent != null) {
@@ -205,10 +206,18 @@ public class EmailNotification {
             mRenotifyIntent = null;
             if (EmailNotify.DEBUG) Log.d(TAG, "Canceled renotify timer for " + mMailbox);
         }
+        stopSound();
+    }
+
+    /**
+     * 通知を消去
+     */
+    public void clear() {
+        stop();
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId);
-        notificationManager.cancel(mNotificationId + 1);
+        if (EmailNotify.DEBUG) Log.d(TAG, "Cleared notification for " + mMailbox);
     }
 
     /**

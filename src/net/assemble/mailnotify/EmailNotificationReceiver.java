@@ -13,7 +13,7 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
 
     public static final String ACTION_NOTIFY_LAUNCH = "net.assemble.mailnotify.action.NOTIFY_CLICK";
     public static final String ACTION_NOTIFY_CANCEL = "net.assemble.mailnotify.action.NOTIFY_CANCEL";
-    public static final String ACTION_STOP = "net.assemble.mailnotify.action.NOTIFY_STOP";
+    public static final String ACTION_STOP_SOUND = "net.assemble.mailnotify.action.NOTIFY_STOP_SOUND";
     public static final String ACTION_RENOTIFY = "net.assemble.mailnotify.action.RENOTIFY";
 
     @Override
@@ -35,9 +35,9 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
             } else if (action.startsWith(ACTION_NOTIFY_CANCEL)) {
                 // 通知停止
                 EmailNotificationManager.clearNotification(mailbox);
-            } else if (action.startsWith(ACTION_STOP)) {
+            } else if (action.startsWith(ACTION_STOP_SOUND)) {
                 // 通知停止
-                EmailNotificationManager.stopNotification(mailbox);
+                EmailNotificationManager.stopNotificationSound(mailbox);
             } else if (action.startsWith(ACTION_RENOTIFY)) {
                 // 再通知
                 EmailNotificationManager.renotifyNotification(mailbox);
