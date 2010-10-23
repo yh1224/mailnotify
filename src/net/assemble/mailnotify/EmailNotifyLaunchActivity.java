@@ -202,7 +202,8 @@ public class EmailNotifyLaunchActivity extends Activity {
         // APNのkeyと付加文字列検索 (ex:apndroid)
         if (EmailNotify.DEBUG) Log.d(TAG, "Checking for enable APN...");
         String apnKey = null;
-        String extraStr = null;
+        String modifierStr = null;
+        String modifierType = null;
         if (cursor.moveToFirst()) {
             do {
                 String key = cursor.getString(0);
@@ -219,21 +220,23 @@ public class EmailNotifyLaunchActivity extends Activity {
                     String ex = apn.substring(target_apn.length());
                     if (type.endsWith(ex)) {
                         apnKey = key;
-                        extraStr = ex;
-                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found extra suffix: " + extraStr);
+                        modifierStr = ex;
+                        modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX;
+                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found modifier " + modifierType + ": " + modifierStr);
                     }
                 } else if (apn.endsWith(target_apn)) {
                     String ex = apn.substring(0, apn.length() - target_apn.length());
                     if (type.startsWith(ex)) {
                         apnKey = key;
-                        extraStr = ex;
-                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found extra prefix: " + extraStr);
+                        modifierStr = ex;
+                        modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX;
+                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found modifier " + modifierType + ": " + modifierStr);
                     }
                 }
             } while (cursor.moveToNext());
         }
 
-        if (extraStr != null) {
+        if (modifierStr != null) {
             if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Enabling APNs...");
             // Activate APNs
             if (cursor.moveToFirst()) {
@@ -244,12 +247,12 @@ public class EmailNotifyLaunchActivity extends Activity {
 
                     String new_apn;
                     String new_type;
-                    if (apn.startsWith(extraStr) && type.startsWith(extraStr)) {
-                        new_apn = apn.substring(extraStr.length());
-                        new_type = type.substring(extraStr.length());
-                    } else if (apn.endsWith(extraStr) && type.endsWith(extraStr)) {
-                        new_apn = apn.substring(0, apn.length() - extraStr.length());
-                        new_type = type.substring(0, type.length() - extraStr.length());
+                    if (apn.startsWith(modifierStr) && type.startsWith(modifierStr)) {
+                        new_apn = apn.substring(modifierStr.length());
+                        new_type = type.substring(modifierStr.length());
+                    } else if (apn.endsWith(modifierStr) && type.endsWith(modifierStr)) {
+                        new_apn = apn.substring(0, apn.length() - modifierStr.length());
+                        new_type = type.substring(0, type.length() - modifierStr.length());
                     } else {
                         if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                         continue;
@@ -293,7 +296,9 @@ public class EmailNotifyLaunchActivity extends Activity {
 
         if (changed) {
             // ネットワーク復元情報(APN)を保存
-            EmailNotifyPreferences.saveNetworkApnInfo(this, prevApnKey, extraStr);
+            EmailNotifyPreferences.saveNetworkApnInfo(this, prevApnKey, modifierStr, modifierType);
+            if (EmailNotify.DEBUG) Log.d(TAG, "Saved network: apnKey=" + prevApnKey +
+                    ", modifier=" + modifierStr + ", type=" + modifierType);
         } else {
             if (EmailNotify.DEBUG) Log.d(TAG, "APN is already active.");
         }
@@ -362,14 +367,16 @@ public class EmailNotifyLaunchActivity extends Activity {
             if (EmailNotify.DEBUG) Log.d(TAG, "Restoring network...");
 
             String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(this);
-            String apnSuffix = EmailNotifyPreferences.getNetworkSaveApnSuffix(this);
+            String modifierStr = EmailNotifyPreferences.getNetworkSaveApnModifierString(this);
+            String modifierType = EmailNotifyPreferences.getNetworkSaveApnModifierType(this);
             boolean wifiEnable = EmailNotifyPreferences.getNetworkSaveWifiEnable(this);
-            if (EmailNotify.DEBUG) Log.d(TAG, "Saved: apnKey=" + apnKey + ", apnSuffix=" + apnSuffix + ", wifiEnable=" + wifiEnable);
+            if (EmailNotify.DEBUG) Log.d(TAG, "Restoring network: apnKey=" + apnKey + ", modifier=" + modifierStr +
+                    ", type=" + modifierType + ", wifiEnable=" + wifiEnable);
 
             ContentResolver resolver = getContentResolver();
             ContentValues values;
 
-            if (apnSuffix != null) {
+            if (modifierStr != null) {
                 Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                         new String[] {"_id", "apn", "type"}, null, null, null);
 
@@ -380,15 +387,21 @@ public class EmailNotifyLaunchActivity extends Activity {
                         String apn = cursor.getString(1);
                         String type = cursor.getString(2);
 
-                        if (apn.startsWith(apnSuffix) || type.startsWith(apnSuffix) ||
-                                apn.endsWith(apnSuffix) || type.endsWith(apnSuffix)) {
+                        String new_apn;
+                        String new_type;
+                        if (modifierType.equals(EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX) &&
+                                !(apn.startsWith(modifierStr) || type.startsWith(modifierStr))) {
+                            new_apn = modifierStr + apn;
+                            new_type = modifierStr + type;
+                        } else if (modifierType.equals(EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX) &&
+                                !(apn.endsWith(modifierStr) || type.endsWith(modifierStr))) {
+                            new_apn = apn + modifierStr;
+                            new_type = type + modifierStr;
+                        } else {
                             // すでに無効化されているので何もしない
                             if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                             continue;
                         }
-
-                        String new_apn = apn + apnSuffix;
-                        String new_type = type + apnSuffix;
 
                         values = new ContentValues();
                         values.put("apn", new_apn);

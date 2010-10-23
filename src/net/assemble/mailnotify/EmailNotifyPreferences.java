@@ -106,7 +106,10 @@ public class EmailNotifyPreferences
     // ネットワーク復元情報保存用
     public static final String PREF_NETWORK_SAVE_KEY = "network_save";
     public static final String PREF_NETWORK_SAVE_APN_KEY_KEY = "network_save_apn_key";
-    public static final String PREF_NETWORK_SAVE_APN_SUFFIX_KEY = "network_save_apn_suffix";
+    public static final String PREF_NETWORK_SAVE_APN_MODIFIER_STRING_KEY = "network_save_apn_modifier_string";
+    public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_KEY = "network_save_apn_modifier_type";
+    public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX = "prefix";
+    public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX = "suffix";
     public static final String PREF_NETWORK_SAVE_WIFI_ENABLE_KEY = "network_save_wifi_enable";
 
     /**
@@ -504,11 +507,19 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * ネットワーク復元情報：APNサフィックスを取得
+     * ネットワーク復元情報：APN付与文字列を取得
      */
-    public static String getNetworkSaveApnSuffix(Context ctx) {
+    public static String getNetworkSaveApnModifierString(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
-                PREF_NETWORK_SAVE_APN_SUFFIX_KEY, null);
+                PREF_NETWORK_SAVE_APN_MODIFIER_STRING_KEY, null);
+    }
+
+    /**
+     * ネットワーク復元情報：APN付与タイプを取得
+     */
+    public static String getNetworkSaveApnModifierType(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_KEY, null);
     }
 
     /**
@@ -531,10 +542,11 @@ public class EmailNotifyPreferences
     /**
      * ネットワーク復元情報：APN情報を保存
      */
-    public static void saveNetworkApnInfo(Context ctx, String key, String suffix) {
+    public static void saveNetworkApnInfo(Context ctx, String key, String modifier, String type) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putString(PREF_NETWORK_SAVE_APN_KEY_KEY, key);
-        e.putString(PREF_NETWORK_SAVE_APN_SUFFIX_KEY, suffix);
+        e.putString(PREF_NETWORK_SAVE_APN_MODIFIER_STRING_KEY, modifier);
+        e.putString(PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_KEY, type);
         e.commit();
     }
 
@@ -554,7 +566,8 @@ public class EmailNotifyPreferences
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_NETWORK_SAVE_KEY, false);
         e.remove(PREF_NETWORK_SAVE_APN_KEY_KEY);
-        e.remove(PREF_NETWORK_SAVE_APN_SUFFIX_KEY);
+        e.remove(PREF_NETWORK_SAVE_APN_MODIFIER_STRING_KEY);
+        e.remove(PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_KEY);
         e.remove(PREF_NETWORK_SAVE_WIFI_ENABLE_KEY);
         e.commit();
     }
