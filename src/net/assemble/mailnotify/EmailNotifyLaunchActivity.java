@@ -4,6 +4,7 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -356,7 +357,12 @@ public class EmailNotifyLaunchActivity extends Activity {
             intent.setClass(this, EmailNotifyActivity.class);
         }
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.application_not_found, Toast.LENGTH_LONG).show();
+            Log.d(TAG, e.getMessage());
+        }
     }
 
     /**
