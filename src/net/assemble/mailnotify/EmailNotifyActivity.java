@@ -1,22 +1,16 @@
 package net.assemble.mailnotify;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import net.assemble.android.AboutActivity;
-import net.assemble.android.AssetsReader;
 import net.assemble.android.MyLog;
 import net.assemble.android.MyLogActivity;
 
@@ -30,20 +24,6 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
 
         mEnableButton = (ToggleButton) findViewById(R.id.enable);
         mEnableButton.setOnClickListener(this);
-
-        AssetsReader ar = new AssetsReader(this);
-        try {
-            String str = ar.getText("description.txt");
-            TextView text = (TextView) findViewById(R.id.description);
-            text.setText(Html.fromHtml(str, new Html.ImageGetter() {
-                @Override
-                public Drawable getDrawable(String source) {
-                    Drawable d = getResources().getDrawable(R.drawable.icon);
-                    d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-                    return d;
-                }
-            }, null));
-        } catch (IOException e) {}
 
         // ライセンスフラグ設定
         //  有料版を使ったことがある場合は購入メニューを表示させない
@@ -102,6 +82,10 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
                 intent.putExtra("level", MyLog.LEVEL_VERBOSE);
             }
             intent.putExtra("debug_menu", true);
+            startActivity(intent);
+            break;
+        case R.id.menu_help:
+            intent = new Intent().setClass(this, EmailNotifyHelpActivity.class);
             startActivity(intent);
             break;
         case R.id.menu_about:

@@ -15,6 +15,7 @@
     <string name="cancel">キャンセル</string>
     <string name="preferences">設定</string>
     <string name="log">ログ</string>
+    <string name="help">使い方</string>
     <string name="about">バージョン情報</string>
     <string name="feedback">報告</string>
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
@@ -112,6 +113,8 @@
     <string name="pref_group_experimental">試験的な実装 (Experimental)</string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
     <string name="enable">有効化</string>
+    <string name="enabled">監視中</string>
+    <string name="disabled">停止中</string>
     <string name="test_notify">通知テスト</string>
     <string name="service_started">メール着信監視を開始しました。</string>
     <string name="service_stopped">メール着信監視を停止しました。</string>
