@@ -31,7 +31,7 @@ public class MyLogActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mylog);
-        
+
         Intent intent = getIntent();
         mLevel = intent.getIntExtra("level", LEVEL_DEFAULT);
         mDebugMenu = intent.getBooleanExtra("debug_menu", false);
@@ -69,7 +69,7 @@ public class MyLogActivity extends ListActivity {
             MyLog.clearAll(this);
             updateList();
         } else if (item == mMenuReport) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(
                     "mailto:" + getResources().getString(R.string.feedback_to)));
             intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
             intent.putExtra(Intent.EXTRA_TEXT, MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));

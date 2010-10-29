@@ -17,7 +17,7 @@ public class EmailNotifyPreferencesLaunchAppActivity extends LauncherActivity {
     @Override
     protected Intent getTargetIntent() {
         // TODO: できればメール受信アプリだけ取得したいが…
-        //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:"));
+        //Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         return intent;
