@@ -30,7 +30,21 @@ public class EmailNotificationManager {
             emn = new EmailNotification(ctx, service, mailbox, date, getNextNotificationId());
             mNotifications.add(emn);
         }
-        emn.start();
+        emn.start(false);
+    }
+
+    /**
+     * メール着信通知テスト
+     */
+    public static void testNotification(Context ctx, String service, String mailbox) {
+        EmailNotification emn = getNotification(mailbox, false);
+        if (emn != null) {
+            emn.clear();
+        } else {
+            emn = new EmailNotification(ctx, service, mailbox, null, getNextNotificationId());
+            mNotifications.add(emn);
+        }
+        emn.start(true);
     }
 
     /**

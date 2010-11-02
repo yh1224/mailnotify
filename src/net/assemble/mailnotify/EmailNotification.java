@@ -181,8 +181,22 @@ public class EmailNotification {
     /**
      * 通知を開始
      */
-    public void start() {
+    public void start(boolean skipDelay) {
         mMailCount++;
+
+        // 通知遅延 (再通知タイマを使う)
+        if (!skipDelay) {
+            int delay = EmailNotifyPreferences.getNotifyDelay(mCtx, mService);
+            if (delay > 0) {
+                long next = SystemClock.elapsedRealtime() + delay * 1000;
+                mRenotifyIntent = getPendingIntent(EmailNotificationReceiver.ACTION_RENOTIFY);
+                AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                if (EmailNotify.DEBUG) Log.d(TAG, "Started notify delay timer for " + mMailbox);
+                return;
+            }
+        }
+
         doNotify();
     }
 

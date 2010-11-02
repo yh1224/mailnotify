@@ -94,6 +94,9 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_RENOTIFY_COUNT_KEY = "notify_renotify_count";
     public static final int PREF_NOTIFY_RENOTIFY_COUNT_DEFAULT = 5;
 
+    public static final String PREF_NOTIFY_DELAY_KEY = "notify_delay";
+    public static final String PREF_NOTIFY_DELAY_DEFAULT = "0";
+
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
 
@@ -439,6 +442,22 @@ public class EmailNotifyPreferences
             return pref.getInt(PREF_NOTIFY_RENOTIFY_COUNT_KEY,
                 PREF_NOTIFY_RENOTIFY_COUNT_DEFAULT);
         }
+    }
+
+    /**
+     * 通知遅延時間設定を取得
+     */
+    public static int getNotifyDelay(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        String val;
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            val = pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, service),
+                PREF_NOTIFY_DELAY_DEFAULT);
+        } else {
+            val = pref.getString(PREF_NOTIFY_DELAY_KEY,
+                PREF_NOTIFY_DELAY_DEFAULT);
+        }
+        return Integer.parseInt(val);
     }
 
     /**

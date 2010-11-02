@@ -29,6 +29,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchAppMopera;
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalMopera;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountMopera;
+    private ListPreference mPrefNotifyDelayMopera;
     private Preference mPrefTestNotifyMopera;
 
     // spモードメール通知設定
@@ -39,6 +40,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchAppSpmode;
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalSpmode;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountSpmode;
+    private ListPreference mPrefNotifyDelaySpmode;
     private Preference mPrefTestNotifySpmode;
 
     // iモードメール通知設定
@@ -49,6 +51,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchAppImode;
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalImode;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountImode;
+    private ListPreference mPrefNotifyDelayImode;
     private Preference mPrefTestNotifyImode;
 
     // 基本通知設定
@@ -60,6 +63,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchApp;
     private NumberSeekbarPreference mPrefNotifyRenotifyInterval;
     private NumberSeekbarPreference mPrefNotifyRenotifyCount;
+    private ListPreference mPrefNotifyDelay;
     private Preference mPrefTestNotify;
 
     @Override
@@ -77,6 +81,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchAppMopera = findPreference("notify_launch_app_mopera");
         mPrefNotifyRenotifyIntervalMopera = (NumberSeekbarPreference) findPreference("notify_renotify_interval_mopera");
         mPrefNotifyRenotifyCountMopera = (NumberSeekbarPreference) findPreference("notify_renotify_count_mopera");
+        mPrefNotifyDelayMopera = (ListPreference) findPreference("notify_delay_mopera");
         mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
 
         // spモードメール通知設定
@@ -87,6 +92,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchAppSpmode = findPreference("notify_launch_app_spmode");
         mPrefNotifyRenotifyIntervalSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_spmode");
         mPrefNotifyRenotifyCountSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_count_spmode");
+        mPrefNotifyDelaySpmode = (ListPreference) findPreference("notify_delay_spmode");
         mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
 
         // iモードメール通知設定
@@ -97,6 +103,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchAppImode = findPreference("notify_launch_app_imode");
         mPrefNotifyRenotifyIntervalImode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_imode");
         mPrefNotifyRenotifyCountImode = (NumberSeekbarPreference) findPreference("notify_renotify_count_imode");
+        mPrefNotifyDelayImode = (ListPreference) findPreference("notify_delay_imode");
         mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
 
         // 基本通知設定
@@ -108,6 +115,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchApp = findPreference("notify_launch_app");
         mPrefNotifyRenotifyInterval = (NumberSeekbarPreference) findPreference("notify_renotify_interval");
         mPrefNotifyRenotifyCount = (NumberSeekbarPreference) findPreference("notify_renotify_count");
+        mPrefNotifyDelay = (ListPreference) findPreference("notify_delay");
         mPrefTestNotify = (Preference) findPreference("test_notify");
 
         updateSummary();
@@ -166,13 +174,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else if (preference == findPreference("notify_sound_length")) {
             alertMessage(R.string.pref_notify_sound_length_warning, null);
         } else if (preference == mPrefTestNotifyMopera) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U", null);
+            EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
         } else if (preference == mPrefTestNotifySpmode) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_SPMODE, "Test for sp-mode", null);
+            EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_SPMODE, "Test for sp-mode");
         } else if (preference == mPrefTestNotifyImode) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_IMODE, "Test for i-mode", null);
+            EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_IMODE, "Test for i-mode");
         } else if (preference == mPrefTestNotify) {
-            EmailNotificationManager.showNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test", null);
+            EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test");
         }
         return true;
     }
@@ -283,6 +291,15 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     mPrefNotifyRenotifyCountMopera.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
         }
+        if (Integer.parseInt(mPrefNotifyDelayMopera.getValue()) == 0) {
+            mPrefNotifyDelayMopera.setSummary(
+                    getResources().getString(R.string.pref_notify_delay_summary));
+        } else {
+            mPrefNotifyDelayMopera.setSummary(
+                    getEntryString(mPrefNotifyDelayMopera.getValue(),
+                        getResources().getStringArray(R.array.entries_notify_delay),
+                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
+        }
 
         // spモードメール通知設定
         mPrefNotifyVibrationPatternSpmode.setSummary(
@@ -311,6 +328,15 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyCountSpmode.setSummary(
                     mPrefNotifyRenotifyCountSpmode.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
+        }
+        if (Integer.parseInt(mPrefNotifyDelaySpmode.getValue()) == 0) {
+            mPrefNotifyDelaySpmode.setSummary(
+                    getResources().getString(R.string.pref_notify_delay_summary));
+        } else {
+            mPrefNotifyDelaySpmode.setSummary(
+                    getEntryString(mPrefNotifyDelaySpmode.getValue(),
+                        getResources().getStringArray(R.array.entries_notify_delay),
+                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
         }
 
         // iモードメール通知設定
@@ -341,6 +367,15 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     mPrefNotifyRenotifyCountImode.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
         }
+        if (Integer.parseInt(mPrefNotifyDelayImode.getValue()) == 0) {
+            mPrefNotifyDelayImode.setSummary(
+                    getResources().getString(R.string.pref_notify_delay_summary));
+        } else {
+            mPrefNotifyDelayImode.setSummary(
+                    getEntryString(mPrefNotifyDelayImode.getValue(),
+                        getResources().getStringArray(R.array.entries_notify_delay),
+                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
+        }
 
         // 基本通知設定
         mPrefNotifyVibrationPattern.setSummary(
@@ -369,6 +404,15 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyCount.setSummary(
                     mPrefNotifyRenotifyCount.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
+        }
+        if (Integer.parseInt(mPrefNotifyDelay.getValue()) == 0) {
+            mPrefNotifyDelay.setSummary(
+                    getResources().getString(R.string.pref_notify_delay_summary));
+        } else {
+            mPrefNotifyDelay.setSummary(
+                    getEntryString(mPrefNotifyDelay.getValue(),
+                        getResources().getStringArray(R.array.entries_notify_delay),
+                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
         }
 
         // その他

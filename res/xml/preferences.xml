@@ -92,8 +92,15 @@
                     android:title="@string/pref_notify_renotify_count_title"
                     android:defaultValue="5" android:dependency="notify_renotify"
                     minValue="0" maxValue="30"
-                    unit="@string/pref_notify_renotify_count_unit"
-                    zero="@string/pref_notify_renotify_count_zero" />
+                    unit="@string/pref_notify_renotify_count_unit" zero="@string/pref_notify_renotify_count_zero" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/pref_group_other">
+                <ListPreference android:key="notify_delay"
+                    android:title="@string/pref_notify_delay_title"
+                    android:summary="@string/pref_notify_delay_summary"
+                    android:entries="@array/entries_notify_delay"
+                    android:entryValues="@array/entryvalues_notify_delay"
+                    android:defaultValue="0" />
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/pref_group_notify_test">
                 <Preference android:title="@string/test_notify"
@@ -184,6 +191,14 @@
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
                 </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_other">
+                    <ListPreference android:key="notify_delay_mopera"
+                        android:title="@string/pref_notify_delay_title"
+                        android:summary="@string/pref_notify_delay_summary"
+                        android:entries="@array/entries_notify_delay"
+                        android:entryValues="@array/entryvalues_notify_delay"
+                        android:defaultValue="0" android:dependency="notify_custom_mopera" />
+                </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_mopera"
                         android:title="@string/test_notify" />
@@ -271,6 +286,14 @@
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
                 </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_other">
+                    <ListPreference android:key="notify_delay_spmode"
+                        android:title="@string/pref_notify_delay_title"
+                        android:summary="@string/pref_notify_delay_summary"
+                        android:entries="@array/entries_notify_delay"
+                        android:entryValues="@array/entryvalues_notify_delay"
+                        android:defaultValue="0" android:dependency="notify_custom_spmode" />
+                </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_spmode"
                         android:title="@string/test_notify" />
@@ -357,6 +380,14 @@
                         minValue="0" maxValue="30"
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_other">
+                    <ListPreference android:key="notify_delay_imode"
+                        android:title="@string/pref_notify_delay_title"
+                        android:summary="@string/pref_notify_delay_summary"
+                        android:entries="@array/entries_notify_delay"
+                        android:entryValues="@array/entryvalues_notify_delay"
+                        android:defaultValue="0" android:dependency="notify_custom_imode" />
                 </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_imode"
