@@ -112,9 +112,9 @@ public class EmailNotifyService extends Service {
             Calendar ccal = getLogDate(line);
             if (ccal.getTimeInMillis() <= mLastCheck) {
                 // チェック済
+                if (EmailNotify.DEBUG) Log.d(TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + " )");
                 return null;
             }
-            mLastCheck = ccal.getTimeInMillis();
 
             // LYNX(SH-01B)対応
             if (line.endsWith(": Receive EMN")) {
@@ -146,6 +146,7 @@ public class EmailNotifyService extends Service {
                 }
                 MyLog.d(this, TAG, "Received PDU: " + data);
                 MyLog.i(this, TAG, "Received: " + pdu.getMailbox());
+                mLastCheck = ccal.getTimeInMillis();
                 return pdu;
             }
         }
