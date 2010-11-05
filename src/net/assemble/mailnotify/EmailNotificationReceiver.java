@@ -37,7 +37,7 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
                 EmailNotificationManager.clearNotification(mailbox);
             } else if (action.startsWith(ACTION_STOP_SOUND)) {
                 // 通知停止
-                EmailNotificationManager.stopNotificationSound(mailbox);
+                EmailNotificationManager.stopNotificationSound(mailbox, EmailNotification.NOTIFY_SOUND);
             } else if (action.startsWith(ACTION_RENOTIFY)) {
                 // 再通知
                 EmailNotificationManager.renotifyNotification(mailbox);

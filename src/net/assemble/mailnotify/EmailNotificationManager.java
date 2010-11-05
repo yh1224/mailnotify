@@ -13,8 +13,7 @@ public class EmailNotificationManager {
     public static final int NOTIFICATIONID_ICON = 1;
     public static final int NOTIFICATIONID_EXPIRED = 2;
     public static final int NOTIFICATIONID_RESTORE_NETWORK = 3;
-    public static final int NOTIFICATIONID_EMAIL_START = 4;
-    public static final int NOTIFICATIONID_EMAIL_STEP = 2;
+    public static final int NOTIFICATIONID_EMAIL_START = 10;
 
     private static boolean mNotificationIcon = false;
     private static ArrayList<EmailNotification> mNotifications = new ArrayList<EmailNotification>();
@@ -78,7 +77,7 @@ public class EmailNotificationManager {
         for (int i = 0; i < mNotifications.size(); i++) {
             EmailNotification emn = mNotifications.get(i);
             if (id <= emn.getNotificationId()) {
-                id = emn.getNotificationId() + NOTIFICATIONID_EMAIL_STEP;
+                id = emn.getNotificationId() + EmailNotification.NOTIFICATIONID_NUM;
             }
         }
         return id;
@@ -89,20 +88,20 @@ public class EmailNotificationManager {
      *
      * @param mailbox メールボックス名
      */
-    public static void stopNotificationSound(String mailbox) {
+    public static void stopNotificationSound(String mailbox, int flags) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
-            emn.stopSound();
+            emn.stop(flags);
         }
     }
 
     /**
      * メール通知停止(すべて)
      */
-    public static void stopAllNotifications() {
+    public static void stopAllNotifications(int flags) {
         for (int i = 0; i < mNotifications.size(); i++) {
             EmailNotification emn = mNotifications.get(i);
-            emn.stop();
+            emn.stop(flags);
         }
     }
 

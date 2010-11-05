@@ -17,7 +17,14 @@ public class EmailNotifyScreenReceiver extends BroadcastReceiver {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 if (EmailNotifyPreferences.getNotifyStopOnScreen(ctx)) {
                     Log.i(TAG, "Stopping all notifications. (SCREEN ON)");
-                    EmailNotificationManager.stopAllNotifications();
+                    int flags = EmailNotification.NOTIFY_SOUND;
+                    if (EmailNotifyPreferences.getNotifyStopLedOnScreen(ctx)) {
+                        flags |= EmailNotification.NOTIFY_LED;
+                    }
+                    if (EmailNotifyPreferences.getNotifyStopRenotifyOnScreen(ctx)) {
+                        flags |= EmailNotification.NOTIFY_RENOTIFY;
+                    }
+                    EmailNotificationManager.stopAllNotifications(flags);
                 }
             }
         }

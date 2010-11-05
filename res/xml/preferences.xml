@@ -395,16 +395,30 @@
                 </PreferenceCategory>
             </PreferenceScreen>
         </PreferenceScreen>
+        <PreferenceScreen android:title="@string/pref_notify_stop_screen_title"
+            android:summary="@string/pref_notify_stop_screen_summary">
+            <PreferenceCategory
+                android:title="@string/pref_group_notify_stop_on_screen">
+                <CheckBoxPreference android:key="notify_stop_on_screen"
+                    android:title="@string/pref_notify_stop_on_screen_title"
+                    android:summary="@string/pref_notify_stop_on_screen_summary"
+                    android:defaultValue="false" />
+                <CheckBoxPreference android:key="notify_stop_led_on_screen"
+                    android:title="@string/pref_notify_stop_led_on_screen_title"
+                    android:summary="@string/pref_notify_stop_led_on_screen_summary"
+                    android:defaultValue="false" android:dependency="notify_stop_on_screen" />
+                <CheckBoxPreference android:key="notify_stop_renotify_on_screen"
+                    android:title="@string/pref_notify_stop_renotify_on_screen_title"
+                    android:summary="@string/pref_notify_stop_renotify_on_screen_summary"
+                    android:defaultValue="true" android:dependency="notify_stop_on_screen" />
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_experimental">
         <net.assemble.mailnotify.NumberSeekbarPreference
             android:key="notify_sound_length" android:title="@string/pref_notify_sound_length_title"
             android:defaultValue="0" minValue="0" maxValue="60"
             unit="@string/pref_notify_sound_length_unit" zero="@string/pref_notify_sound_length_zero" />
-        <CheckBoxPreference android:key="notify_stop_on_screen"
-            android:title="@string/pref_notify_stop_on_screen_title"
-            android:summary="@string/pref_notify_stop_on_screen_summary"
-            android:defaultValue="false" />
         <CheckBoxPreference android:key="notify_auto_connect_spmode"
             android:summary="@string/pref_notify_auto_connect_spmode_summary"
             android:title="@string/pref_notify_auto_connect_spmode_title" />

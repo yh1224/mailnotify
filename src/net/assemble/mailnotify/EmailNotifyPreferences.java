@@ -47,6 +47,12 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_STOP_ON_SCREEN_KEY = "notify_stop_on_screen";
     public static final boolean PREF_NOTIFY_STOP_ON_SCREEN_DEFAULT = false;
 
+    public static final String PREF_NOTIFY_STOP_LED_ON_SCREEN_KEY = "notify_stop_led_on_screen";
+    public static final boolean PREF_NOTIFY_STOP_LED_ON_SCREEN_DEFAULT = false;
+
+    public static final String PREF_NOTIFY_STOP_RENOTIFY_ON_SCREEN_KEY = "notify_stop_renotify_on_screen";
+    public static final boolean PREF_NOTIFY_STOP_RENOTIFY_ON_SCREEN_DEFAULT = true;
+
     public static final String PREF_NOTIFY_SOUND_KEY = "notify_sound";
     public static final String PREF_NOTIFY_SOUND_DEFAULT = "content://settings/system/notification_sound";
 
@@ -218,6 +224,24 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 PREF_NOTIFY_STOP_ON_SCREEN_KEY,
                 PREF_NOTIFY_STOP_ON_SCREEN_DEFAULT);
+    }
+
+    /**
+     * 画面ONでLEDも消灯
+     */
+    public static boolean getNotifyStopLedOnScreen(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_NOTIFY_STOP_LED_ON_SCREEN_KEY,
+                PREF_NOTIFY_STOP_LED_ON_SCREEN_DEFAULT);
+    }
+
+    /**
+     * 画面ONで再通知も停止
+     */
+    public static boolean getNotifyStopRenotifyOnScreen(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_NOTIFY_STOP_RENOTIFY_ON_SCREEN_KEY,
+                PREF_NOTIFY_STOP_RENOTIFY_ON_SCREEN_DEFAULT);
     }
 
     /**

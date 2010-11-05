@@ -31,7 +31,9 @@
     <string name="pref_service_spmode_summary">spモードメールの着信を通知します。</string>
     <string name="pref_service_imode_title">iモードメール</string>
     <string name="pref_service_imode_summary">iモードメールの着信を通知します。(サポート対象外)</string>
-    <string name="pref_service_imode_warning">iモードメールに対する通知は確実ではありませんのでご了承ください。\n\n- 3G接続中には通知が届かないようです。\n- iモード.netへのログイン通知メールも通知されます。\n\niモードメール通知を有効にしますか?</string>
+    <string name="pref_service_imode_warning">iモードメールに対する通知は確実ではありませんのでご了承ください。\n\n-
+        3G接続中には通知が届かないようです。\n-
+        iモード.netへのログイン通知メールも通知されます。\n\niモードメール通知を有効にしますか?</string>
     <string name="pref_service_other_title">その他</string>
     <string name="pref_service_other_summary">上記のサービス以外(解析できなかった場合を含む)でも通知します。</string>
     <string name="pref_notify_mopera_title">mopera Uメール通知設定</string>
@@ -63,7 +65,8 @@
     <string name="pref_notify_sound_length_summary">短い通知音だけでなく、着信音/アラーム音も選択可能にします。</string>
     <string name="pref_notify_sound_length_unit">秒</string>
     <string name="pref_notify_sound_length_zero">選択した通知音の長さに従う</string>
-    <string name="pref_notify_sound_length_warning">再生時間の指定を有効にすると、通知音に加えて着信音やアラーム音の選択ができるようになります。ただしそれらを選択後に再生時間設定を無効(選択した通知音に従う)に戻した場合、停止するまで鳴り続けることになりますのでご注意ください。</string>
+    <string name="pref_notify_sound_length_warning">再生時間の指定を有効にすると、通知音に加えて着信音やアラーム音の選択ができるようになります。ただしそれらを選択後に再生時間設定を無効(選択した通知音に従う)に戻した場合、停止するまで鳴り続けることになりますのでご注意ください。
+    </string>
     <string name="pref_group_notify_vibration">バイブレーション設定</string>
     <string name="pref_notify_vibration_title">バイブレーション</string>
     <string name="pref_notify_vibration_summary">メール着信通知時にバイブレーションします。</string>
@@ -91,14 +94,17 @@
     <string name="pref_group_notify_bar">通知バー設定</string>
     <string name="pref_notify_view_title">通知バー</string>
     <string name="pref_notify_view_summary">通知バーにアイコンを表示します。</string>
-    <string name="pref_notify_view_warning">通知バーに表示しない場合でも、通知音・バイブレーション・LEDを停止するには通知バーを引き出す必要があります。\n\n非表示にしてよろしいですか?</string>
+    <string name="pref_notify_view_warning">通知バーに表示しない場合でも、通知音・バイブレーション・LEDを停止するには通知バーを引き出す必要があります。\n\n非表示にしてよろしいですか?
+    </string>
     <string name="pref_notify_launch_app_title">起動アプリ</string>
     <string name="pref_notify_launch_app_is">通知タップ時に起動するアプリ:</string>
     <string name="pref_notify_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
     <string name="select_app">アプリ選択</string>
     <string name="pref_notify_auto_connect_spmode_title">spモード自動接続</string>
     <string name="pref_notify_auto_connect_spmode_summary">spモードメール通知をタップしたときにspモードに自動接続します。</string>
-    <string name="pref_notify_auto_connect_spmode_warning">spモードのメール通知をタップ時に、Wi-Fiを無効化およびspモードAPNに接続してから指定したアプリを起動します。データネットワークの有効化については以下のアプリに対応していますが、各アプリでの有効/無効表示には正しく反映されない場合があります。また他のアプリで正常に動作しない場合はご報告ください。\n\n- APNdroid\n- Extended Control\n- Quick Settings\n\nspモード自動接続を有効にしてよろしいですか?</string>
+    <string name="pref_notify_auto_connect_spmode_warning">spモードのメール通知をタップ時に、Wi-Fiを無効化およびspモードAPNに接続してから指定したアプリを起動します。データネットワークの有効化については以下のアプリに対応していますが、各アプリでの有効/無効表示には正しく反映されない場合があります。また他のアプリで正常に動作しない場合はご報告ください。\n\n-
+        APNdroid\n- Extended Control\n- Quick
+        Settings\n\nspモード自動接続を有効にしてよろしいですか?</string>
     <string name="pref_group_notify_renotify">再通知設定</string>
     <string name="pref_notify_renotify_title">再通知</string>
     <string name="pref_notify_renotify_summary">通知を消去するまで定期的に再通知します。</string>
@@ -107,8 +113,15 @@
     <string name="pref_notify_renotify_count_title">再通知回数</string>
     <string name="pref_notify_renotify_count_unit">回</string>
     <string name="pref_notify_renotify_count_zero">制限なし</string>
+    <string name="pref_notify_stop_screen_title">通知停止設定</string>
+    <string name="pref_notify_stop_screen_summary">通知音等の停止に関する設定</string>
+    <string name="pref_group_notify_stop_on_screen">画面ONで停止</string>
     <string name="pref_notify_stop_on_screen_title">画面ONで停止</string>
     <string name="pref_notify_stop_on_screen_summary">電源ボタンを押したときに通知音・バイブレーションを停止します。</string>
+    <string name="pref_notify_stop_led_on_screen_title">LEDも消灯</string>
+    <string name="pref_notify_stop_led_on_screen_summary">LEDも消灯します。</string>
+    <string name="pref_notify_stop_renotify_on_screen_title">再通知も停止</string>
+    <string name="pref_notify_stop_renotify_on_screen_summary">停止後は再通知しません。</string>
     <string name="pref_group_other">その他</string>
     <string name="pref_notify_delay_title">通知遅延</string>
     <string name="pref_notify_delay_summary">メール着信を検出してから通知するまでの待ち時間を設定します。</string>
