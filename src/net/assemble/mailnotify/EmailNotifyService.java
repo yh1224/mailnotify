@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import net.assemble.android.MyLog;
 
@@ -113,18 +116,17 @@ public class EmailNotifyService extends Service {
      * @return 日時
      */
     private Calendar getLogDate(String line) {
-        // 日付
+        String logdate = line.substring(0, 18);
         Calendar cal = Calendar.getInstance();
-        String[] days = line.split(" ")[0].split("-");
-        String[] times = line.split(" ")[1].split(":");
-        cal = Calendar.getInstance();
-        cal.set(Calendar.MONTH, Integer.valueOf(days[0]) - 1);
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(days[1]));
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(times[0]));
-        cal.set(Calendar.MINUTE, Integer.valueOf(times[1]));
-        cal.set(Calendar.SECOND, Integer.valueOf(times[2].substring(0, 2)));
-        cal.set(Calendar.MILLISECOND, 0);
-
+        Date date;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            date = sdf.parse(cal.get(Calendar.YEAR) + "-" + logdate);
+        } catch (ParseException e) {
+            Log.w(TAG, "Unexpected log date: " + logdate);
+            return null;
+        }
+        cal.setTime(date);
         return cal;
     }
 
@@ -138,6 +140,9 @@ public class EmailNotifyService extends Service {
         //if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
         if (line.length() >= 19 && line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
+            if (ccal  == null) {
+                return null;
+            }
             if (ccal.getTimeInMillis() <= mLastCheck) {
                 // チェック済
                 if (EmailNotify.DEBUG) Log.d(TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + " )");
@@ -216,7 +221,7 @@ public class EmailNotifyService extends Service {
                         int type = pdu.getBinaryContentType();
                         if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
                             if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
-                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE); 
+                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE);
                                 if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
                                     // 既に通知済み
                                     MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
@@ -227,7 +232,7 @@ public class EmailNotifyService extends Service {
                             }
                         } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
                             if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
-                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA); 
+                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA);
                                 if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
                                     // 既に通知済み
                                     MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
