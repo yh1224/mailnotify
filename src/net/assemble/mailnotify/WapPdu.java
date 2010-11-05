@@ -329,7 +329,7 @@ public class WapPdu {
         Date date = null;
         if (timestamp != null) {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDDHHmmss z");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z");
                 date = sdf.parse(byte2hex(timestamp) + " GMT");
             } catch (ParseException e) {
                 Log.w(TAG, "Unexpected timestamp: " + byte2hex(timestamp));
