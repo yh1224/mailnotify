@@ -156,14 +156,15 @@ public class EmailNotification {
         if (EmailNotifyPreferences.getNotifyView(mCtx, mService) &&
                 EmailNotifyPreferences.getNotifyRenotify(mCtx, mService)) {
             int renotifyCount = EmailNotifyPreferences.getNotifyRenotifyCount(mCtx, mService);
+            int interval = EmailNotifyPreferences.getNotifyRenotifyInterval(mCtx, mService) * 60;
             if (renotifyCount == 0 || mNotifyCount <= renotifyCount) {
-                long next = SystemClock.elapsedRealtime();
-                next += EmailNotifyPreferences.getNotifyRenotifyInterval(mCtx, mService) * 60 * 1000;
+                long next = SystemClock.elapsedRealtime() + interval * 1000;
                 mRenotifyIntent = getPendingIntent(EmailNotificationReceiver.ACTION_RENOTIFY);
                 AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
                 mActiveNotify |= NOTIFY_RENOTIFY;
-                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started renotify timer for " + mMailbox + ", active=" + mActiveNotify);
+                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started renotify timer for " +
+                        mMailbox + " (" + interval + "sec.), active=" + mActiveNotify);
             } else {
                 if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Renotify count exceeded.");
             }
@@ -184,7 +185,8 @@ public class EmailNotification {
                 mRenotifyIntent = getPendingIntent(EmailNotificationReceiver.ACTION_RENOTIFY);
                 AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
-                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started notify delay timer for " + mMailbox);
+                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId +
+                        "] Started notify delay timer for " + mMailbox + " (" + delay + " sec.)");
                 return;
             }
         }

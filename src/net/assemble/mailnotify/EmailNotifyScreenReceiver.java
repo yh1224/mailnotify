@@ -10,7 +10,7 @@ public class EmailNotifyScreenReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        Log.d(TAG, "received intent: " + intent.getAction());
+        if (EmailNotify.DEBUG) Log.d(TAG, "received intent: " + intent.getAction());
 
         if (intent.getAction() != null) {
             // Screen On
