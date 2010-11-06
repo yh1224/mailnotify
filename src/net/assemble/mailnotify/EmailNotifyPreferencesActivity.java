@@ -29,7 +29,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchAppMopera;
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalMopera;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountMopera;
-    private ListPreference mPrefNotifyDelayMopera;
+    private NumberSeekbarPreference mPrefNotifyDelayMopera;
     private Preference mPrefTestNotifyMopera;
 
     // spモードメール通知設定
@@ -40,7 +40,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchAppSpmode;
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalSpmode;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountSpmode;
-    private ListPreference mPrefNotifyDelaySpmode;
+    private NumberSeekbarPreference mPrefNotifyDelaySpmode;
     private Preference mPrefTestNotifySpmode;
 
     // iモードメール通知設定
@@ -51,7 +51,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchAppImode;
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalImode;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountImode;
-    private ListPreference mPrefNotifyDelayImode;
+    private NumberSeekbarPreference mPrefNotifyDelayImode;
     private Preference mPrefTestNotifyImode;
 
     // 基本通知設定
@@ -63,7 +63,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefNotifyLaunchApp;
     private NumberSeekbarPreference mPrefNotifyRenotifyInterval;
     private NumberSeekbarPreference mPrefNotifyRenotifyCount;
-    private ListPreference mPrefNotifyDelay;
+    private NumberSeekbarPreference mPrefNotifyDelay;
     private Preference mPrefTestNotify;
 
     @Override
@@ -81,7 +81,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchAppMopera = findPreference("notify_launch_app_mopera");
         mPrefNotifyRenotifyIntervalMopera = (NumberSeekbarPreference) findPreference("notify_renotify_interval_mopera");
         mPrefNotifyRenotifyCountMopera = (NumberSeekbarPreference) findPreference("notify_renotify_count_mopera");
-        mPrefNotifyDelayMopera = (ListPreference) findPreference("notify_delay_mopera");
+        mPrefNotifyDelayMopera = (NumberSeekbarPreference) findPreference("notify_delay_mopera");
         mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
 
         // spモードメール通知設定
@@ -92,7 +92,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchAppSpmode = findPreference("notify_launch_app_spmode");
         mPrefNotifyRenotifyIntervalSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_spmode");
         mPrefNotifyRenotifyCountSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_count_spmode");
-        mPrefNotifyDelaySpmode = (ListPreference) findPreference("notify_delay_spmode");
+        mPrefNotifyDelaySpmode = (NumberSeekbarPreference) findPreference("notify_delay_spmode");
         mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
 
         // iモードメール通知設定
@@ -103,7 +103,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchAppImode = findPreference("notify_launch_app_imode");
         mPrefNotifyRenotifyIntervalImode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_imode");
         mPrefNotifyRenotifyCountImode = (NumberSeekbarPreference) findPreference("notify_renotify_count_imode");
-        mPrefNotifyDelayImode = (ListPreference) findPreference("notify_delay_imode");
+        mPrefNotifyDelayImode = (NumberSeekbarPreference) findPreference("notify_delay_imode");
         mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
 
         // 基本通知設定
@@ -115,7 +115,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyLaunchApp = findPreference("notify_launch_app");
         mPrefNotifyRenotifyInterval = (NumberSeekbarPreference) findPreference("notify_renotify_interval");
         mPrefNotifyRenotifyCount = (NumberSeekbarPreference) findPreference("notify_renotify_count");
-        mPrefNotifyDelay = (ListPreference) findPreference("notify_delay");
+        mPrefNotifyDelay = (NumberSeekbarPreference) findPreference("notify_delay");
         mPrefTestNotify = (Preference) findPreference("test_notify");
 
         updateSummary();
@@ -291,14 +291,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     mPrefNotifyRenotifyCountMopera.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
         }
-        if (Integer.parseInt(mPrefNotifyDelayMopera.getValue()) == 0) {
+        if (mPrefNotifyDelayMopera.getValue() == 0) {
             mPrefNotifyDelayMopera.setSummary(
                     getResources().getString(R.string.pref_notify_delay_summary));
         } else {
             mPrefNotifyDelayMopera.setSummary(
-                    getEntryString(mPrefNotifyDelayMopera.getValue(),
-                        getResources().getStringArray(R.array.entries_notify_delay),
-                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
+                    mPrefNotifyDelayMopera.getValue() +
+                    getResources().getString(R.string.pref_notify_delay_unit));
         }
 
         // spモードメール通知設定
@@ -329,14 +328,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     mPrefNotifyRenotifyCountSpmode.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
         }
-        if (Integer.parseInt(mPrefNotifyDelaySpmode.getValue()) == 0) {
+        if (mPrefNotifyDelaySpmode.getValue() == 0) {
             mPrefNotifyDelaySpmode.setSummary(
                     getResources().getString(R.string.pref_notify_delay_summary));
         } else {
             mPrefNotifyDelaySpmode.setSummary(
-                    getEntryString(mPrefNotifyDelaySpmode.getValue(),
-                        getResources().getStringArray(R.array.entries_notify_delay),
-                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
+                    mPrefNotifyDelaySpmode.getValue() +
+                    getResources().getString(R.string.pref_notify_delay_unit));
         }
 
         // iモードメール通知設定
@@ -367,14 +365,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     mPrefNotifyRenotifyCountImode.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
         }
-        if (Integer.parseInt(mPrefNotifyDelayImode.getValue()) == 0) {
+        if (mPrefNotifyDelayImode.getValue() == 0) {
             mPrefNotifyDelayImode.setSummary(
                     getResources().getString(R.string.pref_notify_delay_summary));
         } else {
             mPrefNotifyDelayImode.setSummary(
-                    getEntryString(mPrefNotifyDelayImode.getValue(),
-                        getResources().getStringArray(R.array.entries_notify_delay),
-                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
+                    mPrefNotifyDelayImode.getValue() +
+                    getResources().getString(R.string.pref_notify_delay_unit));
         }
 
         // 基本通知設定
@@ -405,14 +402,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     mPrefNotifyRenotifyCount.getValue() +
                     getResources().getString(R.string.pref_notify_renotify_count_unit));
         }
-        if (Integer.parseInt(mPrefNotifyDelay.getValue()) == 0) {
+        if (mPrefNotifyDelay.getValue() == 0) {
             mPrefNotifyDelay.setSummary(
                     getResources().getString(R.string.pref_notify_delay_summary));
         } else {
             mPrefNotifyDelay.setSummary(
-                    getEntryString(mPrefNotifyDelay.getValue(),
-                        getResources().getStringArray(R.array.entries_notify_delay),
-                        getResources().getStringArray(R.array.entryvalues_notify_delay)));
+                    mPrefNotifyDelay.getValue() +
+                    getResources().getString(R.string.pref_notify_delay_unit));
         }
 
         // その他

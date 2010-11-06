@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
-    private static final int CURRENT_PREFERENCE_VERSION = 2;
+    private static final int CURRENT_PREFERENCE_VERSION = 3;
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
@@ -101,7 +101,7 @@ public class EmailNotifyPreferences
     public static final int PREF_NOTIFY_RENOTIFY_COUNT_DEFAULT = 5;
 
     public static final String PREF_NOTIFY_DELAY_KEY = "notify_delay";
-    public static final String PREF_NOTIFY_DELAY_DEFAULT = "0";
+    public static final int PREF_NOTIFY_DELAY_DEFAULT = 0;
 
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
@@ -473,15 +473,13 @@ public class EmailNotifyPreferences
      */
     public static int getNotifyDelay(Context ctx, String service) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        String val;
         if (service != null && isNotifyCustomized(ctx, service)) {
-            val = pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, service),
+            return pref.getInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, service),
                 PREF_NOTIFY_DELAY_DEFAULT);
         } else {
-            val = pref.getString(PREF_NOTIFY_DELAY_KEY,
+            return pref.getInt(PREF_NOTIFY_DELAY_KEY,
                 PREF_NOTIFY_DELAY_DEFAULT);
         }
-        return Integer.parseInt(val);
     }
 
     /**
@@ -646,6 +644,15 @@ public class EmailNotifyPreferences
                     e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, SERVICES[i]),
                             pref.getString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, SERVICES[i]), null));
                 }
+            }
+            if (ver < 3) {
+                e.putInt(PREF_NOTIFY_DELAY_KEY, Integer.parseInt(pref.getString(PREF_NOTIFY_DELAY_KEY, "0")));
+                e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_MOPERA),
+                        Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_MOPERA), "0")));
+                e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_SPMODE),
+                        Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_SPMODE), "0")));
+                e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE),
+                        Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE), "0")));
             }
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);
             e.commit();

@@ -125,9 +125,8 @@
     <string name="pref_group_other">その他</string>
     <string name="pref_notify_delay_title">通知遅延</string>
     <string name="pref_notify_delay_summary">メール着信を検出してから通知するまでの待ち時間を設定します。</string>
-    <string name="notify_delay_none">無効 (即時通知)</string>
-    <string name="delay_30sec">30秒</string>
-    <string name="delay_60sec">60秒</string>
+    <string name="pref_notify_delay_unit">秒</string>
+    <string name="pref_notify_delay_zero">無効 (即時通知)</string>
     <string name="pref_group_notify_test">通知テスト</string>
     <string name="pref_group_experimental">試験的な実装 (Experimental)</string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
