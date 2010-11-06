@@ -147,6 +147,7 @@ public class EmailNotifyService extends Service {
             // LYNX(SH-01B)対応
             if (line.endsWith(": Receive EMN")) {
                 MyLog.i(this, TAG, "Received EMN");
+                mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu(0x030a);
             }
 
@@ -216,7 +217,7 @@ public class EmailNotifyService extends Service {
                         int type = pdu.getBinaryContentType();
                         if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
                             if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
-                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE); 
+                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE);
                                 if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
                                     // 既に通知済み
                                     MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
@@ -227,7 +228,7 @@ public class EmailNotifyService extends Service {
                             }
                         } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
                             if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
-                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA); 
+                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA);
                                 if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
                                     // 既に通知済み
                                     MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
