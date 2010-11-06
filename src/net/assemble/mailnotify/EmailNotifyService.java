@@ -140,7 +140,7 @@ public class EmailNotifyService extends Service {
         //if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
         if (line.length() >= 19 && line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
-            if (ccal  == null) {
+            if (ccal == null) {
                 return null;
             }
             if (ccal.getTimeInMillis() <= mLastCheck) {
@@ -152,6 +152,7 @@ public class EmailNotifyService extends Service {
             // LYNX(SH-01B)対応
             if (line.endsWith(": Receive EMN")) {
                 MyLog.i(this, TAG, "Received EMN");
+                mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu(0x030a);
             }
 
