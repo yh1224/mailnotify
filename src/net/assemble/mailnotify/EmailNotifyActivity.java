@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ToggleButton;
 
 import net.assemble.android.AboutActivity;
@@ -103,12 +104,15 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     };
 
     private void updateService() {
+        ImageView image = (ImageView) findViewById(R.id.main_image);
         if (EmailNotifyPreferences.getEnable(this)) {
             EmailNotifyService.startService(this);
             mEnableButton.setChecked(true);
+            image.setImageResource(R.drawable.main);
         } else {
             EmailNotifyService.stopService(this);
             mEnableButton.setChecked(false);
+            image.setImageResource(R.drawable.disable);
         }
     }
 
