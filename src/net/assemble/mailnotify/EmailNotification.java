@@ -111,15 +111,14 @@ public class EmailNotification {
         // 通知
         if (EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
             Notification notification = new Notification(R.drawable.icon,
-                    mCtx.getResources().getString(R.string.app_name),
+                    mCtx.getResources().getString(R.string.notify_text),
                     System.currentTimeMillis());
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm ");
-            String message = sdf.format(mDate) +
-                mCtx.getResources().getString(R.string.notify_text) + " (" +
-                mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
+            String message = sdf.format(mDate);
             if (mMailbox != null) {
-                message += "\n" + mMailbox;
+                message += " " + mMailbox;
             }
+            message += " (" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
             notification.setLatestEventInfo(mCtx,
                     mCtx.getResources().getString(R.string.app_name),
                     message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
