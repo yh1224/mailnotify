@@ -57,8 +57,8 @@ public class NumberSeekbarPreference extends DialogPreference {
         final TextView textView = getTextView(view);
         final SeekBar seekBar = getSeekBar(view);
 
-        seekBar.setProgress(mValue);
         seekBar.setMax(mMaxValue);
+        seekBar.setProgress(mValue);
         seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
