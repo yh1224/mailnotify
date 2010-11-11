@@ -1,6 +1,5 @@
 package net.assemble.mailnotify;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,7 +36,8 @@ public class EmailNotification {
     private Context mCtx;
     private String mMailbox;
     private String mService;
-    private Date mDate;
+    private Date mReceiveDate;
+    private long mNotifyTime;
     private int mNotificationId;
     private int mMailCount;
     private int mNotifyCount;
@@ -56,9 +56,9 @@ public class EmailNotification {
         mService = service;
         mMailbox = mailbox;
         if (date == null) {
-            mDate = Calendar.getInstance().getTime();
+            mReceiveDate = Calendar.getInstance().getTime();
         } else {
-            mDate = date;
+            mReceiveDate = date;
         }
         mNotificationId = notificationId;
         mMailCount = 0;
@@ -111,14 +111,11 @@ public class EmailNotification {
         // 通知
         if (EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
             Notification notification = new Notification(R.drawable.icon,
-                    mCtx.getResources().getString(R.string.notify_text),
-                    System.currentTimeMillis());
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm ");
-            String message = sdf.format(mDate);
+                    mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
+            String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
             if (mMailbox != null) {
                 message += " " + mMailbox;
             }
-            message += " (" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
             notification.setLatestEventInfo(mCtx,
                     mCtx.getResources().getString(R.string.app_name),
                     message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
@@ -174,6 +171,7 @@ public class EmailNotification {
      * 通知を開始
      */
     public void start(boolean skipDelay) {
+        mNotifyTime = System.currentTimeMillis();
         mMailCount++;
 
         // 通知遅延 (再通知タイマを使う)
@@ -241,7 +239,7 @@ public class EmailNotification {
                 mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
 
             Notification notification = new Notification();
-            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+            notification.flags = Notification.FLAG_SHOW_LIGHTS;
             notification.ledARGB = EmailNotifyPreferences.getNotifyLedColor(mCtx, mService);
             notification.ledOnMS = 200;
             notification.ledOffMS = 2000;
