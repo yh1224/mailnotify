@@ -158,43 +158,105 @@ public class EmailNotifyService extends Service {
      * リアルタイムログ監視スレッド
      */
     private class LogCheckThread extends Thread {
+        private Context mCtx;
+
+        /**
+         * logcatクリア
+         */
+        private void clearLog() {
+            try {
+                Process process = Runtime.getRuntime().exec(new String[] {"logcat", "-c" });
+                process.waitFor();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            MyLog.d(mCtx, TAG, "Logcat cleared.");
+        }
+
+        /**
+         * エラー出力を取得する
+         */
+        private String getErrorMessage(Process process) throws IOException {
+            String line;
+            BufferedReader errReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream()), 1024);
+            StringBuffer errMsg = new StringBuffer();
+            while ((line = errReader.readLine()) != null) {
+                errMsg.append(line + "\n");
+            }
+            return errMsg.toString().trim();
+        }
+
         @Override
         public void run() {
-            Context ctx = EmailNotifyService.this;
-            MyLog.d(ctx, TAG, "Starting log check thread.");
-            try {
-                ArrayList<String> commandLine = new ArrayList<String>();
-                commandLine.add("logcat");
-                commandLine.add("-v");
-                commandLine.add("time");
-                commandLine.add("-s");
-                //commandLine.add("MailPushFactory:D");
-                // ほんとうは「WAP PUSH」でフィルタしたいんだけどスペースがあるとうまくいかない…
-                commandLine.add("*:D");
-                Process process = Runtime.getRuntime().exec(
-                        commandLine.toArray(new String[commandLine.size()]));
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()), 1024);
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (mStopLogCheckThread) {
-                        break;
+            mCtx = EmailNotifyService.this;
+            MyLog.d(mCtx, TAG, "Starting log check thread.");
+
+            String[] command = new String[] {
+                "logcat",
+                "-v", "time",
+                "-s", "*:D"
+                 // ほんとうは「WAP PUSH」でフィルタしたいんだけどスペースがあるとうまくいかない…
+            };
+            int errCount = 0;
+            while (true) {
+                try {
+                    Process process = Runtime.getRuntime().exec(command);
+                    BufferedReader bufferedReader = new BufferedReader(
+                            new InputStreamReader(process.getInputStream()), 1024);
+                    int readCount = 0;
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if (mStopLogCheckThread) {
+                            break;
+                        }
+                        readCount++;
+                        WapPdu pdu = checkLogLine(line);
+                        if (pdu != null) {
+                            // 最後に通知した日時を保持しておく
+                            EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
+                            EmailNotifyNotification.showNotify(EmailNotifyService.this, pdu.getMailbox());
+                        }
                     }
-                    WapPdu pdu = checkLogLine(line);
-                    if (pdu != null) {
-                        // 最後に通知した日時を保持しておく
-                        EmailNotifyPreferences.setLastCheck(ctx, mLastCheck);
-                        EmailNotifyNotification.showNotify(EmailNotifyService.this, pdu.getMailbox());
+                    bufferedReader.close();
+                    String errMsg = getErrorMessage(process);
+                    process.destroy();
+                    if (!mStopLogCheckThread) {
+                        // 不正終了
+                        MyLog.w(mCtx, TAG, "Unexpectedly suspended. read=" + readCount);
+                        process.waitFor();
+                        MyLog.d(mCtx, TAG, "exitValue=" + process.exitValue()+ "\n" + errMsg);
+
+                        // 5回連続して全く読めなかった場合は通知を出して停止
+                        if (readCount == 0) {
+                            errCount++;
+                            if (errCount >= 5) {
+                                break;
+                            }
+                        } else {
+                            errCount = 0;
+                        }
+
+                        // ログをクリアして再試行する。
+                        clearLog();
+                        Thread.sleep(5000);
+                        continue;
                     }
+                } catch (IOException e) {
+                    MyLog.e(mCtx, TAG, "Unexpected error on log checking.");
+                    stopSelf();
+                } catch (InterruptedException e) {
+                    MyLog.e(mCtx, TAG, "Interrupted on log checking.");
+                    e.printStackTrace();
                 }
-                bufferedReader.close();
-                process.destroy();
-                MyLog.d(ctx, TAG, "Exiting log check thread.");
-                mLogCheckThread = null;
-            } catch (IOException e) {
-                MyLog.e(ctx, TAG, "Unexpected error on log checking.");
-                stopSelf();
+                break;
             }
+
+            MyLog.d(mCtx, TAG, "Exiting log check thread.");
+            mLogCheckThread = null;
+            stopSelf();
         }
     }
 
