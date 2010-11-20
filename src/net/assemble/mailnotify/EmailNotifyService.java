@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,7 +40,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onCreate() {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onCreate()");
+        MyLog.d(this, TAG, "EmailNotifyService.onCreate()");
         super.onCreate();
 
         // プリファレンスのバージョンアップ
@@ -67,7 +66,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onStart()");
+        MyLog.d(this, TAG, "EmailNotifyService.onStart()");
         super.onStart(intent, startId);
         startCheck();
     }
@@ -87,7 +86,7 @@ public class EmailNotifyService extends Service {
     }
 
     public void onDestroy() {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onDestroy()");
+        MyLog.d(this, TAG, "EmailNotifyService.onDestroy()");
         super.onDestroy();
         mActive = false;
 
@@ -99,10 +98,6 @@ public class EmailNotifyService extends Service {
 
         // リアルタイムログ監視停止
         stopLogCheckThread();
-
-        // 正常に停止した場合は、次に開始するまでに受信した通知は
-        // 通知しないようにするため、前回通知日時をクリアする。
-        EmailNotifyPreferences.setLastCheck(this, 0);
     }
 
     @Override
@@ -193,68 +188,133 @@ public class EmailNotifyService extends Service {
     private class LogCheckThread extends Thread {
         private Context mCtx;
 
+        /**
+         * logcatクリア
+         */
+        private void clearLog() {
+            try {
+                Process process = Runtime.getRuntime().exec(new String[] {"logcat", "-c" });
+                process.waitFor();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            MyLog.d(mCtx, TAG, "Logcat cleared.");
+        }
+        
+        /**
+         * エラー出力を取得する
+         */
+        private String getErrorMessage(Process process) throws IOException {
+            String line;
+            BufferedReader errReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream()), 1024);
+            StringBuffer errMsg = new StringBuffer();
+            while ((line = errReader.readLine()) != null) {
+                errMsg.append(line + "\n");
+            }
+            return errMsg.toString().trim();
+        }
+
         @Override
         public void run() {
             mCtx = EmailNotifyService.this;
             MyLog.d(mCtx, TAG, "Starting log check thread.");
-            try {
-                ArrayList<String> commandLine = new ArrayList<String>();
-                commandLine.add("logcat");
-                commandLine.add("-v");
-                commandLine.add("time");
-                commandLine.add("-s");
-                //commandLine.add("MailPushFactory:D");
-                // ほんとうは「WAP PUSH」でフィルタしたいんだけどスペースがあるとうまくいかない…
-                commandLine.add("*:D");
-                Process process = Runtime.getRuntime().exec(
-                        commandLine.toArray(new String[commandLine.size()]));
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()), 1024);
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (mStopLogCheckThread) {
-                        break;
-                    }
-                    final WapPdu pdu = checkLogLine(line);
-                    if (pdu != null) {
-                        // 最後に通知した日時を保持しておく
-                        EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
-                        int type = pdu.getBinaryContentType();
-                        if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
-                            if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
-                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE);
-                                if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
-                                    // 既に通知済み
-                                    MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
-                                } /*TODO: まずはチェックのみ。 else*/ {
-                                    notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
-                                    EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getTimestampString());
+            EmailNotificationManager.clearSuspendedNotification(mCtx);
+
+            String[] command = new String[] {
+                "logcat",
+                "-v", "time",
+                "-s", "*:D"
+                 // ほんとうは「WAP PUSH」でフィルタしたいんだけどスペースがあるとうまくいかない…
+            };
+            int errCount = 0;
+            while (true) {
+                try {
+                    Process process = Runtime.getRuntime().exec(command);
+                    BufferedReader bufferedReader = new BufferedReader(
+                            new InputStreamReader(process.getInputStream()), 1024);
+                    int readCount = 0;
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if (mStopLogCheckThread) {
+                            break;
+                        }
+                        readCount++;
+                        final WapPdu pdu = checkLogLine(line);
+                        if (pdu != null) {
+                            // TODO: 通知遅延した場合、実際に通知したあとに保存すべき!!!
+                            // 最後に通知した日時を保持しておく
+                            EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
+                            int type = pdu.getBinaryContentType();
+                            if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
+                                if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
+                                    String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE);
+                                    if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
+                                        // 既に通知済み
+                                        MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
+                                    } /*TODO: まずはチェックのみ。 else*/ {
+                                        notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
+                                        EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getTimestampString());
+                                    }
                                 }
-                            }
-                        } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
-                            if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
-                                String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA);
-                                if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
-                                    // 既に通知済み
-                                    MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
-                                } /*TODO: まずはチェックのみ。 else*/ {
-                                    notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
-                                    EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getTimestampString());
+                            } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
+                                if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
+                                    String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA);
+                                    if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
+                                        // 既に通知済み
+                                        MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
+                                    } /*TODO: まずはチェックのみ。 else*/ {
+                                        notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
+                                    }
+                                        EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getTimestampString());
                                 }
+                            } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
+                                notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
                             }
-                        } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
-                            notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
                         }
                     }
+                    bufferedReader.close();
+                    String errMsg = getErrorMessage(process);
+                    process.destroy();
+                    if (!mStopLogCheckThread) {
+                        // 不正終了
+                        MyLog.w(mCtx, TAG, "Unexpectedly suspended. read=" + readCount);
+                        process.waitFor();
+                        MyLog.d(mCtx, TAG, "exitValue=" + process.exitValue()+ "\n" + errMsg);
+
+                        // 5回連続して全く読めなかった場合は通知を出して停止
+                        if (readCount == 0) {
+                            errCount++;
+                            if (errCount >= 5) {
+                                break;
+                            }
+                        } else {
+                            errCount = 0;
+                        }
+
+                        // ログをクリアして再試行する。
+                        clearLog();
+                        Thread.sleep(5000);
+                        continue;
+                    }
+                } catch (IOException e) {
+                    MyLog.e(mCtx, TAG, "Unexpected error on log checking.");
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    MyLog.e(mCtx, TAG, "Interrupted on log checking.");
+                    e.printStackTrace();
                 }
-                bufferedReader.close();
-                process.destroy();
-                MyLog.d(mCtx, TAG, "Exiting log check thread.");
-                mLogCheckThread = null;
-            } catch (IOException e) {
-                MyLog.e(mCtx, TAG, "Unexpected error on log checking.");
-                stopSelf();
+                break;
             }
+
+            if (!mStopLogCheckThread) {
+                EmailNotificationManager.showSuspendedNotification(mCtx);
+            }
+            MyLog.d(mCtx, TAG, "Exiting log check thread.");
+            mLogCheckThread = null;
+            stopSelf();
         }
 
         /**
@@ -335,6 +395,10 @@ public class EmailNotifyService extends Service {
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
                 MyLog.i(ctx, TAG, "Service stopped.");
                 mService = null;
+
+                // 正常に停止した場合は、次に開始するまでに受信した通知は
+                // 通知しないようにするため、前回通知日時をクリアする。
+                EmailNotifyPreferences.setLastCheck(ctx, 0);
             }
         }
     }

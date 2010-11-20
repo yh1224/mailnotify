@@ -8,11 +8,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class EmailNotificationManager {
     public static final int NOTIFICATIONID_ICON = 1;
     public static final int NOTIFICATIONID_EXPIRED = 2;
-    public static final int NOTIFICATIONID_RESTORE_NETWORK = 3;
+    public static final int NOTIFICATIONID_SUSPENDED = 3;
+    public static final int NOTIFICATIONID_RESTORE_NETWORK = 4;
     public static final int NOTIFICATIONID_EMAIL_START = 10;
 
     private static boolean mNotificationIcon = false;
@@ -200,6 +202,35 @@ public class EmailNotificationManager {
         notification.defaults = Notification.DEFAULT_ALL;
         notification.flags = Notification.FLAG_SHOW_LIGHTS;
         notificationManager.notify(NOTIFICATIONID_EXPIRED, notification);
+    }
+
+    /**
+     * 監視停止通知
+     */
+    public static void showSuspendedNotification(Context ctx) {
+        NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification(R.drawable.icon,
+                      ctx.getResources().getString(R.string.app_name),
+                      System.currentTimeMillis());
+        Intent intent = new Intent();
+        intent.setClass(ctx, EmailNotifyActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
+        String message = ctx.getResources().getString(R.string.notify_suspended);
+        notification.setLatestEventInfo(ctx,
+                ctx.getResources().getString(R.string.app_name),
+                message, contentIntent);
+        notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONLY_ALERT_ONCE;
+        notificationManager.notify(NOTIFICATIONID_SUSPENDED, notification);
+    }
+
+    /**
+     * 監視停止通知を消去
+     */
+    public static void clearSuspendedNotification(Context ctx) {
+        NotificationManager notificationManager =
+                (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(NOTIFICATIONID_SUSPENDED);
     }
 
 }
