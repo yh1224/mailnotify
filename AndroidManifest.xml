@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="206" android:versionName="2.1.5"
-    package="net.assemble.emailnotify">
+    package="net.assemble.emailnotify" android:versionCode="208"
+    android:versionName="2.2">
     <application android:icon="@drawable/icon"
         android:label="@string/app_name">
         <activity android:name=".EmailNotifyActivity"
@@ -11,8 +11,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EmailNotifyHelpActivity" />
         <activity android:name=".EmailNotifyPreferencesActivity" />
-        <activity android:name=".EmailNotifyPreferencesLaunchAppActivity"
+        <activity android:name=".EmailNotifySelectAppActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".EmailNotifyLaunchActivity"
             android:theme="@android:style/Theme.Dialog" />
         <receiver android:name=".EmailNotifyReceiver">
             <intent-filter>
@@ -25,6 +28,7 @@
                 <data android:mimeType="application/vnd.wap.slc" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".EmailNotificationReceiver" />
         <service android:name=".EmailNotifyService" />
         <activity android:name="net.assemble.android.MyLogActivity" />
         <activity android:name="net.assemble.android.AboutActivity"
@@ -33,5 +37,12 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-sdk android:minSdkVersion="4" />
 </manifest>

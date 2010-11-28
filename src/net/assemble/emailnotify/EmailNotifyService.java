@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import net.assemble.android.MyLog;
 
@@ -13,6 +15,8 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,15 +32,26 @@ public class EmailNotifyService extends Service {
     private static ComponentName mService;
     private static boolean mActive = false;
 
+    private EmailNotifyScreenReceiver mScreenReceiver;
     private LogCheckThread mLogCheckThread;
     private boolean mStopLogCheckThread;
     private long mLastCheck;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate() {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onCreate()");
+        MyLog.d(this, TAG, "EmailNotifyService.onCreate()");
         super.onCreate();
-        mActive = true;
+
+        // プリファレンスのバージョンアップ
+        EmailNotifyPreferences.upgrade(this);
+
+        // ネットワーク復元情報を消去
+        EmailNotifyPreferences.unsetNetworkInfo(this);
+
+        // ACTION_SCREEN_ON レシーバの登録
+        mScreenReceiver = new EmailNotifyScreenReceiver();
+        registerReceiver(mScreenReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
         // すでに通知したものは通知しないようにする
         mLastCheck = EmailNotifyPreferences.getLastCheck(this);
@@ -46,32 +61,43 @@ public class EmailNotifyService extends Service {
             mLastCheck = Calendar.getInstance().getTimeInMillis();
             EmailNotifyPreferences.setLastCheck(this, mLastCheck);
         }
-
-        // リアルタイムログ監視開始
-        startLogCheckThread();
+        startCheck();
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onStart()");
+        MyLog.d(this, TAG, "EmailNotifyService.onStart()");
         super.onStart(intent, startId);
+        startCheck();
+    }
+
+    public void startCheck() {
         mActive = true;
+
+        // 常駐アイコン
+        if (EmailNotifyPreferences.getNotificationIcon(this)) {
+            EmailNotificationManager.showNotificationIcon(this);
+        } else {
+            EmailNotificationManager.clearNotificationIcon(this);
+        }
 
         // リアルタイムログ監視開始
         startLogCheckThread();
     }
 
     public void onDestroy() {
-        if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService.onDestroy()");
+        MyLog.d(this, TAG, "EmailNotifyService.onDestroy()");
         super.onDestroy();
         mActive = false;
 
+        // 通知アイコン
+        EmailNotificationManager.clearNotificationIcon(this);
+
+        // レシーバ解除
+        unregisterReceiver(mScreenReceiver);
+
         // リアルタイムログ監視停止
         stopLogCheckThread();
-
-        // 正常に停止した場合は、次に開始するまでに受信した通知は
-        // 通知しないようにするため、前回通知日時をクリアする。
-        EmailNotifyPreferences.setLastCheck(this, 0);
     }
 
     @Override
@@ -85,18 +111,17 @@ public class EmailNotifyService extends Service {
      * @return 日時
      */
     private Calendar getLogDate(String line) {
-        // 日付
+        String logdate = line.substring(0, 18);
         Calendar cal = Calendar.getInstance();
-        String[] days = line.split(" ")[0].split("-");
-        String[] times = line.split(" ")[1].split(":");
-        cal = Calendar.getInstance();
-        cal.set(Calendar.MONTH, Integer.valueOf(days[0]) - 1);
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(days[1]));
-        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(times[0]));
-        cal.set(Calendar.MINUTE, Integer.valueOf(times[1]));
-        cal.set(Calendar.SECOND, Integer.valueOf(times[2].substring(0, 2)));
-        cal.set(Calendar.MILLISECOND, 0);
-
+        Date date;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            date = sdf.parse(cal.get(Calendar.YEAR) + "-" + logdate);
+        } catch (ParseException e) {
+            Log.w(TAG, "Unexpected log date: " + logdate);
+            return null;
+        }
+        cal.setTime(date);
         return cal;
     }
 
@@ -107,9 +132,12 @@ public class EmailNotifyService extends Service {
      * @return WapPdu WAP PDU (null:メール通知ではない)
      */
     private WapPdu checkLogLine(String line) {
-        if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
+        //if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
         if (line.length() >= 19 && line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
+            if (ccal == null) {
+                return null;
+            }
             if (ccal.getTimeInMillis() <= mLastCheck) {
                 // チェック済
                 if (EmailNotify.DEBUG) Log.d(TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + " )");
@@ -193,6 +221,7 @@ public class EmailNotifyService extends Service {
         public void run() {
             mCtx = EmailNotifyService.this;
             MyLog.d(mCtx, TAG, "Starting log check thread.");
+            EmailNotificationManager.clearSuspendedNotification(mCtx);
 
             String[] command = new String[] {
                 "logcat",
@@ -213,11 +242,37 @@ public class EmailNotifyService extends Service {
                             break;
                         }
                         readCount++;
-                        WapPdu pdu = checkLogLine(line);
+                        final WapPdu pdu = checkLogLine(line);
                         if (pdu != null) {
+                            // TODO: 通知遅延した場合、実際に通知したあとに保存すべき!!!
                             // 最後に通知した日時を保持しておく
                             EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
-                            EmailNotifyNotification.showNotify(EmailNotifyService.this, pdu.getMailbox());
+                            int type = pdu.getBinaryContentType();
+                            if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
+                                if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
+                                    String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE);
+                                    if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
+                                        // 既に通知済み
+                                        MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
+                                    } /*TODO: まずはチェックのみ。 else*/ {
+                                        notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
+                                        EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getTimestampString());
+                                    }
+                                }
+                            } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
+                                if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
+                                    String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA);
+                                    if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
+                                        // 既に通知済み
+                                        MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
+                                    } /*TODO: まずはチェックのみ。 else*/ {
+                                        notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
+                                    }
+                                        EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getTimestampString());
+                                }
+                            } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
+                                notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
+                            }
                         }
                     }
                     bufferedReader.close();
@@ -246,7 +301,7 @@ public class EmailNotifyService extends Service {
                     }
                 } catch (IOException e) {
                     MyLog.e(mCtx, TAG, "Unexpected error on log checking.");
-                    stopSelf();
+                    e.printStackTrace();
                 } catch (InterruptedException e) {
                     MyLog.e(mCtx, TAG, "Interrupted on log checking.");
                     e.printStackTrace();
@@ -254,9 +309,28 @@ public class EmailNotifyService extends Service {
                 break;
             }
 
+            if (!mStopLogCheckThread) {
+                EmailNotificationManager.showSuspendedNotification(mCtx);
+            }
             MyLog.d(mCtx, TAG, "Exiting log check thread.");
             mLogCheckThread = null;
             stopSelf();
+        }
+
+        /**
+         * メール着信通知
+         *
+         * 通知後にタイマをかけるので、元スレッドで実行する。
+         *
+         * @param pdu PDU
+         */
+        private void notify(final WapPdu pdu, final String service) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EmailNotificationManager.showNotification(mCtx, service, pdu.getMailbox(), pdu.getTimestampDate());
+                }
+            });
         }
     }
 
@@ -296,7 +370,7 @@ public class EmailNotifyService extends Service {
             MyLog.e(ctx, TAG, "Service start failed!");
             result = false;
         } else {
-            Log.d(TAG, "EmailNotifyService started: " + mService);
+            if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService started: " + mService);
             result = true;
         }
         if (!restart && result) {
@@ -317,10 +391,14 @@ public class EmailNotifyService extends Service {
             if (res == false) {
                 Log.e(TAG, "EmailNotifyService could not stop!");
             } else {
-                Log.d(TAG, "EmailNotifyService stopped: " + mService);
+                if (EmailNotify.DEBUG) Log.d(TAG, "EmailNotifyService stopped: " + mService);
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
                 MyLog.i(ctx, TAG, "Service stopped.");
                 mService = null;
+
+                // 正常に停止した場合は、次に開始するまでに受信した通知は
+                // 通知しないようにするため、前回通知日時をクリアする。
+                EmailNotifyPreferences.setLastCheck(ctx, 0);
             }
         }
     }

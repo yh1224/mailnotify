@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_vibration_pattern">
+        <item>@string/vibration_pattern_1</item>
+        <item>@string/vibration_pattern_2</item>
+        <item>@string/vibration_pattern_3</item>
+        <item>@string/vibration_pattern_4</item>
+        <item>@string/vibration_pattern_5</item>
+    </string-array>
+    <string-array name="entryvalues_vibration_pattern">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="entries_led_color">
+        <item>@string/red</item>
+        <item>@string/green</item>
+        <item>@string/blue</item>
+        <item>@string/yellow</item>
+        <item>@string/cyan</item>
+        <item>@string/magenta</item>
+        <item>@string/white</item>
+    </string-array>
+    <string-array name="entryvalues_led_color">
+        <item>ffff0000</item>
+        <item>ff00ff00</item>
+        <item>ff0000ff</item>
+        <item>ffffff00</item>
+        <item>ff00ffff</item>
+        <item>ffff00ff</item>
+        <item>ffffffff</item>
+    </string-array>
+</resources>

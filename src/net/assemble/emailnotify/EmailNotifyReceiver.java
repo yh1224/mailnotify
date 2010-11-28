@@ -13,10 +13,16 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
     private static final String TAG = "EmailNotify";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "received intent: " + intent.getAction());
+    public void onReceive(Context ctx, Intent intent) {
+        if (EmailNotify.DEBUG) Log.d(TAG, "received intent: " + intent.getAction());
 
-        if (!EmailNotifyPreferences.getEnable(context)) {
+        if (!EmailNotifyPreferences.getEnable(ctx)) {
+            return;
+        }
+
+        // 有効期限チェック
+        if (!EmailNotify.checkExpiration(ctx)) {
+            EmailNotifyPreferences.setEnable(ctx, false);
             return;
         }
 
@@ -26,30 +32,33 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                 byte[] data = intent.getByteArrayExtra("data");
                 WapPdu pdu = new WapPdu(WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL, data);
                 if (!pdu.decode()) {
-                    MyLog.w(context, TAG, "Unexpected PDU: " + pdu.getHexString());
+                    MyLog.w(ctx, TAG, "Unexpected PDU: " + pdu.getHexString());
                     return;
                 }
-                MyLog.d(context, TAG ,"Received PDU: " + pdu.getHexString());
-                MyLog.i(context, TAG ,"Received: " + pdu.getMailbox());
+                MyLog.d(ctx, TAG ,"Received PDU: " + pdu.getHexString());
+                MyLog.i(ctx, TAG ,"Received: " + pdu.getMailbox());
                 if (pdu.getMailbox() != null && pdu.getMailbox().contains("docomo.ne.jp")) {
-                    if (EmailNotifyPreferences.getServiceImode(context)) {
-                        EmailNotifyNotification.showNotify(context, "docomo.ne.jp");
+                    if (EmailNotifyPreferences.getServiceImode(ctx)) {
+                        EmailNotificationManager.showNotification(ctx, EmailNotifyPreferences.SERVICE_IMODE, "docomo.ne.jp", null);
                     }
                 } else {
-                    EmailNotifyNotification.showNotify(context, pdu.getMailbox());
+                    if (EmailNotifyPreferences.getServiceOther(ctx)) {
+                        EmailNotificationManager.showNotification(ctx, EmailNotifyPreferences.SERVICE_OTHER, pdu.getMailbox(), null);
+                    }
                 }
             }
             // Restart
             else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(TAG, "EmailNotify restarted.");
-                EmailNotifyService.startService(context);
+                EmailNotifyService.startService(ctx);
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)
                     || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
-                EmailNotifyService.startService(context);
+                EmailNotifyService.startService(ctx);
             }
             return;
         }
 
-        EmailNotifyService.startService(context);
+        EmailNotifyService.startService(ctx);
     }
+
 }
