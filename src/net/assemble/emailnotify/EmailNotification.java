@@ -168,11 +168,27 @@ public class EmailNotification {
     }
 
     /**
+     * iMoNiでメールチェックをおこなう
+     */
+    public void notifyImoni() {
+        if (EmailNotifyPreferences.getIntentToImoni(mCtx, mService)) {
+            Intent intent = new Intent();
+            intent.setAction("net.grandnature.android.imodenotifier.ACTION_CHECK");
+            PendingIntent.getBroadcast(mCtx, 0, intent, 0);
+            mCtx.sendBroadcast(intent);
+            MyLog.d(mCtx, TAG, "Sent intent ACTION_CHECK to iMoNi.");
+        }
+    }
+
+    /**
      * 通知を開始
      */
     public void start(boolean skipDelay) {
         mNotifyTime = System.currentTimeMillis();
         mMailCount++;
+
+        // iMoNiに通知
+        notifyImoni();
 
         // 通知遅延 (再通知タイマを使う)
         if (!skipDelay) {
@@ -294,6 +310,9 @@ public class EmailNotification {
      * 通知を消去
      */
     public void clear() {
+        // 通知を消すときもiMoNiに通知
+        notifyImoni();
+
         stop(NOTIFY_ALL);
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
