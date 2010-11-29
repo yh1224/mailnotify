@@ -129,6 +129,8 @@
     <string name="pref_notify_delay_zero">無効 (即時通知)</string>
     <string name="pref_group_notify_test">通知テスト</string>
     <string name="pref_group_experimental">試験的な実装 (Experimental)</string>
+    <string name="pref_notify_to_imoni_title">IMoNi連携</string>
+    <string name="pref_notify_to_imoni_summary">iモードメール通知受信時、IMoNiでメールチェックします。</string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
     <string name="enable">有効化</string>
     <string name="enabled">監視中</string>

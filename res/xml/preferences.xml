@@ -412,6 +412,10 @@
                     android:defaultValue="true" android:dependency="notify_stop_on_screen" />
             </PreferenceCategory>
         </PreferenceScreen>
+        <CheckBoxPreference android:key="notify_to_imoni_imode"
+            android:summary="@string/pref_notify_to_imoni_summary"
+            android:title="@string/pref_notify_to_imoni_title"
+            android:defaultValue="true" android:dependency="service_imode" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_experimental">
         <net.assemble.mailnotify.NumberSeekbarPreference
@@ -420,6 +424,7 @@
             unit="@string/pref_notify_sound_length_unit" zero="@string/pref_notify_sound_length_zero" />
         <CheckBoxPreference android:key="notify_auto_connect_spmode"
             android:summary="@string/pref_notify_auto_connect_spmode_summary"
-            android:title="@string/pref_notify_auto_connect_spmode_title" />
+            android:title="@string/pref_notify_auto_connect_spmode_title"
+            android:defaultValue="false" android:dependency="service_spmode" />
     </PreferenceCategory>
 </PreferenceScreen>

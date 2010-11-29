@@ -106,6 +106,9 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
 
+    public static final String PREF_NOTIFY_INTENT_TO_IMONI_KEY = "notify_to_imoni";
+    public static final boolean PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT = true;
+
     // 最終チェック日時保存用
     public static final String PREF_LAST_CHECK_KEY = "last_check";
 
@@ -495,6 +498,19 @@ public class EmailNotifyPreferences
             return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_KEY,
                 PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
         }
+    }
+
+    /**
+     * iMoNi連携設定を取得
+     */
+    public static boolean getIntentToImoni(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        // iモードのみ
+        if (service.equals(SERVICE_IMODE)) {
+            return pref.getBoolean(getServiceKey(PREF_NOTIFY_INTENT_TO_IMONI_KEY, service),
+                PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT);
+        }
+        return false;
     }
 
     /**
