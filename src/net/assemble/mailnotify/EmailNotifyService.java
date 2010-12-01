@@ -254,7 +254,7 @@ public class EmailNotifyService extends Service {
                                     if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
                                         // 既に通知済み
                                         MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
-                                    } /*TODO: まずはチェックのみ。 else*/ {
+                                    } else {
                                         notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
                                         EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getTimestampString());
                                     }
@@ -265,10 +265,10 @@ public class EmailNotifyService extends Service {
                                     if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
                                         // 既に通知済み
                                         MyLog.w(EmailNotifyService.this, TAG, "Duplicated: " + pdu.getTimestampString());
-                                    } /*TODO: まずはチェックのみ。 else*/ {
+                                    } else {
                                         notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
-                                    }
                                         EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getTimestampString());
+                                    }
                                 }
                             } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
                                 notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
