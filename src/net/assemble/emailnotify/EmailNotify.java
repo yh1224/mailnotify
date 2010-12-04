@@ -15,6 +15,8 @@ public class EmailNotify {
     public static final boolean FREE_VERSION = true;
     public static final String FREE_EXPIRES = null;
 
+    public static final String ACTION_MAIL_PUSH_RECEIVED = "net.assemble.emailnotify.MAIL_PUSH_RECEIVED";
+
     /**
      * 有効期限チェック
      *

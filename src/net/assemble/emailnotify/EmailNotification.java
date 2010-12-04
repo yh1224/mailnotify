@@ -168,7 +168,21 @@ public class EmailNotification {
     }
 
     /**
-     * iMoNiでメールチェックをおこなう
+     * 受信通知をブロードキャスト
+     */
+    public void broadcastNotify() {
+        Intent intent = new Intent();
+        intent.setAction(EmailNotify.ACTION_MAIL_PUSH_RECEIVED);
+        intent.putExtra("service", mService);
+        intent.putExtra("mailbox", mMailbox);
+        intent.putExtra("timestamp", mReceiveDate);
+        intent.putExtra("count", mMailCount);
+        mCtx.sendBroadcast(intent);
+        MyLog.d(mCtx, TAG, "Sent broadcast MAIL_PUSH_RECEIEVD");
+    }
+
+    /**
+     * IMoNiでメールチェックをおこなう
      */
     public void notifyImoni() {
         if (EmailNotifyPreferences.getIntentToImoni(mCtx, mService)) {
@@ -186,6 +200,9 @@ public class EmailNotification {
     public void start(boolean skipDelay) {
         mNotifyTime = System.currentTimeMillis();
         mMailCount++;
+
+        // 通知をブロードキャスト
+        broadcastNotify();
 
         // iMoNiに通知
         notifyImoni();
