@@ -189,6 +189,15 @@ public class EmailNotifyService extends Service {
         private Context mCtx;
 
         /**
+         * Constructor
+         * @param ctx Context
+         */
+        public LogCheckThread(Context ctx) {
+            super();
+            mCtx = ctx;
+        }
+
+        /**
          * logcatクリア
          */
         private void clearLog() {
@@ -202,7 +211,7 @@ public class EmailNotifyService extends Service {
             }
             MyLog.d(mCtx, TAG, "Logcat cleared.");
         }
-        
+
         /**
          * エラー出力を取得する
          */
@@ -219,7 +228,6 @@ public class EmailNotifyService extends Service {
 
         @Override
         public void run() {
-            mCtx = EmailNotifyService.this;
             MyLog.d(mCtx, TAG, "Starting log check thread.");
             EmailNotificationManager.clearSuspendedNotification(mCtx);
 
@@ -343,7 +351,7 @@ public class EmailNotifyService extends Service {
             return;
         }
         mStopLogCheckThread = false;
-        mLogCheckThread = new LogCheckThread();
+        mLogCheckThread = new LogCheckThread(this);
         mLogCheckThread.start();
     }
 
