@@ -16,7 +16,8 @@
         <activity android:name=".EmailNotifySelectAppActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".EmailNotifyLaunchActivity"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Dialog"
+            android:exported="true" />
         <receiver android:name=".EmailNotifyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -67,8 +67,13 @@ public class EmailNotifyLaunchActivity extends Activity {
             finish();
             return;
         }
+
         mService = intent.getStringExtra("service");
         mMailbox = intent.getStringExtra("mailbox");
+        if (mService == null || mMailbox == null) {
+            finish();
+            return;
+        }
 
         // 通知停止
         EmailNotificationManager.clearNotification(mMailbox);
