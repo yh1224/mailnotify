@@ -145,7 +145,7 @@ public class EmailNotifyService extends Service {
             }
 
             // LYNX(SH-01B)対応
-            if (line.endsWith(": Receive EMN")) {
+            if (EmailNotifyPreferences.getLynxWorkaround(this) && line.endsWith(": Receive EMN")) {
                 MyLog.i(this, TAG, "Received EMN");
                 mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu(0x030a);
