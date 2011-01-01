@@ -9,8 +9,6 @@ import android.util.Log;
 import com.android.internal.telephony.WspTypeDecoder;
 
 public class WapPdu {
-    private static final String TAG = "EmailNotify";
-
     private byte[] wapData;
     private int dataIndex = 0;
 
@@ -74,7 +72,7 @@ public class WapPdu {
             try {
                 if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
                         (pduType != WspTypeDecoder.PDU_TYPE_CONFIRMED_PUSH)) {
-                    Log.w(TAG, "Received non-PUSH WAP PDU. Type = " + pduType);                    return false;
+                    Log.w(EmailNotify.TAG, "Received non-PUSH WAP PDU. Type = " + pduType);                    return false;
                 }
 
                 pduDecoder = new WspTypeDecoder(wapData);
@@ -86,7 +84,7 @@ public class WapPdu {
                  * So it will be encoded in no more than 5 octets.
                  */
                 if (pduDecoder.decodeUintvarInteger(index) == false) {
-                    Log.w(TAG, "Received PDU. Header Length error.");
+                    Log.w(EmailNotify.TAG, "Received PDU. Header Length error.");
                     return false;
                 }
                 headerLength = (int)pduDecoder.getValue32();
@@ -107,7 +105,7 @@ public class WapPdu {
                  * Length = Uintvar-integer
                  */
                 if (pduDecoder.decodeContentType(index) == false) {
-                    Log.w(TAG, "Received PDU. Header Content-Type error.");
+                    Log.w(EmailNotify.TAG, "Received PDU. Header Content-Type error.");
                     return false;
                 }
                 mimeType = pduDecoder.getValueString();
@@ -120,11 +118,11 @@ public class WapPdu {
                 index += pduDecoder.getDecodedDataLength();
                 dataIndex = headerStartIndex + headerLength;
 
-                Log.d(TAG ,"Received WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
+                Log.d(EmailNotify.TAG ,"Received WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
                         ", contentType=" + mimeType + "(" + binaryContentType + ")" +
                         ", dataIndex=" + dataIndex);
             } catch (IndexOutOfBoundsException e) {
-                Log.w(TAG, "PDU decode error.");
+                Log.w(EmailNotify.TAG, "PDU decode error.");
                 return false;
             }
         }
@@ -142,7 +140,7 @@ public class WapPdu {
         try {
             // TODO: 超決めうちデコード
             if (binaryContentType == 0x030a) {  // application/vnd.wap.emn+wbxml
-	            index += 5;
+                index += 5;
                 // mailbox取得
                 if (wapData[index] == 0x07) {  // mailbox attribute
                     index += 2;
@@ -213,7 +211,7 @@ public class WapPdu {
                 mailBox = "unknown (" + getContentType() + ")";
             }
         } catch (IndexOutOfBoundsException e) {
-            Log.w(TAG, "PDU analyze error.");
+            Log.w(EmailNotify.TAG, "PDU analyze error.");
         }
     }
 
@@ -244,7 +242,7 @@ public class WapPdu {
         case 0x0311:
             return "application/vnd.docomo.ub";
         default:
-            Log.w(TAG, "Unknown Content-Type = " + binaryContentType);
+            Log.w(EmailNotify.TAG, "Unknown Content-Type = " + binaryContentType);
             return "unknown";
         }
     }
@@ -275,7 +273,7 @@ public class WapPdu {
         } else if (mimeType.equals("application/vnd.docomo.ub")) {
             return 0x0311;
         } else {
-            Log.w(TAG, "Unknown Content-Type = " + mimeType);
+            Log.w(EmailNotify.TAG, "Unknown Content-Type = " + mimeType);
             return 0;
         }
     }
@@ -332,7 +330,7 @@ public class WapPdu {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z");
                 date = sdf.parse(byte2hex(timestamp) + " GMT");
             } catch (ParseException e) {
-                Log.w(TAG, "Unexpected timestamp: " + byte2hex(timestamp));
+                Log.w(EmailNotify.TAG, "Unexpected timestamp: " + byte2hex(timestamp));
             }
         }
         return date;

@@ -40,8 +40,6 @@ import java.util.List;
  *
  */
 public class EmailNotifySelectAppActivity extends ListActivity {
-    private static final String TAG = "EmailNotify";
-
     Intent mIntent;
     PackageManager mPackageManager;
     IconResizer mIconResizer;
@@ -372,7 +370,7 @@ public class EmailNotifySelectAppActivity extends ListActivity {
          */
         @Override
         protected String doInBackground(Object... params) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Executing LoadAppListTask.");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Executing LoadAppListTask.");
             String result = null;
             mIntent = new Intent((Intent)params[0]);
             mIntent.setComponent(null);
@@ -382,14 +380,14 @@ public class EmailNotifySelectAppActivity extends ListActivity {
 
         @Override
         protected void onCancelled() {
-            if (EmailNotify.DEBUG) Log.d(TAG, "LoadAppListTask is cancelled.");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "LoadAppListTask is cancelled.");
             mLoadAppTask = null;
             super.onCancelled();
         }
 
         @Override
         protected void onPostExecute(String result) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "LoadAppListTask is completed.");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "LoadAppListTask is completed.");
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
                 mProgressDialog = null;
@@ -409,7 +407,7 @@ public class EmailNotifySelectAppActivity extends ListActivity {
             mProgressDialog = null;
         }
         if (mLoadAppTask != null && !mLoadAppTask.isCancelled()) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Cancelling LoadAppListTask.");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Cancelling LoadAppListTask.");
             mLoadAppTask.cancel(true);
         }
         super.onDestroy();

@@ -8,7 +8,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class EmailNotificationManager {
     public static final int NOTIFICATIONID_ICON = 1;

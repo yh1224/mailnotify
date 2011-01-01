@@ -8,8 +8,6 @@ import android.provider.Settings;
 import android.util.Log;
 
 public class EmailNotificationSound {
-    private static final String TAG = "EmailNotify";
-
     private ContentResolver mContentResolver;
     private Uri mUri;
     private boolean mIsNotification;
@@ -70,7 +68,7 @@ public class EmailNotificationSound {
                 c.close();
             }
         } catch (Exception e) {
-            Log.d(TAG, "Failed to fetch " + uri + ": " + e.toString());
+            Log.d(EmailNotify.TAG, "Failed to fetch " + uri + ": " + e.toString());
         }
         return this;
     }
