@@ -121,9 +121,9 @@ public class MyLogActivity extends ListActivity {
                 logText.setTextColor(Color.rgb(255, 128, 128));
             } else if (level == MyLog.LEVEL_WARN) {
                 logText.setTextColor(Color.rgb(255, 224, 128));
-            } else if (level == MyLog.LEVEL_INFO) {
-                logText.setTextColor(Color.rgb(192, 192, 255));
-            } else {
+            } else if (level >= MyLog.LEVEL_DEBUG) {
+                logText.setTextColor(Color.rgb(192, 255, 192));
+            } else {    // LEVEL_INFO
                 logText.setTextColor(getResources().getColor(android.R.color.primary_text_dark));
             }
         }

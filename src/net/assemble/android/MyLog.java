@@ -103,19 +103,41 @@ public class MyLog {
      *
      * @return 全ログの文字列
      */
-    public static String getLogText(Context ctx, int level) { 
+    public static String getLogText(Context ctx, int maxlevel) { 
         Cursor c = getDb(ctx).query(MyLogOpenHelper.TABLE_LOG,
-                null, "level <= " + level, null,
+                null, "level <= " + maxlevel, null,
                 null, null, "created_at", null);
         StringBuffer buf = new StringBuffer();
         if (c.moveToFirst()) {
             do {
+                int level = c.getInt(c.getColumnIndex("level"));
                 String date = c.getString(c.getColumnIndex("created_date"));
                 String log_text = c.getString(c.getColumnIndex("log_text"));
-                buf.append(date + ": " + log_text + "\n");
+                buf.append(date + " " + getLevelString(level) + " " + log_text + "\n");
             } while (c.moveToNext());
         }
         return buf.toString();
+    }
+
+    /**
+     * ログレベルを文字で取得
+     * 
+     * @param level ログレベル
+     * @return ログレベル文字
+     */
+    private static String getLevelString(int level) {
+        if (level == LEVEL_ERROR) {
+            return "E";
+        } else if (level == LEVEL_WARN) {
+            return "W";
+        } else if (level == LEVEL_INFO) {
+            return "I";
+        } else if (level == LEVEL_DEBUG) {
+            return "D";
+        } else if (level == LEVEL_VERBOSE) {
+            return "V";
+        }
+        return "?";
     }
 
 }
