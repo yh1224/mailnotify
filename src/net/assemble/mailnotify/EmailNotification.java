@@ -21,8 +21,6 @@ import android.util.Log;
  * メール着信通知
  */
 public class EmailNotification {
-    private static final String TAG = "EmailNotify";
-
     public static final int NOTIFY_SOUND = 0x00000001;
     public static final int NOTIFY_LED = 0x00000002;
     public static final int NOTIFY_RENOTIFY = 0x00000004;
@@ -134,8 +132,8 @@ public class EmailNotification {
         startLed();
 
         mNotifyCount++;
-        MyLog.d(mCtx, TAG, "[" + mNotificationId + "] Notified: " + mMailbox + " " + mService);
-        if (EmailNotify.DEBUG) Log.d(TAG, "  (mailCount=" + mMailCount +
+        MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Notified: " + mMailbox + " " + mService);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "  (mailCount=" + mMailCount +
                 ", notifyCount=" + mNotifyCount + ", notificationId=" + mNotificationId + ")");
 
         // 通知音停止タイマ
@@ -145,7 +143,7 @@ public class EmailNotification {
             mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP_SOUND);
             AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
-            if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started stop timer for " + mMailbox);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started stop timer for " + mMailbox);
         }
 
         // 再通知タイマ
@@ -159,10 +157,10 @@ public class EmailNotification {
                 AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
                 mActiveNotify |= NOTIFY_RENOTIFY;
-                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started renotify timer for " +
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started renotify timer for " +
                         mMailbox + " (" + interval + "sec.), active=" + mActiveNotify);
             } else {
-                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Renotify count exceeded.");
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Renotify count exceeded.");
             }
         }
     }
@@ -178,7 +176,7 @@ public class EmailNotification {
         intent.putExtra("timestamp", mReceiveDate);
         intent.putExtra("count", mMailCount);
         mCtx.sendBroadcast(intent);
-        MyLog.d(mCtx, TAG, "Sent broadcast MAIL_PUSH_RECEIEVD");
+        MyLog.d(mCtx, EmailNotify.TAG, "Sent broadcast MAIL_PUSH_RECEIEVD");
     }
 
     /**
@@ -189,7 +187,7 @@ public class EmailNotification {
             Intent intent = new Intent();
             intent.setAction("net.grandnature.android.imodenotifier.ACTION_CHECK");
             mCtx.sendBroadcast(intent);
-            MyLog.d(mCtx, TAG, "Sent intent ACTION_CHECK to iMoNi.");
+            MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to iMoNi.");
         }
     }
 
@@ -214,7 +212,7 @@ public class EmailNotification {
                 mRenotifyIntent = getPendingIntent(EmailNotificationReceiver.ACTION_RENOTIFY);
                 AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
-                if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId +
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
                         "] Started notify delay timer for " + mMailbox + " (" + delay + " sec.)");
                 return;
             }
@@ -246,7 +244,7 @@ public class EmailNotification {
         }
         notificationManager.notify(mNotificationId + NOTIFICATIONID_SOUND, notification);
         mActiveNotify |= NOTIFY_SOUND;
-        if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started sound for " + mMailbox + ", active=" + mActiveNotify);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started sound for " + mMailbox + ", active=" + mActiveNotify);
     }
 
     /**
@@ -258,7 +256,7 @@ public class EmailNotification {
                 (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(mNotificationId + NOTIFICATIONID_SOUND);
             mActiveNotify &= ~NOTIFY_SOUND;
-            if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Stopped sound for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Stopped sound for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -277,7 +275,7 @@ public class EmailNotification {
             notification.ledOffMS = 2000;
             notificationManager.notify(mNotificationId + NOTIFICATIONID_LED, notification);
             mActiveNotify |= NOTIFY_LED;
-            if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Started led for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started led for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -290,7 +288,7 @@ public class EmailNotification {
                 (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(mNotificationId + NOTIFICATIONID_LED);
             mActiveNotify &= ~NOTIFY_LED;
-            if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Stopped led for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Stopped led for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -303,7 +301,7 @@ public class EmailNotification {
             alarmManager.cancel(mRenotifyIntent);
             mRenotifyIntent = null;
             mActiveNotify &= ~NOTIFY_RENOTIFY;
-            if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Stopped renotify timer for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Stopped renotify timer for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -333,7 +331,7 @@ public class EmailNotification {
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId + NOTIFICATIONID_MAIN);
-        if (EmailNotify.DEBUG) Log.d(TAG, "[" + mNotificationId + "] Cleared notification for " + mMailbox);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Cleared notification for " + mMailbox);
     }
 
     /**

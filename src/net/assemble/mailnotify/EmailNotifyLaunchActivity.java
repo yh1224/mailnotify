@@ -29,7 +29,6 @@ import android.widget.Toast;
 import net.assemble.android.MyLog;
 
 public class EmailNotifyLaunchActivity extends Activity {
-    private static final String TAG = "EmailNotify";
     private static final String SPMODE_APN = "spmode.ne.jp";
 
     public static final String ACTION_RESTORE_NETWORK = "net.assemble.mailnotify.action.RESTORE_NETWORK";
@@ -67,8 +66,13 @@ public class EmailNotifyLaunchActivity extends Activity {
             finish();
             return;
         }
+
         mService = intent.getStringExtra("service");
         mMailbox = intent.getStringExtra("mailbox");
+        if (mService == null || mMailbox == null) {
+            finish();
+            return;
+        }
 
         // 通知停止
         EmailNotificationManager.clearNotification(mMailbox);
@@ -101,9 +105,9 @@ public class EmailNotifyLaunchActivity extends Activity {
                     @Override
                     public void onDataConnectionStateChanged(int state) {
                         super.onDataConnectionStateChanged(state);
-                        if (EmailNotify.DEBUG) Log.d(TAG, "DataConnectionState changed: " + state);
+                        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "DataConnectionState changed: " + state);
                         if (state == TelephonyManager.DATA_CONNECTED) {
-                            if (EmailNotify.DEBUG) Log.d(TAG, "Mobile network connected.");
+                            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Mobile network connected.");
                             Toast.makeText(EmailNotifyLaunchActivity.this,
                                     R.string.connected_network, Toast.LENGTH_LONG).show();
                             launchApp();
@@ -114,7 +118,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                 mTelManager.listen(mStateListener, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
                 return;
             } else {
-                if (EmailNotify.DEBUG) Log.d(TAG, "No need to modify network configuration.");
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "No need to modify network configuration.");
             }
         }
 
@@ -154,18 +158,18 @@ public class EmailNotifyLaunchActivity extends Activity {
 
         // Wi-Fiが有効であれば無効化
         if (wifiEnabled) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Disabling Wi-Fi...");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
 
             // Wi-Fiレシーバ登録
             mReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context ctx, Intent intent) {
-                    if (EmailNotify.DEBUG) Log.d(TAG, "received intent: " + intent.getAction());
+                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
                     if (EmailNotify.DEBUG) logIntent(intent);
                     if (intent.getAction().equals("android.net.wifi.WIFI_STATE_CHANGED")) {
                         int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
                         if (wifiState == WifiManager.WIFI_STATE_DISABLED) {
-                            if (EmailNotify.DEBUG) Log.d(TAG, "Wi-Fi disabled.");
+                            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi disabled.");
                             if (mReceiver != null) {
                                 unregisterReceiver(mReceiver);
                                 mReceiver = null;
@@ -177,9 +181,9 @@ public class EmailNotifyLaunchActivity extends Activity {
             };
             registerReceiver(mReceiver, new IntentFilter("android.net.wifi.WIFI_STATE_CHANGED"));
             mWifiManager.setWifiEnabled(false);
-            MyLog.d(this, TAG, "Wi-Fi disabled.");
+            MyLog.d(this, EmailNotify.TAG, "Wi-Fi disabled.");
         } else {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Wi-Fi is already disabled.");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
         }
 
         // ネットワーク復元情報(Wi-Fi)を保存
@@ -201,7 +205,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                 new String[] {"_id", "apn", "type"}, null, null, null);
 
         // APNのkeyと付加文字列検索 (ex:apndroid)
-        if (EmailNotify.DEBUG) Log.d(TAG, "Checking for enable APN...");
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Checking for enable APN...");
         String apnKey = null;
         String modifierStr = null;
         String modifierType = null;
@@ -210,10 +214,10 @@ public class EmailNotifyLaunchActivity extends Activity {
                 String key = cursor.getString(0);
                 String apn = cursor.getString(1);
                 String type = cursor.getString(2);
-                if (EmailNotify.DEBUG) MyLog.d(this, TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
+                if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
 
                 if (apn.equals(target_apn)) {
-                    if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found valid APN.");
+                    if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Found valid APN.");
                     apnKey = key;
                     break;
                 }
@@ -223,7 +227,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                         apnKey = key;
                         modifierStr = ex;
                         modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX;
-                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found modifier " + modifierType + ": " + modifierStr);
+                        if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
                     }
                 } else if (apn.endsWith(target_apn)) {
                     String ex = apn.substring(0, apn.length() - target_apn.length());
@@ -231,14 +235,14 @@ public class EmailNotifyLaunchActivity extends Activity {
                         apnKey = key;
                         modifierStr = ex;
                         modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX;
-                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Found modifier " + modifierType + ": " + modifierStr);
+                        if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
                     }
                 }
             } while (cursor.moveToNext());
         }
 
         if (modifierStr != null) {
-            if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Enabling APNs...");
+            if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Enabling APNs...");
             // Activate APNs
             if (cursor.moveToFirst()) {
                 do {
@@ -255,7 +259,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                         new_apn = apn.substring(0, apn.length() - modifierStr.length());
                         new_type = type.substring(0, type.length() - modifierStr.length());
                     } else {
-                        if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                        if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                         continue;
                     }
 
@@ -266,7 +270,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                     Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
                     resolver.update(url, values, null, null);
                     changed = true;
-                    MyLog.d(this, TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
+                    MyLog.d(this, EmailNotify.TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
                 } while (cursor.moveToNext());
             }
         }
@@ -274,14 +278,14 @@ public class EmailNotifyLaunchActivity extends Activity {
 
         String prevApnKey = null;
         if (apnKey != null) {
-            if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Activating APN...");
+            if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Activating APN...");
 
             // 現在の接続先を取得
             cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
                     new String[] {"_id"}, null, null, null);
             if (cursor.moveToFirst()) {
                 prevApnKey = cursor.getString(0);
-                if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Current APN ID: " + prevApnKey);
+                if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Current APN ID: " + prevApnKey);
             }
             cursor.close();
 
@@ -291,17 +295,17 @@ public class EmailNotifyLaunchActivity extends Activity {
                 values.put("apn_id", apnKey);
                 resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
                 changed = true;
-                MyLog.d(this, TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
+                MyLog.d(this, EmailNotify.TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
             }
         }
 
         if (changed) {
             // ネットワーク復元情報(APN)を保存
             EmailNotifyPreferences.saveNetworkApnInfo(this, prevApnKey, modifierStr, modifierType);
-            if (EmailNotify.DEBUG) Log.d(TAG, "Saved network: apnKey=" + prevApnKey +
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network: apnKey=" + prevApnKey +
                     ", modifier=" + modifierStr + ", type=" + modifierType);
         } else {
-            if (EmailNotify.DEBUG) Log.d(TAG, "APN is already active.");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "APN is already active.");
         }
         return changed;
     }
@@ -361,7 +365,7 @@ public class EmailNotifyLaunchActivity extends Activity {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, R.string.application_not_found, Toast.LENGTH_LONG).show();
-            Log.d(TAG, e.getMessage());
+            Log.d(EmailNotify.TAG, e.getMessage());
         }
     }
 
@@ -370,13 +374,13 @@ public class EmailNotifyLaunchActivity extends Activity {
      */
     private void restoreNetwork() {
         if (EmailNotifyPreferences.hasNetworkSave(this)) {
-            if (EmailNotify.DEBUG) Log.d(TAG, "Restoring network...");
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network...");
 
             String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(this);
             String modifierStr = EmailNotifyPreferences.getNetworkSaveApnModifierString(this);
             String modifierType = EmailNotifyPreferences.getNetworkSaveApnModifierType(this);
             boolean wifiEnable = EmailNotifyPreferences.getNetworkSaveWifiEnable(this);
-            if (EmailNotify.DEBUG) Log.d(TAG, "Restoring network: apnKey=" + apnKey + ", modifier=" + modifierStr +
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network: apnKey=" + apnKey + ", modifier=" + modifierStr +
                     ", type=" + modifierType + ", wifiEnable=" + wifiEnable);
 
             ContentResolver resolver = getContentResolver();
@@ -405,7 +409,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                             new_type = type + modifierStr;
                         } else {
                             // すでに無効化されているので何もしない
-                            if (EmailNotify.DEBUG) MyLog.d(this, TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                            if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                             continue;
                         }
 
@@ -414,7 +418,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                         values.put("type", new_type);
                         Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
                         resolver.update(url, values, null, null);
-                        MyLog.d(this, TAG, "APN disabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
+                        MyLog.d(this, EmailNotify.TAG, "APN disabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
                     } while (cursor.moveToNext());
                 }
                 cursor.close();
@@ -425,20 +429,20 @@ public class EmailNotifyLaunchActivity extends Activity {
                 values = new ContentValues();
                 values.put("apn_id", apnKey);
                 resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
-                MyLog.d(this, TAG, "APN restored: -> " + apnKey);
+                MyLog.d(this, EmailNotify.TAG, "APN restored: -> " + apnKey);
             }
 
             // Wi-Fi状態を復元
             if (wifiEnable) {
-                if (EmailNotify.DEBUG) Log.d(TAG, "Enabling Wi-Fi...");
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
                 mWifiManager.setWifiEnabled(true);
-                MyLog.d(this, TAG, "Wi-Fi enabled.");
+                MyLog.d(this, EmailNotify.TAG, "Wi-Fi enabled.");
             }
         }
     }
 
     private static void logIntent(Intent intent) {
-        Log.d(TAG, "received intent: " + intent.getAction());
+        Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -461,7 +465,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                     } else {
                         val = o.getClass().getName() + ":?";
                     }
-                    Log.d(TAG, "  " + (String)keys[i] + " = " + val);
+                    Log.d(EmailNotify.TAG, "  " + (String)keys[i] + " = " + val);
                 }
             }
         }

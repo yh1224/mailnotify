@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 /**
@@ -630,6 +631,17 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * LYNX(SH-10B)ワークアラウンドが必要かどうか
+     */
+    public static boolean getLynxWorkaround(Context ctx) {
+        if (Build.MODEL.equals("SH-10B")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * プリファレンスのアップグレード
      */
     public static void upgrade(Context ctx) {
@@ -673,6 +685,15 @@ public class EmailNotifyPreferences
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);
             e.commit();
         }
+
+        if (EmailNotifyPreferences.getLynxWorkaround(ctx)) {
+            // LYNXでは鳴り分けは不可
+            Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+            e.putBoolean(PREF_SERVICE_MOPERA_KEY, false);
+            e.putBoolean(PREF_SERVICE_SPMODE_KEY, false);
+            e.commit();
+        }
+
     }
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.assemble.mailnotify" android:versionName="3.7"
-    android:versionCode="345">
+    package="net.assemble.mailnotify" android:versionName="3.7.2"
+    android:versionCode="349">
     <application android:icon="@drawable/icon"
         android:label="@string/app_name">
         <activity android:name=".EmailNotifyActivity"
@@ -16,7 +16,8 @@
         <activity android:name=".EmailNotifySelectAppActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".EmailNotifyLaunchActivity"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Dialog"
+            android:exported="true" />
         <receiver android:name=".EmailNotifyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -9,8 +9,6 @@ import android.util.Log;
  * メール着信通知からのインテント受信
  */
 public class EmailNotificationReceiver extends BroadcastReceiver {
-    private static final String TAG = "EmailNotify";
-
     public static final String ACTION_NOTIFY_LAUNCH = "net.assemble.mailnotify.action.NOTIFY_CLICK";
     public static final String ACTION_NOTIFY_CANCEL = "net.assemble.mailnotify.action.NOTIFY_CANCEL";
     public static final String ACTION_STOP_SOUND = "net.assemble.mailnotify.action.NOTIFY_STOP_SOUND";
@@ -18,7 +16,7 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        if (EmailNotify.DEBUG) Log.d(TAG, "received intent: " + intent.getAction());
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
 
         String action = intent.getAction();
         if (action != null) {
