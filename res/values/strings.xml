@@ -5,8 +5,8 @@
     <string name="mail_unit">通</string>
     <string name="notification_message">メール着信を監視しています。</string>
     <string name="disabling_wifi">Wi-Fiを無効化しています...</string>
-    <string name="enabling_3g">データネットワークの接続を待機しています...</string>
-    <string name="connected_network">データネットワークに接続しました。ネットワーク接続を元に戻すには、通知バーの「ネットワーク復元」をタップしてください。</string>
+    <string name="enabling_3g">モバイルネットワークの接続を待機しています...</string>
+    <string name="connected_network">モバイルネットワークに接続しました。ネットワーク接続を元に戻すには、通知バーの「ネットワーク復元」をタップしてください。</string>
     <string name="restore_network">ネットワークの復元</string>
     <string name="restore_network_message">ネットワーク設定を自動接続前の状態に戻します。</string>
     <string name="restored_network">ネットワーク設定を復元しました。</string>
@@ -102,7 +102,7 @@
     <string name="select_app">アプリ選択</string>
     <string name="pref_notify_auto_connect_spmode_title">spモード自動接続</string>
     <string name="pref_notify_auto_connect_spmode_summary">spモードメール通知をタップしたときにspモードに自動接続します。</string>
-    <string name="pref_notify_auto_connect_spmode_warning">spモードのメール通知をタップ時に、Wi-Fiを無効化およびspモードAPNに接続してから指定したアプリを起動します。データネットワークの有効化については以下のアプリに対応していますが、各アプリでの有効/無効表示には正しく反映されない場合があります。また他のアプリで正常に動作しない場合はご報告ください。\n\n-
+    <string name="pref_notify_auto_connect_spmode_warning">spモードのメール通知をタップ時に、Wi-Fiを無効化およびspモードAPNに接続してから指定したアプリを起動します。モバイルネットワークの有効化については以下のアプリに対応していますが、各アプリでの有効/無効表示には正しく反映されない場合があります。また他のアプリで正常に動作しない場合はご報告ください。\n\n-
         APNdroid\n- Extended Control\n- Quick
         Settings\n\nspモード自動接続を有効にしてよろしいですか?</string>
     <string name="pref_group_notify_renotify">再通知設定</string>
