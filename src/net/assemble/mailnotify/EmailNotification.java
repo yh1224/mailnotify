@@ -176,7 +176,7 @@ public class EmailNotification {
         intent.putExtra("timestamp", mReceiveDate);
         intent.putExtra("count", mMailCount);
         mCtx.sendBroadcast(intent);
-        MyLog.d(mCtx, EmailNotify.TAG, "Sent broadcast MAIL_PUSH_RECEIEVD");
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Sent broadcast MAIL_PUSH_RECEIVED");
     }
 
     /**
