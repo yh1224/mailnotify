@@ -132,9 +132,8 @@ public class EmailNotification {
         startLed();
 
         mNotifyCount++;
-        MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Notified: " + mMailbox + " " + mService);
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "  (mailCount=" + mMailCount +
-                ", notifyCount=" + mNotifyCount + ", notificationId=" + mNotificationId + ")");
+        MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Notified: " + mMailbox +
+                " (service=" + mService + ", mail=" + mMailCount + ", notify=" + mNotifyCount + ")");
 
         // 通知音停止タイマ
         int soundLen = EmailNotifyPreferences.getNotifySoundLength(mCtx, mService);
@@ -197,6 +196,7 @@ public class EmailNotification {
     public void start(boolean skipDelay) {
         mNotifyTime = System.currentTimeMillis();
         mMailCount++;
+        mNotifyCount = 0;
 
         // 通知をブロードキャスト
         broadcastNotify();
@@ -214,6 +214,8 @@ public class EmailNotification {
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
                         "] Started notify delay timer for " + mMailbox + " (" + delay + " sec.)");
+                MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId +
+                        "] Delayed notify for " + mMailbox + " (" + delay + " sec.)");
                 return;
             }
         }
@@ -309,6 +311,11 @@ public class EmailNotification {
      * 通知音・バイブレーション・再通知を停止
      */
     public void stop(int flags) {
+        if (mNotifyCount == 0) {
+            // 未通知は除外
+            return;
+        }
+
         if ((flags & NOTIFY_SOUND) != 0) {
             stopSound();
         }
