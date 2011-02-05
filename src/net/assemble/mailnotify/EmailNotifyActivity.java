@@ -47,6 +47,21 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
+        // 着信履歴 (デバッグ版のみ)
+        if (EmailNotify.DEBUG) {
+            MenuItem menuBuy = menu.add(R.string.history);
+            menuBuy.setIcon(android.R.drawable.ic_menu_view);
+            menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent intent = new Intent().setClass(EmailNotifyActivity.this,
+                            EmailNotificationHistoryActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+        }
+
         // 購入メニュー (FREE版のみ)
         if (EmailNotify.FREE_VERSION) {
             if (!EmailNotifyPreferences.getLicense(this)) {

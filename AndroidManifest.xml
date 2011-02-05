@@ -25,15 +25,12 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
-                <data android:mimeType="application/vnd.wap.slc" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <data android:scheme="package"/> 
             </intent-filter>
         </receiver>
         <receiver android:name=".EmailNotificationReceiver" />
+        <activity android:name=".EmailNotificationHistoryActivity" />
         <service android:name=".EmailNotifyService" />
         <activity android:name="net.assemble.android.MyLogActivity" />
         <activity android:name="net.assemble.android.AboutActivity"

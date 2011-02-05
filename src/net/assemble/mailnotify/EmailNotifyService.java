@@ -53,12 +53,15 @@ public class EmailNotifyService extends Service {
 
         // すでに通知したものは通知しないようにする
         mLastCheck = EmailNotifyPreferences.getLastCheck(this);
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Last notify: " + mLastCheck);
-        if (mLastCheck == 0) {
+        if (mLastCheck != 0) {
+            Date d = new Date(mLastCheck);
+            MyLog.w(this, EmailNotify.TAG, "Service restarted unexpectedly. Last checked at " + d.toLocaleString());
+        } else {
             // 前回通知日時が存在しない場合、サービス開始以前を通知しない。
             mLastCheck = Calendar.getInstance().getTimeInMillis();
             EmailNotifyPreferences.setLastCheck(this, mLastCheck);
         }
+
         startCheck();
     }
 
@@ -138,7 +141,7 @@ public class EmailNotifyService extends Service {
             }
             if (ccal.getTimeInMillis() <= mLastCheck) {
                 // チェック済
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + " )");
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + ")");
                 return null;
             }
 
@@ -172,7 +175,7 @@ public class EmailNotifyService extends Service {
                     return null;
                 }
                 MyLog.d(this, EmailNotify.TAG, "Received PDU: " + data);
-                MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox());
+                MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
                 mLastCheck = ccal.getTimeInMillis();
                 return pdu;
             }
@@ -248,37 +251,11 @@ public class EmailNotifyService extends Service {
                             break;
                         }
                         readCount++;
-                        final WapPdu pdu = checkLogLine(line);
+                        WapPdu pdu = checkLogLine(line);
                         if (pdu != null) {
-                            // TODO: 通知遅延した場合、実際に通知したあとに保存すべき!!!
-                            // 最後に通知した日時を保持しておく
+                            // 最終チェック日時を更新
                             EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
-                            int type = pdu.getBinaryContentType();
-                            if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
-                                if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
-                                    String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE);
-                                    if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
-                                        // 既に通知済み
-                                        MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: " + pdu.getTimestampString());
-                                    } else {
-                                        notify(pdu, EmailNotifyPreferences.SERVICE_SPMODE);
-                                        EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getTimestampString());
-                                    }
-                                }
-                            } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
-                                if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
-                                    String prev = EmailNotifyPreferences.getLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA);
-                                    if (prev != null && pdu.getTimestampString() != null && prev.equals(pdu.getTimestampString())) {
-                                        // 既に通知済み
-                                        MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: " + pdu.getTimestampString());
-                                    } else {
-                                        notify(pdu, EmailNotifyPreferences.SERVICE_MOPERA);
-                                        EmailNotifyPreferences.setLastTimestamp(mCtx, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getTimestampString());
-                                    }
-                                }
-                            } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
-                                notify(pdu, EmailNotifyPreferences.SERVICE_OTHER);
-                            }
+                            notify(getLogDate(line).getTime(), pdu);
                         }
                     }
                     bufferedReader.close();
@@ -325,16 +302,53 @@ public class EmailNotifyService extends Service {
 
         /**
          * メール着信通知
+         * 
+         * @param logdate
+         * @param pdu
+         */
+        private void notify(Date logdate, WapPdu pdu) {
+            // 重複通知チェック
+            if (EmailNotificationHistoryDao.exists(mCtx, pdu.getMailbox(), pdu.getTimestampDate())) {
+                MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: " + pdu.getTimestampString());
+                return;
+            }
+
+            // 記録
+            EmailNotificationHistoryDao.add(mCtx, logdate, pdu.getContentType(), pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
+
+            // メールサービス別通知
+            int type = pdu.getBinaryContentType();
+            if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
+                // spモードメール
+                if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
+                    showNotify(pdu, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getMailbox());
+                }
+            } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
+                // mopera Uメール
+                if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
+                    showNotify(pdu, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getMailbox());
+                }
+            } else if (type == 0x8002 && pdu.getMailbox() != null && pdu.getMailbox().contains("docomo.ne.jp")) {
+                // iモードメール
+                if (EmailNotifyPreferences.getServiceImode(mCtx)) {
+                    showNotify(pdu, EmailNotifyPreferences.SERVICE_IMODE, "docomo.ne.jp");
+                }
+            } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
+                // その他
+                showNotify(pdu, EmailNotifyPreferences.SERVICE_OTHER, pdu.getMailbox());
+            }
+        }
+
+        /**
+         * メール着信通知
          *
          * 通知後にタイマをかけるので、元スレッドで実行する。
-         *
-         * @param pdu PDU
          */
-        private void notify(final WapPdu pdu, final String service) {
+        private void showNotify(final WapPdu pdu, final String service, final String mailbox) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    EmailNotificationManager.showNotification(mCtx, service, pdu.getMailbox(), pdu.getTimestampDate());
+                    EmailNotificationManager.showNotification(mCtx, service, mailbox, pdu.getTimestampDate());
                 }
             });
         }
@@ -402,8 +416,8 @@ public class EmailNotifyService extends Service {
                 MyLog.i(ctx, EmailNotify.TAG, "Service stopped.");
                 mService = null;
 
-                // 正常に停止した場合は、次に開始するまでに受信した通知は
-                // 通知しないようにするため、前回通知日時をクリアする。
+                // 正常に停止した場合は、次に開始するまでに受信した通知を
+                // 通知しないようにするため、最終チェック日時をクリアする。
                 EmailNotifyPreferences.setLastCheck(ctx, 0);
             }
         }

@@ -532,23 +532,6 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * 前回通知日時を取得
-     */
-    public static String getLastTimestamp(Context ctx, String service) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(
-                getServiceKey(PREF_LAST_TIMESTAMP_KEY, service), null);
-    }
-
-    /**
-     * 前回通知日時を保存
-     */
-    public static void setLastTimestamp(Context ctx, String service, String val) {
-        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-        e.putString(getServiceKey(PREF_LAST_TIMESTAMP_KEY, service), val);
-        e.commit();
-    }
-
-    /**
      * ネットワーク復元情報の有無を取得
      */
     public static boolean hasNetworkSave(Context ctx) {

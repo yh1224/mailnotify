@@ -162,6 +162,8 @@ public class EmailNotification {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Renotify count exceeded.");
             }
         }
+
+        EmailNotificationHistoryDao.notified(mCtx, mMailbox);
     }
 
     /**
@@ -339,6 +341,9 @@ public class EmailNotification {
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId + NOTIFICATIONID_MAIN);
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Cleared notification for " + mMailbox);
+
+        // 消去の記録
+        EmailNotificationHistoryDao.cleared(mCtx, mMailbox);
     }
 
     /**
