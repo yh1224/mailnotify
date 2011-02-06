@@ -31,7 +31,7 @@ public class EmailNotificationHistoryDao {
     /**
      * メール受信履歴を取得
      *
-     * @param ctx
+     * @param ctx Context
      * @return Cursor
      */
     public static Cursor getHistories(Context ctx) {
@@ -44,8 +44,8 @@ public class EmailNotificationHistoryDao {
     /**
      * メール受信履歴を1件取得
      *
-     * @param ctx
-     * @param id
+     * @param ctx Context
+     * @param id ID
      * @return Cursor
      */
     public static Cursor getHistory(Context ctx, long id) {
@@ -70,11 +70,11 @@ public class EmailNotificationHistoryDao {
     /**
      * メール受信を記録
      *
-     * @param ctx
+     * @param ctx Context
      * @param logdate ログチェック日時
      * @param contentType Content-Type
      * @param mailbox メールボックス名
-     * @param timestamp メール受信日時
+     * @param timestamp タイムスタンプ
      * @param wap_data WAP data
      * @return ID
      */
@@ -100,7 +100,7 @@ public class EmailNotificationHistoryDao {
     /**
      * メール受信を通知したことを記録
      *
-     * @param ctx
+     * @param ctx Context
      * @param mailbox メールボックス名
      */
     public static void notified(Context ctx, String mailbox) {
@@ -114,7 +114,7 @@ public class EmailNotificationHistoryDao {
     /**
      * メール受信通知を消去したことを記録
      *
-     * @param ctx
+     * @param ctx Context
      * @param mailbox メールボックス名
      */
     public static void cleared(Context ctx, String mailbox) {
@@ -130,9 +130,9 @@ public class EmailNotificationHistoryDao {
     /**
      * 重複チェック
      *
-     * @param ctx
+     * @param ctx Context
      * @param mailbox メールボックス名
-     * @param timestamp timestamp
+     * @param timestamp タイムスタンプ
      * @return true:すでに存在する
      */
     public static boolean exists(Context ctx, String mailbox, Date timestamp) {

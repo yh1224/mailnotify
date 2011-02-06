@@ -306,7 +306,7 @@ public class EmailNotifyService extends Service {
          * @param logdate
          * @param pdu
          */
-        private void notify(Date logdate, WapPdu pdu) {
+        private void notify(Date logdate, final WapPdu pdu) {
             // 重複通知チェック
             if (EmailNotificationHistoryDao.exists(mCtx, pdu.getMailbox(), pdu.getTimestampDate())) {
                 MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: " + pdu.getTimestampString());
@@ -316,39 +316,11 @@ public class EmailNotifyService extends Service {
             // 記録
             EmailNotificationHistoryDao.add(mCtx, logdate, pdu.getContentType(), pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
 
-            // メールサービス別通知
-            int type = pdu.getBinaryContentType();
-            if (type == 0x030a && pdu.getMailbox() != null && pdu.getMailbox().endsWith("docomo.ne.jp")) {
-                // spモードメール
-                if (EmailNotifyPreferences.getServiceSpmode(mCtx)) {
-                    showNotify(pdu, EmailNotifyPreferences.SERVICE_SPMODE, pdu.getMailbox());
-                }
-            } else if (type == 0x030a && pdu.getMailbox() != null  && pdu.getMailbox().endsWith("mopera.net")) {
-                // mopera Uメール
-                if (EmailNotifyPreferences.getServiceMopera(mCtx)) {
-                    showNotify(pdu, EmailNotifyPreferences.SERVICE_MOPERA, pdu.getMailbox());
-                }
-            } else if (type == 0x8002 && pdu.getMailbox() != null && pdu.getMailbox().contains("docomo.ne.jp")) {
-                // iモードメール
-                if (EmailNotifyPreferences.getServiceImode(mCtx)) {
-                    showNotify(pdu, EmailNotifyPreferences.SERVICE_IMODE, "docomo.ne.jp");
-                }
-            } else if (EmailNotifyPreferences.getServiceOther(mCtx)) {
-                // その他
-                showNotify(pdu, EmailNotifyPreferences.SERVICE_OTHER, pdu.getMailbox());
-            }
-        }
-
-        /**
-         * メール着信通知
-         *
-         * 通知後にタイマをかけるので、元スレッドで実行する。
-         */
-        private void showNotify(final WapPdu pdu, final String service, final String mailbox) {
+            // 通知
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    EmailNotificationManager.showNotification(mCtx, service, mailbox, pdu.getTimestampDate());
+                    doNotify(pdu);
                 }
             });
         }
@@ -376,6 +348,44 @@ public class EmailNotifyService extends Service {
             return;
         }
         mStopLogCheckThread = true;
+    }
+
+    /**
+     * メール着信通知
+     *
+     * @param pdu WAP PDU
+     */
+    private void doNotify(WapPdu pdu) {
+        String service = null;
+        String mailbox = pdu.getMailbox();
+
+        // メールサービス別通知
+        int type = pdu.getBinaryContentType();
+        if (type == 0x030a && mailbox != null && mailbox.endsWith("docomo.ne.jp")) {
+            // spモードメール
+            if (EmailNotifyPreferences.getServiceSpmode(this)) {
+                service = EmailNotifyPreferences.SERVICE_SPMODE;
+            }
+        } else if (type == 0x030a && mailbox != null  && mailbox.endsWith("mopera.net")) {
+            // mopera Uメール
+            if (EmailNotifyPreferences.getServiceMopera(this)) {
+                service = EmailNotifyPreferences.SERVICE_MOPERA;
+            }
+        } else if (type == 0x8002 && mailbox != null && mailbox.contains("docomo.ne.jp")) {
+            // iモードメール
+            if (EmailNotifyPreferences.getServiceImode(this)) {
+                service = EmailNotifyPreferences.SERVICE_IMODE;
+                mailbox = "docomo.ne.jp";
+            }
+        } else if (EmailNotifyPreferences.getServiceOther(this)) {
+            // その他
+            service = EmailNotifyPreferences.SERVICE_OTHER;
+        }
+
+        if (service != null) {
+            EmailNotificationManager.showNotification(this,
+                    service, mailbox, pdu.getTimestampDate());
+        }
     }
 
 

@@ -21,13 +21,18 @@ public class EmailNotificationManager {
 
     /**
      * メール着信通知
+     *
+     * @param ctx Context
+     * @param service メールサービス名
+     * @param mailbox メールボックス名
+     * @param timestamp タイムスタンプ
      */
-    public static void showNotification(Context ctx, String service, String mailbox, Date date) {
+    public static void showNotification(Context ctx, String service, String mailbox, Date timestamp) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
             emn.clear();
         } else {
-            emn = new EmailNotification(ctx, service, mailbox, date, getNextNotificationId());
+            emn = new EmailNotification(ctx, service, mailbox, timestamp, getNextNotificationId());
             mNotifications.add(emn);
         }
         emn.start(false);

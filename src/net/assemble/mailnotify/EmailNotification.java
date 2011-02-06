@@ -27,19 +27,22 @@ public class EmailNotification {
     public static final int NOTIFY_ALL = NOTIFY_SOUND | NOTIFY_LED | NOTIFY_RENOTIFY;
 
     public static final int NOTIFICATIONID_NUM = 3;
-    private static final int NOTIFICATIONID_MAIN = 0;
+    private static final int NOTIFICATIONID_ICON = 0;
     private static final int NOTIFICATIONID_SOUND = 1;
     private static final int NOTIFICATIONID_LED = 2;
 
     private Context mCtx;
-    private String mMailbox;
-    private String mService;
-    private Date mReceiveDate;
-    private long mNotifyTime;
-    private int mNotificationId;
-    private int mMailCount;
-    private int mNotifyCount;
-    private int mActiveNotify;
+
+    private String mMailbox;        // メールボックス名
+    private String mService;        // メールサービス名
+    private Date mTimestamp;        // タイムスタンプ
+    private long mNotifyTime;       // 通知時刻
+    private int mNotificationId;    // 通知ID
+
+    private int mMailCount;         // メール数
+    private int mNotifyCount;       // 通知回数
+    private int mActiveNotify;      // 現在アクティブな通知種別 (MAIN/SOUND/LED)
+
     private PendingIntent mRenotifyIntent;
     private PendingIntent mStopIntent;
 
@@ -48,15 +51,17 @@ public class EmailNotification {
      *
      * @param ctx Context
      * @param mailbox メールボックス名
+     * @param timestamp タイムスタンプ
+     * @param notificationId 通知ID
      */
-    public EmailNotification(Context ctx, String service, String mailbox, Date date, int notificationId) {
+    public EmailNotification(Context ctx, String service, String mailbox, Date timestamp, int notificationId) {
         mCtx = ctx;
         mService = service;
         mMailbox = mailbox;
-        if (date == null) {
-            mReceiveDate = Calendar.getInstance().getTime();
+        if (timestamp == null) {
+            mTimestamp = Calendar.getInstance().getTime();
         } else {
-            mReceiveDate = date;
+            mTimestamp = timestamp;
         }
         mNotificationId = notificationId;
         mMailCount = 0;
@@ -103,47 +108,14 @@ public class EmailNotification {
      * 通知
      */
     public void doNotify() {
-        NotificationManager notificationManager = (NotificationManager)
-            mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
-
         // 通知
-        if (EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
-            Notification notification = new Notification(R.drawable.icon,
-                    mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
-            String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
-            if (mMailbox != null) {
-                message += " " + mMailbox;
-            }
-            notification.setLatestEventInfo(mCtx,
-                    mCtx.getResources().getString(R.string.app_name),
-                    message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
-            notification.deleteIntent =
-                    getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_CANCEL);
-            if (mMailCount > 1) {
-                notification.number = mMailCount;
-            }
-            notification.defaults = 0;
-            notification.flags = Notification.FLAG_AUTO_CANCEL;
-            notificationManager.notify(mNotificationId + NOTIFICATIONID_MAIN, notification);
-        }
-
-        // 通知音・バイブレーション・LEDは別途通知
+        startIcon();
         startSound();
         startLed();
 
         mNotifyCount++;
         MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Notified: " + mMailbox +
                 " (service=" + mService + ", mail=" + mMailCount + ", notify=" + mNotifyCount + ")");
-
-        // 通知音停止タイマ
-        int soundLen = EmailNotifyPreferences.getNotifySoundLength(mCtx, mService);
-        if (soundLen > 0) {
-            long next = SystemClock.elapsedRealtime() + soundLen * 1000;
-            mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP_SOUND);
-            AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started stop timer for " + mMailbox);
-        }
 
         // 再通知タイマ
         if (EmailNotifyPreferences.getNotifyView(mCtx, mService) &&
@@ -174,7 +146,7 @@ public class EmailNotification {
         intent.setAction(EmailNotify.ACTION_MAIL_PUSH_RECEIVED);
         intent.putExtra("service", mService);
         intent.putExtra("mailbox", mMailbox);
-        intent.putExtra("timestamp", mReceiveDate);
+        intent.putExtra("timestamp", mTimestamp);
         intent.putExtra("count", mMailCount);
         mCtx.sendBroadcast(intent);
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Sent broadcast MAIL_PUSH_RECEIVED");
@@ -226,7 +198,35 @@ public class EmailNotification {
     }
 
     /**
-     * 通知音・バイブレーションを通知
+     * 通知アイコン表示
+     */
+    private void startIcon() {
+        NotificationManager notificationManager = (NotificationManager)
+        mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
+            Notification notification = new Notification(R.drawable.icon,
+                    mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
+            String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
+            if (mMailbox != null) {
+                message += " " + mMailbox;
+            }
+            notification.setLatestEventInfo(mCtx,
+                    mCtx.getResources().getString(R.string.app_name),
+                    message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
+            notification.deleteIntent =
+                    getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_CANCEL);
+            if (mMailCount > 1) {
+                notification.number = mMailCount;
+            }
+            notification.defaults = 0;
+            notification.flags = Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(mNotificationId + NOTIFICATIONID_ICON, notification);
+        }
+    }
+
+    /**
+     * 通知音・バイブレーションを開始
      */
     private void startSound() {
         NotificationManager notificationManager = (NotificationManager)
@@ -249,6 +249,16 @@ public class EmailNotification {
         notificationManager.notify(mNotificationId + NOTIFICATIONID_SOUND, notification);
         mActiveNotify |= NOTIFY_SOUND;
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started sound for " + mMailbox + ", active=" + mActiveNotify);
+
+        // 通知音停止タイマ
+        int soundLen = EmailNotifyPreferences.getNotifySoundLength(mCtx, mService);
+        if (soundLen > 0) {
+            long next = SystemClock.elapsedRealtime() + soundLen * 1000;
+            mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP_SOUND);
+            AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started stop timer for " + mMailbox);
+        }
     }
 
     /**
@@ -265,7 +275,7 @@ public class EmailNotification {
     }
 
     /**
-     * LEDを通知
+     * LEDを開始
      */
     private void startLed() {
         if (EmailNotifyPreferences.getNotifyLed(mCtx, mService)) {
@@ -339,7 +349,7 @@ public class EmailNotification {
         stop(NOTIFY_ALL);
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(mNotificationId + NOTIFICATIONID_MAIN);
+        notificationManager.cancel(mNotificationId + NOTIFICATIONID_ICON);
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Cleared notification for " + mMailbox);
 
         // 消去の記録
