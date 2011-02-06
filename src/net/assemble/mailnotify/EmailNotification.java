@@ -58,15 +58,31 @@ public class EmailNotification {
         mCtx = ctx;
         mService = service;
         mMailbox = mailbox;
+        mTimestamp = timestamp;
         if (timestamp == null) {
-            mTimestamp = Calendar.getInstance().getTime();
+            mNotifyTime = Calendar.getInstance().getTimeInMillis();
         } else {
-            mTimestamp = timestamp;
+            mNotifyTime = timestamp.getTime();
         }
         mNotificationId = notificationId;
-        mMailCount = 0;
+        mMailCount = 1;
         mNotifyCount = 0;
         mActiveNotify = 0;
+    }
+
+    /**
+     * 通知情報を更新
+     *
+     * @param timestamp タイムスタンプ
+     */
+    public void update(Date timestamp) {
+        mTimestamp = timestamp;
+        if (timestamp == null) {
+            mNotifyTime = Calendar.getInstance().getTimeInMillis();
+        } else {
+            mNotifyTime = timestamp.getTime();
+        }
+        mMailCount++;
     }
 
     /**
@@ -168,9 +184,11 @@ public class EmailNotification {
      * 通知を開始
      */
     public void start(boolean skipDelay) {
-        mNotifyTime = System.currentTimeMillis();
-        mMailCount++;
         mNotifyCount = 0;
+
+        if (mActiveNotify > 0) {
+            stop(NOTIFY_ALL);
+        }
 
         // 通知をブロードキャスト
         broadcastNotify();

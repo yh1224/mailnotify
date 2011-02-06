@@ -30,7 +30,7 @@ public class EmailNotificationManager {
     public static void showNotification(Context ctx, String service, String mailbox, Date timestamp) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
-            emn.clear();
+            emn.update(timestamp);
         } else {
             emn = new EmailNotification(ctx, service, mailbox, timestamp, getNextNotificationId());
             mNotifications.add(emn);
@@ -44,7 +44,7 @@ public class EmailNotificationManager {
     public static void testNotification(Context ctx, String service, String mailbox) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
-            emn.clear();
+            emn.update(null);
         } else {
             emn = new EmailNotification(ctx, service, mailbox, null, getNextNotificationId());
             mNotifications.add(emn);
