@@ -16,8 +16,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -51,13 +53,15 @@ public class EmailNotifyService extends Service {
         mScreenReceiver = new EmailNotifyScreenReceiver();
         registerReceiver(mScreenReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
-        // すでに通知したものは通知しないようにする
+        // 異常終了チェック
         mLastCheck = EmailNotifyPreferences.getLastCheck(this);
         if (mLastCheck != 0) {
             Date d = new Date(mLastCheck);
             MyLog.w(this, EmailNotify.TAG, "Service restarted unexpectedly. Last checked at " + d.toLocaleString());
+            // 未消去の通知を復元する
+            restoreNotifications();
         } else {
-            // 前回通知日時が存在しない場合、サービス開始以前を通知しない。
+            // 正常に終了していた場合、サービス開始以前のものを通知しない。
             mLastCheck = Calendar.getInstance().getTimeInMillis();
             EmailNotifyPreferences.setLastCheck(this, mLastCheck);
         }
@@ -320,7 +324,7 @@ public class EmailNotifyService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    doNotify(pdu);
+                    doNotify(pdu, false);
                 }
             });
         }
@@ -354,8 +358,9 @@ public class EmailNotifyService extends Service {
      * メール着信通知
      *
      * @param pdu WAP PDU
+     * @param restore 復元
      */
-    private void doNotify(WapPdu pdu) {
+    private void doNotify(WapPdu pdu, boolean restore) {
         String service = null;
         String mailbox = pdu.getMailbox();
 
@@ -384,7 +389,32 @@ public class EmailNotifyService extends Service {
 
         if (service != null) {
             EmailNotificationManager.showNotification(this,
-                    service, mailbox, pdu.getTimestampDate());
+                    service, mailbox, pdu.getTimestampDate(), restore);
+        }
+    }
+
+    /**
+     * 未消去の通知を復元する
+     *
+     * @param pdu WAP PDU
+     */
+    private void restoreNotifications() {
+        Cursor cur = EmailNotificationHistoryDao.getActiveHistories(this);
+        if (cur.moveToFirst()) {
+            do {
+                MyLog.d(this, EmailNotify.TAG, "Restoring notification: " +
+                        cur.getLong(cur.getColumnIndex(BaseColumns._ID)));
+                String wap_data = cur.getString(cur.getColumnIndex("wap_data"));
+                WapPdu pdu = new WapPdu(wap_data);
+                pdu.decode();
+                if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
+                    // 未通知なら改めて通知
+                    doNotify(pdu, false);
+                } else {
+                    // 通知済みなら表示のみ
+                    doNotify(pdu, true);
+                }
+            } while (cur.moveToNext());
         }
     }
 

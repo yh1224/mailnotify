@@ -218,7 +218,7 @@ public class EmailNotification {
     /**
      * 通知アイコン表示
      */
-    private void startIcon() {
+    public void startIcon() {
         NotificationManager notificationManager = (NotificationManager)
         mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -240,6 +240,7 @@ public class EmailNotification {
             notification.defaults = 0;
             notification.flags = Notification.FLAG_AUTO_CANCEL;
             notificationManager.notify(mNotificationId + NOTIFICATIONID_ICON, notification);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started icon for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 

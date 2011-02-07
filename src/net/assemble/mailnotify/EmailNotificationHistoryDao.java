@@ -42,6 +42,18 @@ public class EmailNotificationHistoryDao {
     }
 
     /**
+     * 未消去のメール受信履歴を取得
+     *
+     * @param ctx Context
+     * @return Cursor
+     */
+    public static Cursor getActiveHistories(Context ctx) {
+        Cursor c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+                null, "cleared_at IS NULL", null, null, null, null);
+        return c;
+    }
+
+    /**
      * メール受信履歴を1件取得
      *
      * @param ctx Context

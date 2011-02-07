@@ -50,6 +50,15 @@ public class WapPdu {
     }
 
     /**
+     * Constructor
+     *
+     * @param data WAP PDU
+     */
+    public WapPdu(String str) {
+        wapData = hex2bytes(str);
+    }
+
+    /**
      * WAP PDU解析 (基本ぱくり)
      *
      * frameworks/base/telephony/java/com/android/internal/telephony/WapPushOverSms.java
@@ -312,7 +321,7 @@ public class WapPdu {
      */
     public String getTimestampString() {
         if (timestamp != null) {
-            return byte2hex(timestamp);
+            return bytes2hex(timestamp);
         } else {
             return null;
         }
@@ -328,9 +337,9 @@ public class WapPdu {
         if (timestamp != null) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z");
-                date = sdf.parse(byte2hex(timestamp) + " GMT");
+                date = sdf.parse(bytes2hex(timestamp) + " GMT");
             } catch (ParseException e) {
-                Log.w(EmailNotify.TAG, "Unexpected timestamp: " + byte2hex(timestamp));
+                Log.w(EmailNotify.TAG, "Unexpected timestamp: " + bytes2hex(timestamp));
             }
         }
         return date;
@@ -342,25 +351,39 @@ public class WapPdu {
      * @return 16進数文字列
      */
     public String getHexString() {
-        return byte2hex(wapData);
+        return bytes2hex(wapData);
     }
 
     /**
-     * データの16進数文字列を取得
+     * バイトデータを16進数文字列に変換
      *
-     * @param data バイナリデータ
+     * @param bytes バイトデータ
      * @return 16進数文字列
      */
-    private String byte2hex(byte[] data) {
-        StringBuffer strbuf = new StringBuffer(data.length * 2);
-        for (int i = 0; i < data.length; i++) {
-            int bt = data[i] & 0xff;
+    public static String bytes2hex(byte[] bytes) {
+        StringBuffer strbuf = new StringBuffer(bytes.length * 2);
+        for (int i = 0; i < bytes.length; i++) {
+            int bt = bytes[i] & 0xff;
             if (bt < 0x10) {
                 strbuf.append("0");
             }
             strbuf.append(Integer.toHexString(bt));
         }
         return strbuf.toString();
+    }
+
+    /**
+     * 16進数文字列をバイトデータに変換
+     *
+     * @param hex 16進数文字列
+     * @return バイナリデータ
+     */
+    public static byte[] hex2bytes(String hex) {
+        byte[] bytes = new byte[hex.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) Integer.parseInt(hex.substring(i * 2, (i + 1) * 2), 16);
+        }
+        return bytes;
     }
 
 }

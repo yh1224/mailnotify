@@ -26,8 +26,9 @@ public class EmailNotificationManager {
      * @param service メールサービス名
      * @param mailbox メールボックス名
      * @param timestamp タイムスタンプ
+     * @param boolean 復元
      */
-    public static void showNotification(Context ctx, String service, String mailbox, Date timestamp) {
+    public static void showNotification(Context ctx, String service, String mailbox, Date timestamp, boolean restore) {
         EmailNotification emn = getNotification(mailbox, false);
         if (emn != null) {
             emn.update(timestamp);
@@ -35,7 +36,11 @@ public class EmailNotificationManager {
             emn = new EmailNotification(ctx, service, mailbox, timestamp, getNextNotificationId());
             mNotifications.add(emn);
         }
-        emn.start(false);
+        if (restore) {
+            emn.startIcon();
+        } else {
+            emn.start(false);
+        }
     }
 
     /**
