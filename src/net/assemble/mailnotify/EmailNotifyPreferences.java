@@ -1,5 +1,7 @@
 package net.assemble.mailnotify;
 
+import java.util.Calendar;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -109,6 +111,8 @@ public class EmailNotifyPreferences
 
     public static final String PREF_NOTIFY_INTENT_TO_IMONI_KEY = "notify_to_imoni";
     public static final boolean PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT = true;
+
+    public static final String PREF_EXCLUDE_HOURS_KEY = "exclude_hours";
 
     // 最終チェック日時保存用
     public static final String PREF_LAST_CHECK_KEY = "last_check";
@@ -510,6 +514,61 @@ public class EmailNotifyPreferences
         if (service.equals(SERVICE_IMODE)) {
             return pref.getBoolean(getServiceKey(PREF_NOTIFY_INTENT_TO_IMONI_KEY, service),
                 PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT);
+        }
+        return false;
+    }
+
+    /**
+     * 通知抑止期間設定を取得
+     *
+     * @return 開始時、終了時 (未設定、不正の場合はnull)
+     */
+    public static int[] getExcludeHours(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        // TODO: 試験実装中のため、サービス毎設定の有効無効に結び付けない。
+        String val = pref.getString(PREF_EXCLUDE_HOURS_KEY, null);
+        if (val != null) {
+            try {
+                String[] se = val.split("-");
+                if (se.length == 2) {
+                        int[] result = new int[2];
+                        result[0] = (int) Integer.parseInt(se[0]);
+                        result[1] = (int) Integer.parseInt(se[1]);
+                        if (result[0] >= 0 && result[0] <= 24 &&
+                                result[1] >= 0 && result[1] <= 24 &&
+                                result[0] != result[1]) {
+                            if (result[0] == 24) {
+                                result[0] = 0;
+                            }
+                            if (result[1] == 24) {
+                                result[1] = 0;
+                            }
+                            return result;
+                        }
+                }
+            } catch (NumberFormatException e) {}
+        }
+        return null;
+    }
+
+    /**
+     * 現在が通知抑止期間かどうか
+     */
+    public static boolean inExcludeHours(Context ctx, String service) {
+        int now = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int[] hours = getExcludeHours(ctx, service);
+        if (hours == null) {
+            // 指定なし
+            return true;
+        }
+        if (hours[0] <= hours[1]) { // start < end
+            if (hours[0] <= now && now < hours[1]) {
+                return true;
+            }
+        } else {    // start > end
+            if (hours[0] <= now || now < hours[1]) {
+                return true;
+            }
         }
         return false;
     }

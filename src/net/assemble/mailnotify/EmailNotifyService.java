@@ -388,6 +388,10 @@ public class EmailNotifyService extends Service {
         }
 
         if (service != null) {
+            if (EmailNotifyPreferences.inExcludeHours(this, service)) {
+                MyLog.d(this, EmailNotify.TAG, "This is exclude hours now.");
+                return;
+            }
             EmailNotificationManager.showNotification(this,
                     service, mailbox, pdu.getTimestampDate(), restore);
         }

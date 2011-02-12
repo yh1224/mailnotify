@@ -426,5 +426,9 @@
             android:summary="@string/pref_notify_auto_connect_spmode_summary"
             android:title="@string/pref_notify_auto_connect_spmode_title"
             android:defaultValue="false" android:dependency="service_spmode" />
+        <EditTextPreference android:key="exclude_hours"
+            android:summary="@string/pref_exclude_hours_summary"
+            android:title="@string/pref_exclude_hours_title"
+            android:inputType="textVisiblePassword" />
     </PreferenceCategory>
 </PreferenceScreen>

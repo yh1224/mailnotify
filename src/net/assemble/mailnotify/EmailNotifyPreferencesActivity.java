@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -68,6 +69,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyDelay;
     private Preference mPrefTestNotify;
 
+    private EditTextPreference mPrefExcludeHours;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +124,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         mPrefNotifyRenotifyCount = (NumberSeekbarPreference) findPreference("notify_renotify_count");
         mPrefNotifyDelay = (NumberSeekbarPreference) findPreference("notify_delay");
         mPrefTestNotify = (Preference) findPreference("test_notify");
+
+        mPrefExcludeHours = (EditTextPreference) findPreference("exclude_hours");
 
         updateSummary();
     }
@@ -177,6 +182,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             }
         } else if (preference == findPreference("notify_sound_length")) {
             alertMessage(R.string.pref_notify_sound_length_warning, null);
+        } else if (preference == findPreference("exclude_hours")) {
+            alertMessage(R.string.pref_exclude_hours_warning, null);
         } else if (preference == mPrefTestNotifyMopera) {
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
         } else if (preference == mPrefTestNotifySpmode) {
@@ -439,6 +446,18 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifySoundSpmode.setRingtoneType(RingtoneManager.TYPE_ALL);
             mPrefNotifySoundImode.setRingtoneType(RingtoneManager.TYPE_ALL);
             mPrefNotifySound.setRingtoneType(RingtoneManager.TYPE_ALL);
+        }
+        if (mPrefExcludeHours.getText() != null && mPrefExcludeHours.getText().length() > 0) {
+            int[] hours = EmailNotifyPreferences.getExcludeHours(this, EmailNotifyPreferences.SERVICE_OTHER);
+            if (hours != null) {
+                mPrefExcludeHours.setSummary(hours[0] +
+                        getResources().getString(R.string.pref_exclude_hours_from) +
+                        hours[1] + getResources().getString(R.string.pref_exclude_hours_to));
+            } else {
+                mPrefExcludeHours.setSummary(getResources().getString(R.string.pref_exclude_hours_invalid));
+            }
+        } else {
+            mPrefExcludeHours.setSummary(getResources().getString(R.string.pref_exclude_hours_summary));
         }
     }
 
