@@ -144,7 +144,7 @@ public class EmailNotificationManager {
     public static void showRestoreNetworkIcon(Context ctx) {
         NotificationManager notificationManager = (NotificationManager)
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.restore,
+        Notification notification = new Notification(R.drawable.restore_icon,
                 ctx.getResources().getString(R.string.app_name), System.currentTimeMillis());
         Intent restoreIntent = new Intent(ctx, EmailNotifyLaunchActivity.class);
         restoreIntent.setAction(EmailNotifyLaunchActivity.ACTION_RESTORE_NETWORK);
