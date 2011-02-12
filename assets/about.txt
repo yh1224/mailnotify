@@ -68,4 +68,4 @@ v2.0
 - メール着信監視の方法を変更
 - iモードメールに仮対応
 
-Copyright 2010 Orange leaf
+Copyright 2010-2011 Orange leaf
