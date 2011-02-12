@@ -140,6 +140,20 @@ public class EmailNotificationHistoryDao {
     }
 
     /**
+     * メール受信通知を無視したことを記録
+     *
+     * @param ctx Context
+     * @param id ID
+     */
+    public static void ignored(Context ctx, long id) {
+        ContentValues values = new ContentValues();
+        values.put("cleared_at", Calendar.getInstance().getTimeInMillis() / 1000);
+        getDb(ctx).update(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+                values, BaseColumns._ID + " = " + id, null);
+        return;
+    }
+
+    /**
      * 重複チェック
      *
      * @param ctx Context

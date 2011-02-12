@@ -318,13 +318,14 @@ public class EmailNotifyService extends Service {
             }
 
             // 記録
-            EmailNotificationHistoryDao.add(mCtx, logdate, pdu.getContentType(), pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
+            final long historyId = EmailNotificationHistoryDao.add(mCtx, logdate,
+                    pdu.getContentType(), pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
 
             // 通知
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    doNotify(pdu, false);
+                    doNotify(pdu, historyId, false);
                 }
             });
         }
@@ -360,7 +361,7 @@ public class EmailNotifyService extends Service {
      * @param pdu WAP PDU
      * @param restore 復元
      */
-    private void doNotify(WapPdu pdu, boolean restore) {
+    private void doNotify(WapPdu pdu, long historyId, boolean restore) {
         String service = null;
         String mailbox = pdu.getMailbox();
 
@@ -390,10 +391,14 @@ public class EmailNotifyService extends Service {
         if (service != null) {
             if (EmailNotifyPreferences.inExcludeHours(this, service)) {
                 MyLog.d(this, EmailNotify.TAG, "This is exclude hours now.");
+                // PENDING: あとで通知する?
+                EmailNotificationHistoryDao.ignored(this, historyId);
                 return;
             }
             EmailNotificationManager.showNotification(this,
                     service, mailbox, pdu.getTimestampDate(), restore);
+        } else {
+            EmailNotificationHistoryDao.ignored(this, historyId);
         }
     }
 
@@ -406,17 +411,17 @@ public class EmailNotifyService extends Service {
         Cursor cur = EmailNotificationHistoryDao.getActiveHistories(this);
         if (cur.moveToFirst()) {
             do {
-                MyLog.d(this, EmailNotify.TAG, "Restoring notification: " +
-                        cur.getLong(cur.getColumnIndex(BaseColumns._ID)));
+                long id = cur.getLong(cur.getColumnIndex(BaseColumns._ID)); 
+                MyLog.d(this, EmailNotify.TAG, "Restoring notification: " + id);
                 String wap_data = cur.getString(cur.getColumnIndex("wap_data"));
                 WapPdu pdu = new WapPdu(wap_data);
                 pdu.decode();
                 if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
                     // 未通知なら改めて通知
-                    doNotify(pdu, false);
+                    doNotify(pdu, id, false);
                 } else {
                     // 通知済みなら表示のみ
-                    doNotify(pdu, true);
+                    doNotify(pdu, id, true);
                 }
             } while (cur.moveToNext());
         }
