@@ -25,18 +25,16 @@
     <string name="pref_group_observe">メール着信監視設定</string>
     <string name="pref_notification_icon_title">監視アイコン</string>
     <string name="pref_notification_icon_summary">通知バーに常にアイコンを表示します。</string>
-    <string name="pref_group_service">メールサービス設定</string>
+    <string name="pref_services_title">メールサービス</string>
+    <string name="pref_services_summary">監視するメールサービスを指定します。</string>
     <string name="pref_service_mopera_title">mopera Uメール</string>
-    <string name="pref_service_mopera_summary">mopera Uメールの着信を通知します。</string>
     <string name="pref_service_spmode_title">spモードメール</string>
-    <string name="pref_service_spmode_summary">spモードメールの着信を通知します。</string>
     <string name="pref_service_imode_title">iモードメール</string>
-    <string name="pref_service_imode_summary">iモードメールの着信を通知します。(サポート対象外)</string>
-    <string name="pref_service_imode_warning">iモードメールに対する通知は確実ではありませんのでご了承ください。\n\n-
+    <string name="pref_service_imode_warning">iモードメールには、サービス側の仕様のため以下の制限があります。\n\n-
         3G接続中には通知が届かないようです。\n-
-        iモード.netへのログイン通知メールも通知されます。\n\niモードメール通知を有効にしますか?</string>
+        iモード.netへのログイン通知メールも通知されます。\n\niモードメールの通知を有効にしますか?</string>
     <string name="pref_service_other_title">その他</string>
-    <string name="pref_service_other_summary">上記のサービス以外(解析できなかった場合を含む)でも通知します。</string>
+    <string name="pref_service_other_summary">上記以外の WAP PUSH 受信時 (解析失敗を含む)</string>
     <string name="pref_notify_mopera_title">mopera Uメール通知設定</string>
     <string name="pref_notify_spmode_title">spモードメール通知設定</string>
     <string name="pref_notify_imode_title">iモードメール通知設定</string>
