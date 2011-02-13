@@ -13,9 +13,21 @@ public class EmailNotify {
 
     public static final String ACTION_MAIL_PUSH_RECEIVED = "net.assemble.emailnotify.MAIL_PUSH_RECEIVED";
 
+    /**
+     * デバッグ版
+     */
     public static final boolean DEBUG = false;
+
+    /**
+     * 無料版 (機能制限あり)
+     */
     public static final boolean FREE_VERSION = false;
-    public static final String FREE_EXPIRES = "2010/10/03";
+
+    /**
+     * 使用期限
+     */
+    public static final String TRIAL_EXPIRES = null;
+    //public static final String TRIAL_EXPIRES = "yyyy/MM/dd";
 
     /**
      * 有効期限チェック
@@ -25,11 +37,11 @@ public class EmailNotify {
      */
     @SuppressWarnings("unused")
     public static boolean checkExpiration(Context ctx) {
-        if (FREE_VERSION && FREE_EXPIRES != null) {
+        if (TRIAL_EXPIRES != null) {
             Date today = new Date();
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-                Date expire_date = sdf.parse(EmailNotify.FREE_EXPIRES);
+                Date expire_date = sdf.parse(EmailNotify.TRIAL_EXPIRES);
                 if (today.compareTo(expire_date) > 0) {
                     EmailNotificationManager.showExpiredNotification(ctx);
                     Log.d(TAG, "Expired.");

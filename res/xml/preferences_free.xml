@@ -1,0 +1,50 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_group_observe">
+        <PreferenceScreen android:title="@string/pref_services_title"
+            android:summary="@string/pref_services_summary">
+            <CheckBoxPreference android:key="service_mopera"
+                android:title="@string/pref_service_mopera_title"
+                android:defaultValue="true" />
+            <CheckBoxPreference android:key="service_spmode"
+                android:title="@string/pref_service_spmode_title"
+                android:defaultValue="true" />
+            <CheckBoxPreference android:key="service_imode"
+                android:title="@string/pref_service_imode_title"
+                android:defaultValue="false" />
+            <CheckBoxPreference android:key="service_other"
+                android:summary="@string/pref_service_other_summary"
+                android:title="@string/pref_service_other_title"
+                android:defaultValue="true" />
+        </PreferenceScreen>
+        <CheckBoxPreference android:key="notify_to_imoni_imode"
+            android:summary="@string/pref_notify_to_imoni_summary"
+            android:title="@string/pref_notify_to_imoni_title"
+            android:defaultValue="true" android:dependency="service_imode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_group_notify">
+        <RingtonePreference android:key="notify_sound"
+            android:title="@string/pref_notify_sound_title"
+            android:summary="@string/pref_notify_sound_summary"
+            android:ringtoneType="notification"
+            android:defaultValue="content://settings/system/notification_sound" />
+        <CheckBoxPreference android:key="notify_vibration"
+            android:summary="@string/pref_notify_vibration_summary"
+            android:title="@string/pref_notify_vibration_title"
+            android:defaultValue="true" />
+        <Preference android:key="notify_launch_app"
+            android:summary="@string/pref_notify_launch_app_summary"
+            android:title="@string/pref_notify_launch_app_title" />
+        <Preference android:title="@string/test_notify"
+            android:key="test_notify" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_group_experimental">
+        <CheckBoxPreference android:key="notify_auto_connect_spmode"
+            android:summary="@string/pref_notify_auto_connect_spmode_summary"
+            android:title="@string/pref_notify_auto_connect_spmode_title"
+            android:defaultValue="false" android:dependency="service_spmode" />
+        <EditTextPreference android:key="exclude_hours"
+            android:summary="@string/pref_exclude_hours_summary"
+            android:title="@string/pref_exclude_hours_title"
+            android:inputType="textVisiblePassword" />
+    </PreferenceCategory>
+</PreferenceScreen>

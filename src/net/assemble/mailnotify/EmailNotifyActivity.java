@@ -1,7 +1,13 @@
 package net.assemble.mailnotify;
 
+import com.admob.android.ads.AdManager;
+import com.admob.android.ads.AdView;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +27,11 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        if (EmailNotify.FREE_VERSION) {
+            setContentView(R.layout.main_free);
+        } else {
+            setContentView(R.layout.main);
+        }
 
         mEnableButton = (ToggleButton) findViewById(R.id.enable);
         mEnableButton.setOnClickListener(this);
@@ -38,6 +48,26 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         }
 
         updateService();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // AdMob
+        if (EmailNotify.FREE_VERSION) {
+            AdView adView = (AdView) findViewById(R.id.ad);
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                //AdManager.setTestDevices( new String[] { "388141A967D061433E2A0DD6CD552C68" });
+                adView.requestFreshAd();
+                adView.setVisibility(View.VISIBLE);
+            } else {
+                // ネットワーク未接続時はエラーになるので表示しない
+                adView.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     /**
@@ -62,8 +92,8 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             });
         }
 
-        // 購入メニュー (FREE版のみ)
-        if (EmailNotify.FREE_VERSION) {
+        // 購入メニュー (FREE/TRIAL版)
+        if (EmailNotify.FREE_VERSION || EmailNotify.TRIAL_EXPIRES != null) {
             if (!EmailNotifyPreferences.getLicense(this)) {
                 MenuItem menuBuy = menu.add(R.string.buy);
                 menuBuy.setIcon(android.R.drawable.ic_menu_more);

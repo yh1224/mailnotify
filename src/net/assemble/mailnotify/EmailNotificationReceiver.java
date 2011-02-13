@@ -9,10 +9,10 @@ import android.util.Log;
  * メール着信通知からのインテント受信
  */
 public class EmailNotificationReceiver extends BroadcastReceiver {
-    public static final String ACTION_NOTIFY_LAUNCH = "net.assemble.mailnotify.action.NOTIFY_CLICK";
-    public static final String ACTION_NOTIFY_CANCEL = "net.assemble.mailnotify.action.NOTIFY_CANCEL";
-    public static final String ACTION_STOP_SOUND = "net.assemble.mailnotify.action.NOTIFY_STOP_SOUND";
-    public static final String ACTION_RENOTIFY = "net.assemble.mailnotify.action.RENOTIFY";
+    public static final String ACTION_NOTIFY_LAUNCH = "net.assemble.emailnotify.action.NOTIFY_CLICK";
+    public static final String ACTION_NOTIFY_CANCEL = "net.assemble.emailnotify.action.NOTIFY_CANCEL";
+    public static final String ACTION_STOP_SOUND = "net.assemble.emailnotify.action.NOTIFY_STOP_SOUND";
+    public static final String ACTION_RENOTIFY = "net.assemble.emailnotify.action.RENOTIFY";
 
     @Override
     public void onReceive(Context ctx, Intent intent) {

@@ -76,53 +76,61 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
+        if (EmailNotify.FREE_VERSION) {
+            addPreferencesFromResource(R.xml.preferences_free);
+        } else {
+            addPreferencesFromResource(R.xml.preferences);
+        }
 
-        // mopera Uメール通知設定
-        mPrefServiceMopera = (CheckBoxPreference) findPreference("service_mopera");
-        mPrefNotifySoundMopera = (RingtonePreference) findPreference("notify_sound_mopera");
-        mPrefNotifyVibrationPatternMopera = (ListPreference) findPreference("notify_vibration_pattern_mopera");
-        mPrefNotifyVibrationLengthMopera = (NumberSeekbarPreference) findPreference("notify_vibration_length_mopera");
-        mPrefNotifyLedColorMopera = (ListPreference) findPreference("notify_led_color_mopera");
-        mPrefNotifyLaunchAppMopera = findPreference("notify_launch_app_mopera");
-        mPrefNotifyRenotifyIntervalMopera = (NumberSeekbarPreference) findPreference("notify_renotify_interval_mopera");
-        mPrefNotifyRenotifyCountMopera = (NumberSeekbarPreference) findPreference("notify_renotify_count_mopera");
-        mPrefNotifyDelayMopera = (NumberSeekbarPreference) findPreference("notify_delay_mopera");
-        mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
+        if (!EmailNotify.FREE_VERSION) {
+            // mopera Uメール通知設定
+            mPrefServiceMopera = (CheckBoxPreference) findPreference("service_mopera");
+            mPrefNotifySoundMopera = (RingtonePreference) findPreference("notify_sound_mopera");
+            mPrefNotifyVibrationPatternMopera = (ListPreference) findPreference("notify_vibration_pattern_mopera");
+            mPrefNotifyVibrationLengthMopera = (NumberSeekbarPreference) findPreference("notify_vibration_length_mopera");
+            mPrefNotifyLedColorMopera = (ListPreference) findPreference("notify_led_color_mopera");
+            mPrefNotifyLaunchAppMopera = findPreference("notify_launch_app_mopera");
+            mPrefNotifyRenotifyIntervalMopera = (NumberSeekbarPreference) findPreference("notify_renotify_interval_mopera");
+            mPrefNotifyRenotifyCountMopera = (NumberSeekbarPreference) findPreference("notify_renotify_count_mopera");
+            mPrefNotifyDelayMopera = (NumberSeekbarPreference) findPreference("notify_delay_mopera");
+            mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
 
-        // spモードメール通知設定
-        mPrefServiceSpmode = (CheckBoxPreference) findPreference("service_spmode");
-        mPrefNotifySoundSpmode = (RingtonePreference) findPreference("notify_sound_spmode");
-        mPrefNotifyVibrationPatternSpmode = (ListPreference) findPreference("notify_vibration_pattern_spmode");
-        mPrefNotifyVibrationLengthSpmode = (NumberSeekbarPreference) findPreference("notify_vibration_length_spmode");
-        mPrefNotifyLedColorSpmode = (ListPreference) findPreference("notify_led_color_spmode");
-        mPrefNotifyLaunchAppSpmode = findPreference("notify_launch_app_spmode");
-        mPrefNotifyRenotifyIntervalSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_spmode");
-        mPrefNotifyRenotifyCountSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_count_spmode");
-        mPrefNotifyDelaySpmode = (NumberSeekbarPreference) findPreference("notify_delay_spmode");
-        mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
+            // spモードメール通知設定
+            mPrefServiceSpmode = (CheckBoxPreference) findPreference("service_spmode");
+            mPrefNotifySoundSpmode = (RingtonePreference) findPreference("notify_sound_spmode");
+            mPrefNotifyVibrationPatternSpmode = (ListPreference) findPreference("notify_vibration_pattern_spmode");
+            mPrefNotifyVibrationLengthSpmode = (NumberSeekbarPreference) findPreference("notify_vibration_length_spmode");
+            mPrefNotifyLedColorSpmode = (ListPreference) findPreference("notify_led_color_spmode");
+            mPrefNotifyLaunchAppSpmode = findPreference("notify_launch_app_spmode");
+            mPrefNotifyRenotifyIntervalSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_spmode");
+            mPrefNotifyRenotifyCountSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_count_spmode");
+            mPrefNotifyDelaySpmode = (NumberSeekbarPreference) findPreference("notify_delay_spmode");
+            mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
 
-        // iモードメール通知設定
-        mPrefNotifySoundImode = (RingtonePreference) findPreference("notify_sound_imode");
-        mPrefNotifyVibrationPatternImode = (ListPreference) findPreference("notify_vibration_pattern_imode");
-        mPrefNotifyVibrationLengthImode = (NumberSeekbarPreference) findPreference("notify_vibration_length_imode");
-        mPrefNotifyLedColorImode = (ListPreference) findPreference("notify_led_color_imode");
-        mPrefNotifyLaunchAppImode = findPreference("notify_launch_app_imode");
-        mPrefNotifyRenotifyIntervalImode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_imode");
-        mPrefNotifyRenotifyCountImode = (NumberSeekbarPreference) findPreference("notify_renotify_count_imode");
-        mPrefNotifyDelayImode = (NumberSeekbarPreference) findPreference("notify_delay_imode");
-        mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
+            // iモードメール通知設定
+            mPrefNotifySoundImode = (RingtonePreference) findPreference("notify_sound_imode");
+            mPrefNotifyVibrationPatternImode = (ListPreference) findPreference("notify_vibration_pattern_imode");
+            mPrefNotifyVibrationLengthImode = (NumberSeekbarPreference) findPreference("notify_vibration_length_imode");
+            mPrefNotifyLedColorImode = (ListPreference) findPreference("notify_led_color_imode");
+            mPrefNotifyLaunchAppImode = findPreference("notify_launch_app_imode");
+            mPrefNotifyRenotifyIntervalImode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_imode");
+            mPrefNotifyRenotifyCountImode = (NumberSeekbarPreference) findPreference("notify_renotify_count_imode");
+            mPrefNotifyDelayImode = (NumberSeekbarPreference) findPreference("notify_delay_imode");
+            mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
+        }
 
         // 基本通知設定
         mPrefNotifySound = (RingtonePreference) findPreference("notify_sound");
-        mPrefNotifySoundLength = (NumberSeekbarPreference) findPreference("notify_sound_length");
-        mPrefNotifyVibrationPattern = (ListPreference) findPreference("notify_vibration_pattern");
-        mPrefNotifyVibrationLength = (NumberSeekbarPreference) findPreference("notify_vibration_length");
-        mPrefNotifyLedColor = (ListPreference) findPreference("notify_led_color");
         mPrefNotifyLaunchApp = findPreference("notify_launch_app");
-        mPrefNotifyRenotifyInterval = (NumberSeekbarPreference) findPreference("notify_renotify_interval");
-        mPrefNotifyRenotifyCount = (NumberSeekbarPreference) findPreference("notify_renotify_count");
-        mPrefNotifyDelay = (NumberSeekbarPreference) findPreference("notify_delay");
+        if (!EmailNotify.FREE_VERSION) {
+            mPrefNotifySoundLength = (NumberSeekbarPreference) findPreference("notify_sound_length");
+            mPrefNotifyVibrationPattern = (ListPreference) findPreference("notify_vibration_pattern");
+            mPrefNotifyVibrationLength = (NumberSeekbarPreference) findPreference("notify_vibration_length");
+            mPrefNotifyLedColor = (ListPreference) findPreference("notify_led_color");
+            mPrefNotifyRenotifyInterval = (NumberSeekbarPreference) findPreference("notify_renotify_interval");
+            mPrefNotifyRenotifyCount = (NumberSeekbarPreference) findPreference("notify_renotify_count");
+            mPrefNotifyDelay = (NumberSeekbarPreference) findPreference("notify_delay");
+        }
         mPrefTestNotify = (Preference) findPreference("test_notify");
 
         mPrefExcludeHours = (EditTextPreference) findPreference("exclude_hours");
@@ -274,178 +282,186 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private void updateSummary() {
         String launchAppName;
 
-        if (EmailNotifyPreferences.getLynxWorkaround(this)) {
-            // LYNX(SH-10B)では鳴り分けは不可
-            mPrefServiceMopera.setEnabled(false);
-            mPrefServiceSpmode.setEnabled(false);
+        if (!EmailNotify.FREE_VERSION) {
+            if (EmailNotifyPreferences.getLynxWorkaround(this)) {
+                // LYNX(SH-10B)では鳴り分けは不可
+                mPrefServiceMopera.setEnabled(false);
+                mPrefServiceSpmode.setEnabled(false);
+            }
         }
 
-        // mopera Uメール通知設定
-        mPrefNotifyVibrationPatternMopera.setSummary(
-            getEntryString(mPrefNotifyVibrationPatternMopera.getValue(),
-                getResources().getStringArray(R.array.entries_vibration_pattern),
-                getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
-        mPrefNotifyVibrationLengthMopera.setSummary(
-                mPrefNotifyVibrationLengthMopera.getValue() +
-                getResources().getString(R.string.pref_notify_vibration_length_unit));
-        mPrefNotifyLedColorMopera.setSummary(
-            getEntryString(mPrefNotifyLedColorMopera.getValue(),
-                getResources().getStringArray(R.array.entries_led_color),
-                getResources().getStringArray(R.array.entryvalues_led_color)));
-        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_MOPERA);
-        if (launchAppName != null) {
-            mPrefNotifyLaunchAppMopera.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
-        }
-        mPrefNotifyRenotifyIntervalMopera.setSummary(
-                mPrefNotifyRenotifyIntervalMopera.getValue() +
-                getResources().getString(R.string.pref_notify_renotify_interval_unit));
-        if (mPrefNotifyRenotifyCountMopera.getValue() == 0) {
-            mPrefNotifyRenotifyCountMopera.setSummary(
-                    getResources().getString(R.string.pref_notify_renotify_count_zero));
-        } else {
-            mPrefNotifyRenotifyCountMopera.setSummary(
-                    mPrefNotifyRenotifyCountMopera.getValue() +
-                    getResources().getString(R.string.pref_notify_renotify_count_unit));
-        }
-        if (mPrefNotifyDelayMopera.getValue() == 0) {
-            mPrefNotifyDelayMopera.setSummary(
-                    getResources().getString(R.string.pref_notify_delay_summary));
-        } else {
-            mPrefNotifyDelayMopera.setSummary(
-                    mPrefNotifyDelayMopera.getValue() +
-                    getResources().getString(R.string.pref_notify_delay_unit));
-        }
-
-        // spモードメール通知設定
-        mPrefNotifyVibrationPatternSpmode.setSummary(
-            getEntryString(mPrefNotifyVibrationPatternSpmode.getValue(),
-                getResources().getStringArray(R.array.entries_vibration_pattern),
-                getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
-        mPrefNotifyVibrationLengthSpmode.setSummary(
-                mPrefNotifyVibrationLengthSpmode.getValue() +
-                getResources().getString(R.string.pref_notify_vibration_length_unit));
-        mPrefNotifyLedColorSpmode.setSummary(
-            getEntryString(mPrefNotifyLedColorSpmode.getValue(),
-                getResources().getStringArray(R.array.entries_led_color),
-                getResources().getStringArray(R.array.entryvalues_led_color)));
-        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_SPMODE);
-        if (launchAppName != null) {
-            mPrefNotifyLaunchAppSpmode.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
-        }
-        mPrefNotifyRenotifyIntervalSpmode.setSummary(
-                mPrefNotifyRenotifyIntervalSpmode.getValue() +
-                getResources().getString(R.string.pref_notify_renotify_interval_unit));
-        if (mPrefNotifyRenotifyCountSpmode.getValue() == 0) {
-            mPrefNotifyRenotifyCountSpmode.setSummary(
-                    getResources().getString(R.string.pref_notify_renotify_count_zero));
-        } else {
-            mPrefNotifyRenotifyCountSpmode.setSummary(
-                    mPrefNotifyRenotifyCountSpmode.getValue() +
-                    getResources().getString(R.string.pref_notify_renotify_count_unit));
-        }
-        if (mPrefNotifyDelaySpmode.getValue() == 0) {
-            mPrefNotifyDelaySpmode.setSummary(
-                    getResources().getString(R.string.pref_notify_delay_summary));
-        } else {
-            mPrefNotifyDelaySpmode.setSummary(
-                    mPrefNotifyDelaySpmode.getValue() +
-                    getResources().getString(R.string.pref_notify_delay_unit));
-        }
-
-        // iモードメール通知設定
-        mPrefNotifyVibrationPatternImode.setSummary(
-            getEntryString(mPrefNotifyVibrationPatternImode.getValue(),
-                getResources().getStringArray(R.array.entries_vibration_pattern),
-                getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
-        mPrefNotifyVibrationLengthImode.setSummary(
-                mPrefNotifyVibrationLengthImode.getValue() +
-                getResources().getString(R.string.pref_notify_vibration_length_unit));
-        mPrefNotifyLedColorImode.setSummary(
-            getEntryString(mPrefNotifyLedColorImode.getValue(),
-                getResources().getStringArray(R.array.entries_led_color),
-                getResources().getStringArray(R.array.entryvalues_led_color)));
-        launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_IMODE);
-        if (launchAppName != null) {
-            mPrefNotifyLaunchAppImode.setSummary(
-                    getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
-        }
-        mPrefNotifyRenotifyIntervalImode.setSummary(
-                mPrefNotifyRenotifyIntervalImode.getValue() +
-                getResources().getString(R.string.pref_notify_renotify_interval_unit));
-        if (mPrefNotifyRenotifyCountImode.getValue() == 0) {
-            mPrefNotifyRenotifyCountImode.setSummary(
-                    getResources().getString(R.string.pref_notify_renotify_count_zero));
-        } else {
-            mPrefNotifyRenotifyCountImode.setSummary(
-                    mPrefNotifyRenotifyCountImode.getValue() +
-                    getResources().getString(R.string.pref_notify_renotify_count_unit));
-        }
-        if (mPrefNotifyDelayImode.getValue() == 0) {
-            mPrefNotifyDelayImode.setSummary(
-                    getResources().getString(R.string.pref_notify_delay_summary));
-        } else {
-            mPrefNotifyDelayImode.setSummary(
-                    mPrefNotifyDelayImode.getValue() +
-                    getResources().getString(R.string.pref_notify_delay_unit));
+        if (!EmailNotify.FREE_VERSION) {
+            // mopera Uメール通知設定
+            mPrefNotifyVibrationPatternMopera.setSummary(
+                getEntryString(mPrefNotifyVibrationPatternMopera.getValue(),
+                    getResources().getStringArray(R.array.entries_vibration_pattern),
+                    getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
+            mPrefNotifyVibrationLengthMopera.setSummary(
+                    mPrefNotifyVibrationLengthMopera.getValue() +
+                    getResources().getString(R.string.pref_notify_vibration_length_unit));
+            mPrefNotifyLedColorMopera.setSummary(
+                getEntryString(mPrefNotifyLedColorMopera.getValue(),
+                    getResources().getStringArray(R.array.entries_led_color),
+                    getResources().getStringArray(R.array.entryvalues_led_color)));
+            launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_MOPERA);
+            if (launchAppName != null) {
+                mPrefNotifyLaunchAppMopera.setSummary(
+                        getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
+            }
+            mPrefNotifyRenotifyIntervalMopera.setSummary(
+                    mPrefNotifyRenotifyIntervalMopera.getValue() +
+                    getResources().getString(R.string.pref_notify_renotify_interval_unit));
+            if (mPrefNotifyRenotifyCountMopera.getValue() == 0) {
+                mPrefNotifyRenotifyCountMopera.setSummary(
+                        getResources().getString(R.string.pref_notify_renotify_count_zero));
+            } else {
+                mPrefNotifyRenotifyCountMopera.setSummary(
+                        mPrefNotifyRenotifyCountMopera.getValue() +
+                        getResources().getString(R.string.pref_notify_renotify_count_unit));
+            }
+            if (mPrefNotifyDelayMopera.getValue() == 0) {
+                mPrefNotifyDelayMopera.setSummary(
+                        getResources().getString(R.string.pref_notify_delay_summary));
+            } else {
+                mPrefNotifyDelayMopera.setSummary(
+                        mPrefNotifyDelayMopera.getValue() +
+                        getResources().getString(R.string.pref_notify_delay_unit));
+            }
+    
+            // spモードメール通知設定
+            mPrefNotifyVibrationPatternSpmode.setSummary(
+                getEntryString(mPrefNotifyVibrationPatternSpmode.getValue(),
+                    getResources().getStringArray(R.array.entries_vibration_pattern),
+                    getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
+            mPrefNotifyVibrationLengthSpmode.setSummary(
+                    mPrefNotifyVibrationLengthSpmode.getValue() +
+                    getResources().getString(R.string.pref_notify_vibration_length_unit));
+            mPrefNotifyLedColorSpmode.setSummary(
+                getEntryString(mPrefNotifyLedColorSpmode.getValue(),
+                    getResources().getStringArray(R.array.entries_led_color),
+                    getResources().getStringArray(R.array.entryvalues_led_color)));
+            launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_SPMODE);
+            if (launchAppName != null) {
+                mPrefNotifyLaunchAppSpmode.setSummary(
+                        getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
+            }
+            mPrefNotifyRenotifyIntervalSpmode.setSummary(
+                    mPrefNotifyRenotifyIntervalSpmode.getValue() +
+                    getResources().getString(R.string.pref_notify_renotify_interval_unit));
+            if (mPrefNotifyRenotifyCountSpmode.getValue() == 0) {
+                mPrefNotifyRenotifyCountSpmode.setSummary(
+                        getResources().getString(R.string.pref_notify_renotify_count_zero));
+            } else {
+                mPrefNotifyRenotifyCountSpmode.setSummary(
+                        mPrefNotifyRenotifyCountSpmode.getValue() +
+                        getResources().getString(R.string.pref_notify_renotify_count_unit));
+            }
+            if (mPrefNotifyDelaySpmode.getValue() == 0) {
+                mPrefNotifyDelaySpmode.setSummary(
+                        getResources().getString(R.string.pref_notify_delay_summary));
+            } else {
+                mPrefNotifyDelaySpmode.setSummary(
+                        mPrefNotifyDelaySpmode.getValue() +
+                        getResources().getString(R.string.pref_notify_delay_unit));
+            }
+    
+            // iモードメール通知設定
+            mPrefNotifyVibrationPatternImode.setSummary(
+                getEntryString(mPrefNotifyVibrationPatternImode.getValue(),
+                    getResources().getStringArray(R.array.entries_vibration_pattern),
+                    getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
+            mPrefNotifyVibrationLengthImode.setSummary(
+                    mPrefNotifyVibrationLengthImode.getValue() +
+                    getResources().getString(R.string.pref_notify_vibration_length_unit));
+            mPrefNotifyLedColorImode.setSummary(
+                getEntryString(mPrefNotifyLedColorImode.getValue(),
+                    getResources().getStringArray(R.array.entries_led_color),
+                    getResources().getStringArray(R.array.entryvalues_led_color)));
+            launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, EmailNotifyPreferences.SERVICE_IMODE);
+            if (launchAppName != null) {
+                mPrefNotifyLaunchAppImode.setSummary(
+                        getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
+            }
+            mPrefNotifyRenotifyIntervalImode.setSummary(
+                    mPrefNotifyRenotifyIntervalImode.getValue() +
+                    getResources().getString(R.string.pref_notify_renotify_interval_unit));
+            if (mPrefNotifyRenotifyCountImode.getValue() == 0) {
+                mPrefNotifyRenotifyCountImode.setSummary(
+                        getResources().getString(R.string.pref_notify_renotify_count_zero));
+            } else {
+                mPrefNotifyRenotifyCountImode.setSummary(
+                        mPrefNotifyRenotifyCountImode.getValue() +
+                        getResources().getString(R.string.pref_notify_renotify_count_unit));
+            }
+            if (mPrefNotifyDelayImode.getValue() == 0) {
+                mPrefNotifyDelayImode.setSummary(
+                        getResources().getString(R.string.pref_notify_delay_summary));
+            } else {
+                mPrefNotifyDelayImode.setSummary(
+                        mPrefNotifyDelayImode.getValue() +
+                        getResources().getString(R.string.pref_notify_delay_unit));
+            }
         }
 
         // 基本通知設定
-        mPrefNotifyVibrationPattern.setSummary(
-            getEntryString(mPrefNotifyVibrationPattern.getValue(),
-                getResources().getStringArray(R.array.entries_vibration_pattern),
-                getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
-        mPrefNotifyVibrationLength.setSummary(
-                mPrefNotifyVibrationLength.getValue() +
-                getResources().getString(R.string.pref_notify_vibration_length_unit));
-        mPrefNotifyLedColor.setSummary(
-            getEntryString(mPrefNotifyLedColor.getValue(),
-                getResources().getStringArray(R.array.entries_led_color),
-                getResources().getStringArray(R.array.entryvalues_led_color)));
         launchAppName = EmailNotifyPreferences.getNotifyLaunchAppName(this, null);
         if (launchAppName != null) {
             mPrefNotifyLaunchApp.setSummary(
                     getResources().getString(R.string.pref_notify_launch_app_is) + "\n" + launchAppName);
         }
-        mPrefNotifyRenotifyInterval.setSummary(
-                mPrefNotifyRenotifyInterval.getValue() +
-                getResources().getString(R.string.pref_notify_renotify_interval_unit));
-        if (mPrefNotifyRenotifyCount.getValue() == 0) {
-            mPrefNotifyRenotifyCount.setSummary(
-                    getResources().getString(R.string.pref_notify_renotify_count_zero));
-        } else {
-            mPrefNotifyRenotifyCount.setSummary(
-                    mPrefNotifyRenotifyCount.getValue() +
-                    getResources().getString(R.string.pref_notify_renotify_count_unit));
-        }
-        if (mPrefNotifyDelay.getValue() == 0) {
-            mPrefNotifyDelay.setSummary(
-                    getResources().getString(R.string.pref_notify_delay_summary));
-        } else {
-            mPrefNotifyDelay.setSummary(
-                    mPrefNotifyDelay.getValue() +
-                    getResources().getString(R.string.pref_notify_delay_unit));
+        if (!EmailNotify.FREE_VERSION) {
+            mPrefNotifyVibrationPattern.setSummary(
+                getEntryString(mPrefNotifyVibrationPattern.getValue(),
+                    getResources().getStringArray(R.array.entries_vibration_pattern),
+                    getResources().getStringArray(R.array.entryvalues_vibration_pattern)));
+            mPrefNotifyVibrationLength.setSummary(
+                    mPrefNotifyVibrationLength.getValue() +
+                    getResources().getString(R.string.pref_notify_vibration_length_unit));
+            mPrefNotifyLedColor.setSummary(
+                getEntryString(mPrefNotifyLedColor.getValue(),
+                    getResources().getStringArray(R.array.entries_led_color),
+                    getResources().getStringArray(R.array.entryvalues_led_color)));
+            mPrefNotifyRenotifyInterval.setSummary(
+                    mPrefNotifyRenotifyInterval.getValue() +
+                    getResources().getString(R.string.pref_notify_renotify_interval_unit));
+            if (mPrefNotifyRenotifyCount.getValue() == 0) {
+                mPrefNotifyRenotifyCount.setSummary(
+                        getResources().getString(R.string.pref_notify_renotify_count_zero));
+            } else {
+                mPrefNotifyRenotifyCount.setSummary(
+                        mPrefNotifyRenotifyCount.getValue() +
+                        getResources().getString(R.string.pref_notify_renotify_count_unit));
+            }
+            if (mPrefNotifyDelay.getValue() == 0) {
+                mPrefNotifyDelay.setSummary(
+                        getResources().getString(R.string.pref_notify_delay_summary));
+            } else {
+                mPrefNotifyDelay.setSummary(
+                        mPrefNotifyDelay.getValue() +
+                        getResources().getString(R.string.pref_notify_delay_unit));
+            }
         }
 
         // その他
-        if (mPrefNotifySoundLength.getValue() == 0) {
-            mPrefNotifySoundLength.setSummary(
-                    getResources().getString(R.string.pref_notify_sound_length_summary));
-            // 通知音長が設定されていない場合は、通知音のみ選択可能。
-            mPrefNotifySoundMopera.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
-            mPrefNotifySoundSpmode.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
-            mPrefNotifySoundImode.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
-            mPrefNotifySound.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
-        } else {
-            mPrefNotifySoundLength.setSummary(
-                    mPrefNotifySoundLength.getValue() +
-                    getResources().getString(R.string.pref_notify_sound_length_unit));
-            // 通知音長が設定されている場合のみ、着信音・アラーム音も選択可能とする。
-            mPrefNotifySoundMopera.setRingtoneType(RingtoneManager.TYPE_ALL);
-            mPrefNotifySoundSpmode.setRingtoneType(RingtoneManager.TYPE_ALL);
-            mPrefNotifySoundImode.setRingtoneType(RingtoneManager.TYPE_ALL);
-            mPrefNotifySound.setRingtoneType(RingtoneManager.TYPE_ALL);
+        if (!EmailNotify.FREE_VERSION) {
+            if (mPrefNotifySoundLength.getValue() == 0) {
+                mPrefNotifySoundLength.setSummary(
+                        getResources().getString(R.string.pref_notify_sound_length_summary));
+                // 通知音長が設定されていない場合は、通知音のみ選択可能。
+                mPrefNotifySoundMopera.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
+                mPrefNotifySoundSpmode.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
+                mPrefNotifySoundImode.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
+                mPrefNotifySound.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
+            } else {
+                mPrefNotifySoundLength.setSummary(
+                        mPrefNotifySoundLength.getValue() +
+                        getResources().getString(R.string.pref_notify_sound_length_unit));
+                // 通知音長が設定されている場合のみ、着信音・アラーム音も選択可能とする。
+                mPrefNotifySoundMopera.setRingtoneType(RingtoneManager.TYPE_ALL);
+                mPrefNotifySoundSpmode.setRingtoneType(RingtoneManager.TYPE_ALL);
+                mPrefNotifySoundImode.setRingtoneType(RingtoneManager.TYPE_ALL);
+                mPrefNotifySound.setRingtoneType(RingtoneManager.TYPE_ALL);
+            }
         }
         if (mPrefExcludeHours.getText() != null && mPrefExcludeHours.getText().length() > 0) {
             int[] hours = EmailNotifyPreferences.getExcludeHours(this, EmailNotifyPreferences.SERVICE_OTHER);

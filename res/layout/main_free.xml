@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myapp="http://schemas.android.com/apk/res/net.assemble.mailnotify"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:gravity="center">
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:gravity="center">
+        <ImageView android:id="@+id/main_image"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:src="@drawable/main" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:gravity="top">
+        <com.admob.android.ads.AdView
+            android:id="@+id/ad" android:layout_width="fill_parent"
+            android:layout_height="wrap_content" myapp:backgroundColor="#000000"
+            myapp:primaryTextColor="#FFFFFF" myapp:secondaryTextColor="#CCCCCC"
+            android:visible="false" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:gravity="bottom">
+        <ToggleButton android:id="@+id/enable"
+            android:layout_width="fill_parent" android:layout_height="wrap_content"
+            android:textOn="@string/enabled" android:textOff="@string/disabled" />
+    </LinearLayout>
+</FrameLayout>

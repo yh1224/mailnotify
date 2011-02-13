@@ -31,8 +31,8 @@ import net.assemble.android.MyLog;
 public class EmailNotifyLaunchActivity extends Activity {
     private static final String SPMODE_APN = "spmode.ne.jp";
 
-    public static final String ACTION_RESTORE_NETWORK = "net.assemble.mailnotify.action.RESTORE_NETWORK";
-    public static final String ACTION_KEEP_NETWORK = "net.assemble.mailnotify.action.KEEP_NETWORK";
+    public static final String ACTION_RESTORE_NETWORK = "net.assemble.emailnotify.action.RESTORE_NETWORK";
+    public static final String ACTION_KEEP_NETWORK = "net.assemble.emailnotify.action.KEEP_NETWORK";
 
     private ConnectivityManager mConnManager;
     private WifiManager mWifiManager;
