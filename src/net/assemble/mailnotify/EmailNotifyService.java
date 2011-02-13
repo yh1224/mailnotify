@@ -170,16 +170,12 @@ public class EmailNotifyService extends Service {
                     MyLog.w(this, EmailNotify.TAG, "Unexpected PDU: " + data);
                     return null;
                 }
-                if (pdu.getBinaryContentType() == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL) {
-                    // application/vnd.wap.slc は、Receiverで受信する ので無視
-                    if (EmailNotify.DEBUG) {
-                        Log.d(EmailNotify.TAG, "Received PDU: " + data);
-                        Log.i(EmailNotify.TAG, "Received: " + pdu.getMailbox());
-                    }
-                    return null;
-                }
                 MyLog.d(this, EmailNotify.TAG, "Received PDU: " + data);
-                MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
+                if (pdu.getTimestampDate() != null) {
+                    MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
+                } else {
+                    MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox());
+                }
                 mLastCheck = ccal.getTimeInMillis();
                 return pdu;
             }
@@ -377,7 +373,7 @@ public class EmailNotifyService extends Service {
             if (EmailNotifyPreferences.getServiceMopera(this)) {
                 service = EmailNotifyPreferences.SERVICE_MOPERA;
             }
-        } else if (type == 0x8002 && mailbox != null && mailbox.contains("docomo.ne.jp")) {
+        } else if (type == 0x30 && mailbox != null && mailbox.contains("docomo.ne.jp")) {
             // iモードメール
             if (EmailNotifyPreferences.getServiceImode(this)) {
                 service = EmailNotifyPreferences.SERVICE_IMODE;
