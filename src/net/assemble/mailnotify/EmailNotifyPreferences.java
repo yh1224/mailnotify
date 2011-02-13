@@ -557,17 +557,15 @@ public class EmailNotifyPreferences
     public static boolean inExcludeHours(Context ctx, String service) {
         int now = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int[] hours = getExcludeHours(ctx, service);
-        if (hours == null) {
-            // 指定なし
-            return true;
-        }
-        if (hours[0] <= hours[1]) { // start < end
-            if (hours[0] <= now && now < hours[1]) {
-                return true;
-            }
-        } else {    // start > end
-            if (hours[0] <= now || now < hours[1]) {
-                return true;
+        if (hours != null) {
+            if (hours[0] <= hours[1]) { // start < end
+                if (hours[0] <= now && now < hours[1]) {
+                    return true;
+                }
+            } else {    // start > end
+                if (hours[0] <= now || now < hours[1]) {
+                    return true;
+                }
             }
         }
         return false;
