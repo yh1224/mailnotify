@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import net.assemble.mailnotify.R;
-
 public class EmailNotificationHistoryActivity extends ListActivity {
 
     private MyAdapter mAdapter;
