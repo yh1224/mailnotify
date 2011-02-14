@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.assemble.android.MyLog;
+import net.orleaf.android.MyLog;
 
 import android.app.AlarmManager;
 import android.app.Notification;

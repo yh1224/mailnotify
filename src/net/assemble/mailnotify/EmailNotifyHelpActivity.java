@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
 
-import net.assemble.android.AssetsReader;
+import net.orleaf.android.AssetsReader;
 
 public class EmailNotifyHelpActivity extends Activity {
     @Override

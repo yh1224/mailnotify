@@ -17,9 +17,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
-import net.assemble.android.AboutActivity;
-import net.assemble.android.MyLog;
-import net.assemble.android.MyLogActivity;
+import net.orleaf.android.AboutActivity;
+import net.orleaf.android.MyLog;
+import net.orleaf.android.MyLogActivity;
 
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
     private ToggleButton mEnableButton;
@@ -136,6 +136,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             break;
         case R.id.menu_about:
             intent = new Intent().setClass(this, AboutActivity.class);
+            intent.putExtra("body_asset", "about.txt");
             startActivity(intent);
             break;
         }

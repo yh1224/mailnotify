@@ -26,7 +26,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.assemble.android.MyLog;
+import net.orleaf.android.MyLog;
 
 public class EmailNotifyLaunchActivity extends Activity {
     private static final String SPMODE_APN = "spmode.ne.jp";

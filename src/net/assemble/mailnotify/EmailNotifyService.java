@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.assemble.android.MyLog;
+import net.orleaf.android.MyLog;
 
 import android.app.Service;
 import android.content.ComponentName;
