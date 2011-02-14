@@ -377,7 +377,6 @@ public class EmailNotifyService extends Service {
             // iモードメール
             if (EmailNotifyPreferences.getServiceImode(this)) {
                 service = EmailNotifyPreferences.SERVICE_IMODE;
-                mailbox = "docomo.ne.jp";
             }
         } else if (EmailNotifyPreferences.getServiceOther(this)) {
             // その他

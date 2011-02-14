@@ -226,7 +226,10 @@ public class EmailNotification {
             Notification notification = new Notification(R.drawable.icon,
                     mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
             String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
-            if (mMailbox != null) {
+            if (mService.equals(EmailNotifyPreferences.SERVICE_IMODE)) {
+                // iモードの場合は表示を変更 (imap://docomo.ne.jp?PI=06 とか意味不明なので)
+                message += " docomo.ne.jp";
+            } else if (mMailbox != null) {
                 message += " " + mMailbox;
             }
             notification.setLatestEventInfo(mCtx,
