@@ -1,4 +1,14 @@
-bin/
 dist/
-gen/
+work/
+MailNotifyCore/bin/
+MailNotifyCore/gen/
+MailNotifyFree/bin/
+MailNotifyFree/gen/
+MailNotifyFree/proguard/
+MailNotifyPaid/bin/
+MailNotifyPaid/gen/
+MailNotifyPaid/proguard/
+MailNotifyLiveViewPlugin/bin/
+MailNotifyLiveViewPlugin/gen/
+MailNotifyLiveViewPlugin/proguard/
 *.bak

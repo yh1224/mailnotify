@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.orleaf.android.emailnotify.liveview.plugins"
+    android:versionCode="2" android:versionName="0.2">
+    <application android:icon="@drawable/icon"
+        android:label="@string/app_name" android:description="@string/application_description">
+        <service android:name=".EmnPluginService">
+            <intent-filter>
+                <action
+                    android:name="net.orleaf.android.emailnotify.liveview.plugins.emailnotifyservice" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
+        <activity
+            android:name="com.sonyericsson.extras.liveview.plugins.PluginPreferences">
+            <intent-filter>
+                <action
+                    android:name="net.orleaf.android.emailnotify.liveview.plugins.PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <receiver
+            android:name="com.sonyericsson.extras.liveview.plugins.PluginReceiver">
+            <intent-filter>
+                <action android:name="com.sonyericsson.extras.liveview.LAUNCH_PLUGIN" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".EmnNotifyReceiver">
+            <intent-filter>
+                <action android:name="net.assemble.emailnotify.MAIL_PUSH_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".EmnNotifyService" />
+    </application>
+    <uses-sdk android:minSdkVersion="4" />
+</manifest>

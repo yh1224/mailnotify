@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mail Notify plugin</string>
+    <string name="pluginname">Mail Notify plugin</string>
+    <string name="intent_preferences">net.orleaf.android.emailnotify.liveview.plugins.PREFERENCES</string>
+    <string name="intent_service">net.orleaf.android.emailnotify.liveview.plugins.emailnotifyservice</string>
+    <string name="application_description">Extends:com.sonyericsson.extras.liveview</string>
+    <string name="enabled">有効化</string>
+    <string name="announce_header">メール通知</string>
+</resources>
