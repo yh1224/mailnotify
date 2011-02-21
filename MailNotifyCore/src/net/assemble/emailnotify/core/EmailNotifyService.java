@@ -58,6 +58,8 @@ public class EmailNotifyService extends Service {
             MyLog.w(this, EmailNotify.TAG, "Service restarted unexpectedly. Last checked at " + d.toLocaleString());
             // 未消去の通知を復元する
             restoreNotifications();
+            // ネットワーク復元情報を消去
+            EmailNotifyPreferences.unsetNetworkInfo(this);
         } else {
             // 正常に終了していた場合、サービス開始以前のものを通知しない。
             mLastCheck = Calendar.getInstance().getTimeInMillis();
