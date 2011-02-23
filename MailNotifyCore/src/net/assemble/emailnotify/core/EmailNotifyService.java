@@ -11,6 +11,8 @@ import java.util.Date;
 
 import net.orleaf.android.MyLog;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -65,6 +67,12 @@ public class EmailNotifyService extends Service {
             mLastCheck = Calendar.getInstance().getTimeInMillis();
             EmailNotifyPreferences.setLastCheck(this, mLastCheck);
         }
+
+        // 定期的に再startを仕掛けておく
+        PendingIntent restartIntent = PendingIntent.getService(this, 0, 
+                new Intent(this, EmailNotifyService.class), 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC, 0, 30 * 60 * 1000, restartIntent);
 
         startCheck();
     }
