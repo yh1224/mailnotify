@@ -82,9 +82,11 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             addPreferencesFromResource(R.xml.preferences);
         }
 
+        mPrefServiceMopera = (CheckBoxPreference) findPreference("service_mopera");
+        mPrefServiceSpmode = (CheckBoxPreference) findPreference("service_spmode");
+
         if (!EmailNotify.isFreeVersion(this)) {
             // mopera Uメール通知設定
-            mPrefServiceMopera = (CheckBoxPreference) findPreference("service_mopera");
             mPrefNotifySoundMopera = (RingtonePreference) findPreference("notify_sound_mopera");
             mPrefNotifyVibrationPatternMopera = (ListPreference) findPreference("notify_vibration_pattern_mopera");
             mPrefNotifyVibrationLengthMopera = (NumberSeekbarPreference) findPreference("notify_vibration_length_mopera");
@@ -96,7 +98,6 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
 
             // spモードメール通知設定
-            mPrefServiceSpmode = (CheckBoxPreference) findPreference("service_spmode");
             mPrefNotifySoundSpmode = (RingtonePreference) findPreference("notify_sound_spmode");
             mPrefNotifyVibrationPatternSpmode = (ListPreference) findPreference("notify_vibration_pattern_spmode");
             mPrefNotifyVibrationLengthSpmode = (NumberSeekbarPreference) findPreference("notify_vibration_length_spmode");
@@ -282,12 +283,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private void updateSummary() {
         String launchAppName;
 
-        if (!EmailNotify.isFreeVersion(this)) {
-            if (EmailNotifyPreferences.getLynxWorkaround(this)) {
-                // LYNX(SH-10B)では鳴り分けは不可
-                mPrefServiceMopera.setEnabled(false);
-                mPrefServiceSpmode.setEnabled(false);
-            }
+        if (EmailNotifyPreferences.getLynxWorkaround(this)) {
+            // LYNX(SH-10B)では鳴り分けは不可
+            mPrefServiceMopera.setEnabled(false);
+            mPrefServiceSpmode.setEnabled(false);
         }
 
         if (!EmailNotify.isFreeVersion(this)) {
