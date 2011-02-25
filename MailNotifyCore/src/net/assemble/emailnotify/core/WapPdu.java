@@ -22,9 +22,7 @@ public class WapPdu {
      *
      * @param ctype Content-Type (binary)
      */
-    public WapPdu(int ctype) {
-        binaryContentType = ctype;
-        mimeType = convertContentType(binaryContentType);
+    public WapPdu() {
         wapData = null;
     }
 
@@ -55,7 +53,7 @@ public class WapPdu {
      * @param data WAP PDU
      */
     public WapPdu(String str) {
-        wapData = hex2bytes(str);
+		wapData = hex2bytes(str);
     }
 
     /**
@@ -351,7 +349,10 @@ public class WapPdu {
      * @return 16進数文字列
      */
     public String getHexString() {
-        return bytes2hex(wapData);
+    	if (wapData != null) {
+    		return bytes2hex(wapData);
+    	}
+    	return null;
     }
 
     /**

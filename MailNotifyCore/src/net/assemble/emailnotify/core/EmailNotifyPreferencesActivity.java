@@ -47,6 +47,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private Preference mPrefTestNotifySpmode;
 
     // iモードメール通知設定
+    private CheckBoxPreference mPrefServiceImode;
     private RingtonePreference mPrefNotifySoundImode;
     private ListPreference mPrefNotifyVibrationPatternImode;
     private NumberSeekbarPreference mPrefNotifyVibrationLengthImode;
@@ -84,6 +85,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 
         mPrefServiceMopera = (CheckBoxPreference) findPreference("service_mopera");
         mPrefServiceSpmode = (CheckBoxPreference) findPreference("service_spmode");
+        mPrefServiceImode = (CheckBoxPreference) findPreference("service_imode");
 
         if (!EmailNotify.isFreeVersion(this)) {
             // mopera Uメール通知設定
@@ -287,6 +289,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             // LYNX(SH-10B)では鳴り分けは不可
             mPrefServiceMopera.setEnabled(false);
             mPrefServiceSpmode.setEnabled(false);
+            mPrefServiceImode.setEnabled(false);
         }
 
         if (!EmailNotify.isFreeVersion(this)) {

@@ -161,7 +161,7 @@ public class EmailNotifyService extends Service {
             if (EmailNotifyPreferences.getLynxWorkaround(this) && line.endsWith(": Receive EMN")) {
                 MyLog.i(this, EmailNotify.TAG, "Received EMN");
                 mLastCheck = ccal.getTimeInMillis();
-                return new WapPdu(0x030a);
+                return new WapPdu();
             }
 
             if (line.contains(": Rx: ")) {
@@ -417,8 +417,13 @@ public class EmailNotifyService extends Service {
                 long id = cur.getLong(cur.getColumnIndex(BaseColumns._ID));
                 MyLog.d(this, EmailNotify.TAG, "Restoring notification: " + id);
                 String wap_data = cur.getString(cur.getColumnIndex("wap_data"));
-                WapPdu pdu = new WapPdu(wap_data);
-                pdu.decode();
+                WapPdu pdu;
+                if (wap_data == null) {
+                	pdu = new WapPdu();
+                } else {
+                	pdu = new WapPdu(wap_data);
+                	pdu.decode();
+                }
                 if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
                     // 未通知なら改めて通知
                     doNotify(pdu, id, false);

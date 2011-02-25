@@ -671,7 +671,7 @@ public class EmailNotifyPreferences
      */
     public static boolean getLynxWorkaround(Context ctx) {
         if (Build.MODEL.equals("SH-10B")) {
-    	return true;
+            return true;
         } else {
             return false;
         }
@@ -732,6 +732,7 @@ public class EmailNotifyPreferences
             Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
             e.putBoolean(PREF_SERVICE_MOPERA_KEY, false);
             e.putBoolean(PREF_SERVICE_SPMODE_KEY, false);
+            e.putBoolean(PREF_SERVICE_IMODE_KEY, false);
             e.commit();
         }
 

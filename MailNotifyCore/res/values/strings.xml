@@ -39,10 +39,10 @@
     <string name="pref_notify_spmode_title">spモードメール通知設定</string>
     <string name="pref_notify_imode_title">iモードメール通知設定</string>
     <string name="pref_group_notify">通知設定</string>
-    <string name="pref_notify_title">通知設定 (基本)</string>
-    <string name="pref_notify_summary">サービス毎の通知設定を指定しない場合、この設定が使用されます。</string>
-    <string name="pref_notify_custom_title">通知設定 (サービス毎)</string>
-    <string name="pref_notify_custom_summary">サービス毎に通知設定を設定します。</string>
+    <string name="pref_notify_title">通知設定</string>
+    <string name="pref_notify_summary">通知オプション</string>
+    <string name="pref_notify_custom_other_screen_title">その他 (基本)</string>
+    <string name="pref_notify_custom_other_screen_summary">サービス毎の通知設定を指定しない場合、この設定が使用されます。</string>
     <string name="pref_notify_custom_mopera_screen_title">mopera Uメール</string>
     <string name="pref_notify_custom_mopera_screen_summary">mopera Uメール用の通知設定</string>
     <string name="pref_notify_custom_mopera_title">有効</string>
