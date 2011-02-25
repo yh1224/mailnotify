@@ -13,6 +13,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
@@ -172,11 +174,16 @@ public class EmailNotification {
      * IMoNiでメールチェックをおこなう
      */
     public void notifyImoni() {
-        if (EmailNotifyPreferences.getIntentToImoni(mCtx, mService)) {
-            Intent intent = new Intent();
-            intent.setAction("net.grandnature.android.imodenotifier.ACTION_CHECK");
-            mCtx.sendBroadcast(intent);
-            MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to iMoNi.");
+        if (EmailNotifyPreferences.getIntentToImoni(mCtx)) {
+            // ネットワーク接続時のみ
+            ConnectivityManager cm = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                Intent intent = new Intent();
+                intent.setAction("net.grandnature.android.imodenotifier.ACTION_CHECK");
+                mCtx.sendBroadcast(intent);
+                MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to iMoNi.");
+            }
         }
     }
 

@@ -16,10 +16,10 @@
                 android:title="@string/pref_service_other_title"
                 android:defaultValue="true" />
         </PreferenceScreen>
-        <CheckBoxPreference android:key="notify_to_imoni_imode"
+        <CheckBoxPreference android:key="notify_to_imoni"
             android:summary="@string/pref_notify_to_imoni_summary"
             android:title="@string/pref_notify_to_imoni_title"
-            android:defaultValue="true" android:dependency="service_imode" />
+            android:defaultValue="true" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_notify">
         <RingtonePreference android:key="notify_sound"

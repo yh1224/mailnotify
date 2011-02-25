@@ -15,7 +15,7 @@ import android.preference.PreferenceManager;
 public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
-    private static final int CURRENT_PREFERENCE_VERSION = 3;
+    private static final int CURRENT_PREFERENCE_VERSION = 4;
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
@@ -508,14 +508,10 @@ public class EmailNotifyPreferences
     /**
      * iMoNi連携設定を取得
      */
-    public static boolean getIntentToImoni(Context ctx, String service) {
+    public static boolean getIntentToImoni(Context ctx) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        // iモードのみ
-        if (service.equals(SERVICE_IMODE)) {
-            return pref.getBoolean(getServiceKey(PREF_NOTIFY_INTENT_TO_IMONI_KEY, service),
-                PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT);
-        }
-        return false;
+        return pref.getBoolean(PREF_NOTIFY_INTENT_TO_IMONI_KEY,
+            PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT);
     }
 
     /**
@@ -675,7 +671,7 @@ public class EmailNotifyPreferences
      */
     public static boolean getLynxWorkaround(Context ctx) {
         if (Build.MODEL.equals("SH-10B")) {
-            return true;
+    	return true;
         } else {
             return false;
         }
@@ -687,7 +683,7 @@ public class EmailNotifyPreferences
     public static void upgrade(Context ctx) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
         int ver = pref.getInt(PREF_PREFERENCE_VERSION_KEY, 0);
-        if (ver < CURRENT_PREFERENCE_VERSION) {
+        if (0 < ver && ver < CURRENT_PREFERENCE_VERSION) {
             Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
             if (ver == 0) {
                 // キー名称を変更
@@ -721,6 +717,11 @@ public class EmailNotifyPreferences
                         Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_SPMODE), "0")));
                 e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE),
                         Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE), "0")));
+            }
+            if (ver < 4) {
+                // IMoNi通知の対象を全サービスとする
+                e.putBoolean(PREF_NOTIFY_INTENT_TO_IMONI_KEY, pref.getBoolean("notify_to_imoni_imode", true));
+                e.remove("notify_to_imoni_imode");
             }
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);
             e.commit();
