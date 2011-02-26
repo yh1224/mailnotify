@@ -10,14 +10,19 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.SystemClock;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
@@ -38,6 +43,7 @@ public class EmailNotification {
     private static final int NOTIFICATIONID_LED = 2;
 
     private Context mCtx;
+    private ImoniNotifier mImoniNotifier = null;
 
     private String mMailbox;        // メールボックス名
     private String mService;        // メールサービス名
@@ -175,22 +181,6 @@ public class EmailNotification {
     }
 
     /**
-     * IMoNiでメールチェックをおこなう
-     */
-    public void notifyImoni() {
-        ComponentName app = EmailNotifyPreferences.getNotifyLaunchAppComponent(mCtx, mService);
-        if (app != null && app.getPackageName().equals(PACKAGE_NAME_IMONI)) {
-            // ネットワーク接続時のみ
-            ConnectivityManager cm = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
-                mCtx.sendBroadcast(new Intent(ACTION_IMONI_CHECK));
-                MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to IMoNi.");
-            }
-        }
-    }
-
-    /**
      * 通知を開始
      */
     public void start(boolean skipDelay) {
@@ -204,7 +194,11 @@ public class EmailNotification {
         broadcastNotify();
 
         // iMoNiに通知
-        notifyImoni();
+        ComponentName app = EmailNotifyPreferences.getNotifyLaunchAppComponent(mCtx, mService);
+        if (app != null && app.getPackageName().equals(PACKAGE_NAME_IMONI)) {
+	        mImoniNotifier = new ImoniNotifier();
+	        mImoniNotifier.start();
+	     }
 
         // 通知遅延 (再通知タイマを使う)
         if (!skipDelay) {
@@ -375,8 +369,9 @@ public class EmailNotification {
      * 通知を消去
      */
     public void clear() {
-        // 通知を消すときもiMoNiに通知
-        notifyImoni();
+        if (mImoniNotifier != null) {
+            mImoniNotifier.stop();
+        }
 
         stop(NOTIFY_ALL);
         NotificationManager notificationManager =
@@ -397,6 +392,69 @@ public class EmailNotification {
         intent.putExtra("service", mService);
         intent.putExtra("mailbox", mMailbox);
         return PendingIntent.getBroadcast(mCtx, 0, intent, 0);
+    }
+
+    /**
+     * IMoNi で新着メールをチェック
+     * ネットワーク未接続時は接続完了を待って通知する。
+     */
+    private class ImoniNotifier {
+        private TelephonyManager mTelManager;
+        private ConnectivityManager mConnManager;
+        private BroadcastReceiver mConnectivityReceiver = null;
+
+        public ImoniNotifier() {
+            mTelManager = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+            mConnManager = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+
+        /**
+         * 開始
+         */
+        public void start() {
+            if (checkAndNotify()) {
+                // 通知完了
+                return;
+            }
+
+            // 接続状態監視
+            mConnectivityReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
+                    checkAndNotify();
+                }
+            };
+            mCtx.registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Started observing connection by ImoniNotifier");
+        }
+
+        /**
+         * 接続中であれば通知
+         * 
+         * @return true:通知完了 false:未通知
+         */
+        private boolean checkAndNotify() {
+            NetworkInfo networkInfo = mConnManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                mCtx.sendBroadcast(new Intent(ACTION_IMONI_CHECK));
+                MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to IMoNi.");
+                stop();
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * 停止
+         */
+        public void stop() {
+            if (mConnectivityReceiver != null) {
+                mCtx.unregisterReceiver(mConnectivityReceiver);
+                mConnectivityReceiver = null;
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Stopped observing connection by ImoniNotifier");
+            }
+        }
     }
 
 }
