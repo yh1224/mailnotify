@@ -18,20 +18,25 @@
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_notify">
-        <RingtonePreference android:key="notify_sound"
-            android:title="@string/pref_notify_sound_title"
-            android:summary="@string/pref_notify_sound_summary"
-            android:ringtoneType="notification"
-            android:defaultValue="content://settings/system/notification_sound" />
-        <CheckBoxPreference android:key="notify_vibration"
-            android:summary="@string/pref_notify_vibration_summary"
-            android:title="@string/pref_notify_vibration_title"
-            android:defaultValue="true" />
-        <Preference android:key="notify_launch_app"
-            android:summary="@string/pref_notify_launch_app_summary"
-            android:title="@string/pref_notify_launch_app_title" />
-        <Preference android:title="@string/test_notify"
-            android:key="test_notify" />
+        <PreferenceScreen android:title="@string/pref_notify_title"
+            android:summary="@string/pref_notify_summary">
+
+            <RingtonePreference android:key="notify_sound"
+                android:title="@string/pref_notify_sound_title"
+                android:summary="@string/pref_notify_sound_summary"
+                android:ringtoneType="notification"
+                android:defaultValue="content://settings/system/notification_sound" />
+            <CheckBoxPreference android:key="notify_vibration"
+                android:summary="@string/pref_notify_vibration_summary"
+                android:title="@string/pref_notify_vibration_title"
+                android:defaultValue="true" />
+            <Preference android:key="notify_launch_app"
+                android:summary="@string/pref_notify_launch_app_summary"
+                android:title="@string/pref_notify_launch_app_title" />
+            <Preference android:title="@string/test_notify"
+                android:key="test_notify" />
+
+        </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_experimental">
         <CheckBoxPreference android:key="notify_auto_connect_spmode"
