@@ -185,7 +185,7 @@ public class EmailNotification {
             NetworkInfo networkInfo = cm.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 mCtx.sendBroadcast(new Intent(ACTION_IMONI_CHECK));
-                MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to iMoNi.");
+                MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to IMoNi.");
             }
         }
     }
