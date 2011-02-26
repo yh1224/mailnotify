@@ -15,7 +15,7 @@ import android.preference.PreferenceManager;
 public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
-    private static final int CURRENT_PREFERENCE_VERSION = 4;
+    private static final int CURRENT_PREFERENCE_VERSION = 5;
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
@@ -108,9 +108,6 @@ public class EmailNotifyPreferences
 
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
-
-    public static final String PREF_NOTIFY_INTENT_TO_IMONI_KEY = "notify_to_imoni";
-    public static final boolean PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT = true;
 
     public static final String PREF_EXCLUDE_HOURS_KEY = "exclude_hours";
 
@@ -506,15 +503,6 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * iMoNi連携設定を取得
-     */
-    public static boolean getIntentToImoni(Context ctx) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        return pref.getBoolean(PREF_NOTIFY_INTENT_TO_IMONI_KEY,
-            PREF_NOTIFY_INTENT_TO_IMONI_DEFAULT);
-    }
-
-    /**
      * 通知抑止期間設定を取得
      *
      * @return 開始時、終了時 (未設定、不正の場合はnull)
@@ -718,9 +706,9 @@ public class EmailNotifyPreferences
                 e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE),
                         Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE), "0")));
             }
-            if (ver < 4) {
-                // IMoNi通知の対象を全サービスとする
-                e.putBoolean(PREF_NOTIFY_INTENT_TO_IMONI_KEY, pref.getBoolean("notify_to_imoni_imode", true));
+            if (ver < 5) {
+                // IMoNi通知設定を削除
+                e.remove("notify_to_imoni");
                 e.remove("notify_to_imoni_imode");
             }
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);

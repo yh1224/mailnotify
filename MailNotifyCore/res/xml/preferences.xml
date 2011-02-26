@@ -415,10 +415,6 @@
                     android:defaultValue="true" android:dependency="notify_stop_on_screen" />
             </PreferenceCategory>
         </PreferenceScreen>
-        <CheckBoxPreference android:key="notify_to_imoni"
-            android:summary="@string/pref_notify_to_imoni_summary"
-            android:title="@string/pref_notify_to_imoni_title"
-            android:defaultValue="true" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_experimental">
         <net.assemble.emailnotify.core.NumberSeekbarPreference

@@ -10,6 +10,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -23,6 +24,9 @@ import android.util.Log;
  * メール着信通知
  */
 public class EmailNotification {
+    private static final String PACKAGE_NAME_IMONI = "net.grandnature.android.imodenotifier";
+    private static final String ACTION_IMONI_CHECK = "net.grandnature.android.imodenotifier.ACTION_CHECK";
+
     public static final int NOTIFY_SOUND = 0x00000001;
     public static final int NOTIFY_LED = 0x00000002;
     public static final int NOTIFY_RENOTIFY = 0x00000004;
@@ -174,14 +178,13 @@ public class EmailNotification {
      * IMoNiでメールチェックをおこなう
      */
     public void notifyImoni() {
-        if (EmailNotifyPreferences.getIntentToImoni(mCtx)) {
+        ComponentName app = EmailNotifyPreferences.getNotifyLaunchAppComponent(mCtx, mService);
+        if (app != null && app.getPackageName().equals(PACKAGE_NAME_IMONI)) {
             // ネットワーク接続時のみ
             ConnectivityManager cm = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = cm.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                Intent intent = new Intent();
-                intent.setAction("net.grandnature.android.imodenotifier.ACTION_CHECK");
-                mCtx.sendBroadcast(intent);
+                mCtx.sendBroadcast(new Intent(ACTION_IMONI_CHECK));
                 MyLog.d(mCtx, EmailNotify.TAG, "Sent intent ACTION_CHECK to iMoNi.");
             }
         }

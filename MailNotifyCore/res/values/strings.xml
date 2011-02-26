@@ -128,8 +128,6 @@
     <string name="pref_notify_delay_zero">無効 (即時通知)</string>
     <string name="pref_group_notify_test">通知テスト</string>
     <string name="pref_group_experimental">試験的な実装 (Experimental)</string>
-    <string name="pref_notify_to_imoni_title">IMoNi連携</string>
-    <string name="pref_notify_to_imoni_summary">iモードメールアプリIMoNiで新着メールを自動チェックします。</string>
     <string name="pref_exclude_hours_title">通知抑止時間帯</string>
     <string name="pref_exclude_hours_summary">指定した時間帯の通知を抑止します。</string>
     <string name="pref_exclude_hours_warning">「(開始時)-(終了時)」という形式で入力してください。\n\n例)\n「0-6」  0:00～ 6:00\n「23-6」 23:00～ 6:00</string>
