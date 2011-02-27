@@ -136,6 +136,8 @@ public class EmailNotification {
      * 通知
      */
     public void doNotify() {
+        EmailNotificationHistoryDao.notified(mCtx, mMailbox);
+
         // 通知
         startIcon();
         startSound();
@@ -162,8 +164,6 @@ public class EmailNotification {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Renotify count exceeded.");
             }
         }
-
-        EmailNotificationHistoryDao.notified(mCtx, mMailbox);
     }
 
     /**
@@ -196,9 +196,9 @@ public class EmailNotification {
         // iMoNiに通知
         ComponentName app = EmailNotifyPreferences.getNotifyLaunchAppComponent(mCtx, mService);
         if (app != null && app.getPackageName().equals(PACKAGE_NAME_IMONI)) {
-	        mImoniNotifier = new ImoniNotifier();
-	        mImoniNotifier.start();
-	     }
+            mImoniNotifier = new ImoniNotifier();
+            mImoniNotifier.start();
+         }
 
         // 通知遅延 (再通知タイマを使う)
         if (!skipDelay) {
@@ -223,32 +223,36 @@ public class EmailNotification {
      * 通知アイコン表示
      */
     public void startIcon() {
-        NotificationManager notificationManager = (NotificationManager)
-        mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
-            Notification notification = new Notification(R.drawable.icon,
-                    mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
-            String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
-            if (mService.equals(EmailNotifyPreferences.SERVICE_IMODE)) {
-                // iモードの場合は表示を変更 (imap://docomo.ne.jp?PI=06 とか意味不明なので)
-                message += " docomo.ne.jp";
-            } else if (mMailbox != null) {
-                message += " " + mMailbox;
-            }
-            notification.setLatestEventInfo(mCtx,
-                    mCtx.getResources().getString(R.string.app_name),
-                    message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
-            notification.deleteIntent =
-                    getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_CANCEL);
-            if (mMailCount > 1) {
-                notification.number = mMailCount;
-            }
-            notification.defaults = 0;
-            notification.flags = Notification.FLAG_AUTO_CANCEL;
-            notificationManager.notify(mNotificationId + NOTIFICATIONID_ICON, notification);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started icon for " + mMailbox + ", active=" + mActiveNotify);
+        if (!EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
+            // 消すタイミングがないので消去済みとみなす
+            EmailNotificationHistoryDao.cleared(mCtx, mMailbox);
+            return;
         }
+
+        NotificationManager notificationManager = (NotificationManager)
+            mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Notification notification = new Notification(R.drawable.icon,
+                mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
+        String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
+        if (mService.equals(EmailNotifyPreferences.SERVICE_IMODE)) {
+            // iモードの場合は表示を変更 (imap://docomo.ne.jp?PI=06 とか意味不明なので)
+            message += " docomo.ne.jp";
+        } else if (mMailbox != null) {
+            message += " " + mMailbox;
+        }
+        notification.setLatestEventInfo(mCtx,
+                mCtx.getResources().getString(R.string.app_name),
+                message, getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_LAUNCH));
+        notification.deleteIntent =
+                getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_CANCEL);
+        if (mMailCount > 1) {
+            notification.number = mMailCount;
+        }
+        notification.defaults = 0;
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(mNotificationId + NOTIFICATIONID_ICON, notification);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started icon for " + mMailbox + ", active=" + mActiveNotify);
     }
 
     /**
@@ -431,7 +435,7 @@ public class EmailNotification {
 
         /**
          * 接続中であれば通知
-         * 
+         *
          * @return true:通知完了 false:未通知
          */
         private boolean checkAndNotify() {
