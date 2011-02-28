@@ -29,6 +29,10 @@ import android.widget.Toast;
  * メール監視サービス
  */
 public class EmailNotifyService extends Service {
+    private final long RESTART_INTERVAL = 30 * 60 * 1000;
+
+    private AlarmManager mAlarmManager;
+
     private static ComponentName mService;
     private static boolean mActive = false;
 
@@ -37,11 +41,14 @@ public class EmailNotifyService extends Service {
     private boolean mStopLogCheckThread;
     private long mLastCheck;
     private Handler mHandler = new Handler();
+    private PendingIntent mRestartIntent = null;
 
     @Override
     public void onCreate() {
         MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onCreate()");
         super.onCreate();
+
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         // プリファレンスのバージョンアップ
         EmailNotifyPreferences.upgrade(this);
@@ -69,10 +76,9 @@ public class EmailNotifyService extends Service {
         }
 
         // 定期的に再startを仕掛けておく
-        PendingIntent restartIntent = PendingIntent.getService(this, 0, 
+        mRestartIntent  = PendingIntent.getService(this, 0, 
                 new Intent(this, EmailNotifyService.class), 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC, 0, 30 * 60 * 1000, restartIntent);
+        mAlarmManager.setRepeating(AlarmManager.RTC, 0, RESTART_INTERVAL, mRestartIntent);
 
         startCheck();
     }
@@ -102,6 +108,11 @@ public class EmailNotifyService extends Service {
         MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onDestroy()");
         super.onDestroy();
         mActive = false;
+
+        if (mRestartIntent != null) {
+            mAlarmManager.cancel(mRestartIntent);
+            mRestartIntent = null;
+        }
 
         // 通知アイコン
         EmailNotificationManager.clearNotificationIcon(this);
