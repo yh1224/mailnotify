@@ -19,10 +19,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.SystemClock;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
@@ -250,7 +247,7 @@ public class EmailNotification {
             notification.number = mMailCount;
         }
         notification.defaults = 0;
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notification.flags = 0;
         notificationManager.notify(mNotificationId + NOTIFICATIONID_ICON, notification);
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started icon for " + mMailbox + ", active=" + mActiveNotify);
     }
@@ -403,12 +400,10 @@ public class EmailNotification {
      * ネットワーク未接続時は接続完了を待って通知する。
      */
     private class ImoniNotifier {
-        private TelephonyManager mTelManager;
         private ConnectivityManager mConnManager;
         private BroadcastReceiver mConnectivityReceiver = null;
 
         public ImoniNotifier() {
-            mTelManager = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
             mConnManager = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
         }
 

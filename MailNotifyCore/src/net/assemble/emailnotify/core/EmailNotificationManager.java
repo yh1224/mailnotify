@@ -146,14 +146,14 @@ public class EmailNotificationManager {
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.restore_icon,
                 ctx.getResources().getString(R.string.app_name), System.currentTimeMillis());
-        Intent restoreIntent = new Intent(ctx, EmailNotifyLaunchActivity.class);
-        restoreIntent.setAction(EmailNotifyLaunchActivity.ACTION_RESTORE_NETWORK);
+        Intent restoreIntent = new Intent(ctx, EmailNotifyRestoreActivity.class);
+        restoreIntent.setAction(EmailNotifyRestoreActivity.ACTION_RESTORE_NETWORK);
         restoreIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notification.setLatestEventInfo(ctx, ctx.getResources().getString(R.string.restore_network),
                 ctx.getResources().getString(R.string.restore_network_message),
                 PendingIntent.getActivity(ctx, 0, restoreIntent, 0));
-        Intent deleteIntent = new Intent(ctx, EmailNotifyLaunchActivity.class);
-        deleteIntent.setAction(EmailNotifyLaunchActivity.ACTION_KEEP_NETWORK);
+        Intent deleteIntent = new Intent(ctx, EmailNotifyRestoreActivity.class);
+        deleteIntent.setAction(EmailNotifyRestoreActivity.ACTION_KEEP_NETWORK);
         deleteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notification.deleteIntent = PendingIntent.getActivity(ctx, 0, deleteIntent, 0);
         notification.flags = Notification.FLAG_AUTO_CANCEL;

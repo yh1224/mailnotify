@@ -23,9 +23,8 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
             String service = intent.getStringExtra("service");
             String mailbox = intent.getStringExtra("mailbox");
             if (action.startsWith(ACTION_NOTIFY_LAUNCH)) {
-                // 通知停止
-                EmailNotificationManager.clearNotification(mailbox);
-                Intent launchIntent = new Intent().setClass(ctx, EmailNotifyLaunchActivity.class);
+                Intent launchIntent = new Intent();
+                launchIntent.setClassName(ctx.getPackageName(), ctx.getPackageName() + ".EmailNotifyLaunchActivity");
                 launchIntent.putExtra("service", service);
                 launchIntent.putExtra("mailbox", mailbox);
                 launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

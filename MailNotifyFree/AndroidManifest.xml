@@ -11,19 +11,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="net.assemble.emailnotify.core.EmailNotifyHelpActivity" />
+        <activity
+            android:name="net.assemble.emailnotify.core.EmailNotifyHelpActivity" />
         <activity
             android:name="net.assemble.emailnotify.core.EmailNotifyPreferencesActivity" />
         <activity
             android:name="net.assemble.emailnotify.core.EmailNotifySelectAppActivity"
             android:theme="@android:style/Theme.Dialog" />
-        <activity
-            android:name="net.assemble.emailnotify.core.EmailNotifyLaunchActivity"
-            android:theme="@android:style/Theme.Dialog"
-            android:exported="true" />
         <activity android:name=".EmailNotifyLaunchActivity"
             android:theme="@android:style/Theme.Dialog"
-            android:exported="true" />
+            android:launchMode="singleInstance" android:exported="true" />
+        <activity
+            android:name="net.assemble.emailnotify.core.EmailNotifyRestoreActivity"
+            android:launchMode="singleInstance" />
         <receiver android:name="net.assemble.emailnotify.core.EmailNotifyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
