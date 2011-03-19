@@ -268,7 +268,8 @@ public class EmailNotifyLaunchActivity extends Activity {
         ContentResolver resolver = getContentResolver();
         ContentValues values;
         Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
-                new String[] { BaseColumns._ID, "apn", "type" }, null, null, null);
+                new String[] { BaseColumns._ID, "apn", "type" },
+                "numeric = " + mTelManager.getSimOperator(), null, null);
 
         // APNのkeyと付加文字列検索 (ex:apndroid)
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Checking for enable APN...");

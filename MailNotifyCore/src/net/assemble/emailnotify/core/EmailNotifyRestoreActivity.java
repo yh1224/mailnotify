@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ public class EmailNotifyRestoreActivity extends Activity {
     public static final String ACTION_KEEP_NETWORK = "net.assemble.emailnotify.action.KEEP_NETWORK";
 
     private WifiManager mWifiManager;
+    private TelephonyManager mTelManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class EmailNotifyRestoreActivity extends Activity {
         setVisible(false);
 
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        mTelManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
         Intent intent = getIntent();
         if (intent.getAction().equals(ACTION_RESTORE_NETWORK)) {
@@ -60,7 +64,8 @@ public class EmailNotifyRestoreActivity extends Activity {
 
             if (modifierStr != null) {
                 Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
-                        new String[] {"_id", "apn", "type"}, null, null, null);
+                        new String[] { BaseColumns._ID, "apn", "type" },
+                        "numeric = " + mTelManager.getSimOperator(), null, null);
 
                 // APN設定を復元
                 if (cursor.moveToFirst()) {
