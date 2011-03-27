@@ -10,17 +10,17 @@ import com.android.internal.telephony.WspTypeDecoder;
 
 public class WapPdu {
     private byte[] wapData;
-    private int dataIndex = 0;
+    private int dataIndex = -1;
 
-    private String mimeType;
+    private String contentType;
     private int binaryContentType;
+    private String applicationId;
+    private int binaryApplicationId;
     private String mailBox = "unknown";
     private byte[] timestamp = null;
 
     /**
      * Constructor
-     *
-     * @param ctype Content-Type (binary)
      */
     public WapPdu() {
         wapData = null;
@@ -30,30 +30,35 @@ public class WapPdu {
      * Constructor
      *
      * @param ctype Content-Type (binary)
-     * @param data WAP Data
+     * @param appid X-Wap-Application-Id (binary)
+     * @param body WAP body
      */
-    public WapPdu(int ctype, byte[] data) {
+    public WapPdu(int ctype, int appid, byte[] body) {
         binaryContentType = ctype;
-        mimeType = convertContentType(binaryContentType);
-        wapData = data;
+        contentType = convertContentType(binaryContentType);
+        binaryApplicationId = appid;
+        contentType = convertApplicationId(binaryApplicationId);
+        // wapDataはボディ以降を示すため、dataIndexには0を設定
+        wapData = body;
+        dataIndex = 0;
     }
 
     /**
      * Constructor
      *
-     * @param data WAP PDU
+     * @param pdu WAP PDU
      */
-    public WapPdu(byte[] data) {
-        wapData = data;
+    public WapPdu(byte[] pdu) {
+        wapData = pdu;
     }
 
     /**
      * Constructor
      *
-     * @param data WAP PDU
+     * @param str WAP PDU (string)
      */
     public WapPdu(String str) {
-		wapData = hex2bytes(str);
+        wapData = hex2bytes(str);
     }
 
     /**
@@ -62,13 +67,10 @@ public class WapPdu {
      * frameworks/base/telephony/java/com/android/internal/telephony/WapPushOverSms.java
      * WapPushOverSms#dispatchWapPdu()
      *
-     * mimeTypeがすでに設定されている場合、ボディ以降のみとみなす。
-     *
-     * @param pdu WAP PDU
-     * @return true:メールを受信した
+     * @return true:解析成功
      */
     public boolean decode() {
-        if (mimeType == null) {
+        if (dataIndex < 0) {
             WspTypeDecoder pduDecoder = new WspTypeDecoder(wapData);
 
             int index = 0;
@@ -79,7 +81,8 @@ public class WapPdu {
             try {
                 if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
                         (pduType != WspTypeDecoder.PDU_TYPE_CONFIRMED_PUSH)) {
-                    Log.w(EmailNotify.TAG, "WapPdu: non-PUSH WAP PDU. Type = " + pduType);                    return false;
+                    Log.w(EmailNotify.TAG, "WapPdu: non-PUSH WAP PDU. Type = " + pduType);
+                    return false;
                 }
 
                 pduDecoder = new WspTypeDecoder(wapData);
@@ -115,18 +118,44 @@ public class WapPdu {
                     Log.w(EmailNotify.TAG, "WapPdu: Header Content-Type error.");
                     return false;
                 }
-                mimeType = pduDecoder.getValueString();
-                if (mimeType == null) {
+                contentType = pduDecoder.getValueString();
+                if (contentType == null) {
                     binaryContentType = (int)pduDecoder.getValue32();
-                    mimeType = convertContentType(binaryContentType);
+                    contentType = convertContentType(binaryContentType);
                 } else {
-                    binaryContentType = convertContentType(mimeType);
+                    binaryContentType = convertContentType(contentType);
                 }
                 index += pduDecoder.getDecodedDataLength();
                 dataIndex = headerStartIndex + headerLength;
 
+                /**
+                 * Parse X-Wap-Application-Id.
+                 * From wap-230-wsp-20010705-a section 8.4.2.54
+                 *
+                 * Application-id-value = Uri-value | App-assigned-code
+                 * App-assigned-code = Integer-value
+                 */
+                if (wapData[index] == 0xaf - 0x100) {
+                    if (pduDecoder.decodeXWapApplicationId(index + 1) == false) {
+                        Log.w(EmailNotify.TAG, "WapPdu: Header X-Wap-Application-Id error.");
+                        return false;
+                    }
+                    applicationId = pduDecoder.getValueString();
+                    if (applicationId == null) {
+                        binaryApplicationId = (int)pduDecoder.getValue32();
+                        applicationId = convertApplicationId(binaryApplicationId);
+                    } else {
+                        binaryApplicationId = convertApplicationId(applicationId);
+                    }
+                    index += pduDecoder.getDecodedDataLength() + 1;
+                } else {
+                    Log.w(EmailNotify.TAG, "WapPdu: Header X-Wap-Application-Id not present." + wapData[index]);
+                    return false;
+                }
+
                 Log.d(EmailNotify.TAG ,"WapPdu: WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
-                        ", contentType=" + mimeType + "(" + binaryContentType + ")" +
+                        ", Content-Type=" + contentType + "(" + binaryContentType + ")" +
+                        ", X-Wap-Application-Id=" + applicationId + "(" + binaryApplicationId + ")" +
                         ", dataIndex=" + dataIndex);
             } catch (IndexOutOfBoundsException e) {
                 Log.w(EmailNotify.TAG, "WapPdu: PDU decode error.");
@@ -225,11 +254,11 @@ public class WapPdu {
     /**
      * Content-Type変換 (バイナリ値→文字列)
      *
-     * @param ctype バイナリ値
+     * @param type バイナリ値
      * @return 文字列
      */
-    private String convertContentType(int ctype) {
-        switch (binaryContentType) {
+    private String convertContentType(int type) {
+        switch (type) {
         case WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML:
             return WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML;
         case WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML:
@@ -249,7 +278,7 @@ public class WapPdu {
         case 0x0311:
             return "application/vnd.docomo.ub";
         default:
-            Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + binaryContentType);
+            Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
             return "unknown";
         }
     }
@@ -257,30 +286,69 @@ public class WapPdu {
     /**
      * Content-Type変換 (文字列→バイナリ値)
      *
-     * @param mimeType 文字列
+     * @param type 文字列
      * @return バイナリ値
      */
-    private int convertContentType(String mimeType) {
-        if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML)) {
+    private int convertContentType(String type) {
+        if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML)) {
             return WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML;
-        } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML)) {
+        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML)) {
             return WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML;
-        } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI)) {
+        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI)) {
             return WspTypeDecoder.CONTENT_TYPE_B_PUSH_SI;
-        } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL)) {
+        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL)) {
             return WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL;
-        } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO)) {
+        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO)) {
             return WspTypeDecoder.CONTENT_TYPE_B_PUSH_CO;
-        } else if (mimeType.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS)) {
+        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS)) {
             return WspTypeDecoder.CONTENT_TYPE_B_MMS;
-        } else if (mimeType.equals("application/vnd.wap.emn+wbxml")) {
+        } else if (type.equals("application/vnd.wap.emn+wbxml")) {
             return 0x030a;
-        } else if (mimeType.equals("application/vnd.docomo.pf")) {
+        } else if (type.equals("application/vnd.docomo.pf")) {
             return 0x0310;
-        } else if (mimeType.equals("application/vnd.docomo.ub")) {
+        } else if (type.equals("application/vnd.docomo.ub")) {
             return 0x0311;
         } else {
-            Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + mimeType);
+            Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
+            return 0;
+        }
+    }
+
+    /**
+     * X-Wap-Application-id変換 (バイナリ値→文字列)
+     *
+     * @param id バイナリ値
+     * @return 文字列
+     */
+    private String convertApplicationId(int id) {
+        switch (id) {
+        case 0x09:      // mopera Uメール
+            return "x-wap-application:emn.ua";
+        case 0x8002:    // iモードメール
+            return "x-wap-docomo:imode.mail.ua";
+        case 0x905c:    // spモードメール
+            return "x-oma-docomo:xmd.mail.ua";
+        default:
+            Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
+            return "unknown";
+        }
+    }
+
+    /**
+     * X-Wap-Application-id変換 (文字列→バイナリ値)
+     *
+     * @param id 文字列
+     * @return バイナリ値
+     */
+    private int convertApplicationId(String id) {
+        if (id.equals("x-wap-application:emn.ua")) {
+            return 0x09;
+        } else if (id.equals("x-wap-docomo:imode.mail.ua")) {
+            return 0x8002;
+        } else if (id.equals("x-oma-docomo:xmd.mail.ua")) {
+            return 0x905c;
+        } else {
+            Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
             return 0;
         }
     }
@@ -291,7 +359,7 @@ public class WapPdu {
      * @return Content-Type文字列
      */
     public String getContentType() {
-        return mimeType;
+        return contentType;
     }
 
     /**
@@ -301,6 +369,24 @@ public class WapPdu {
      */
     public int getBinaryContentType() {
         return binaryContentType;
+    }
+
+    /**
+     * デコードされたX-Wap-Application-Id(文字列)を取得
+     *
+     * @return X-Wap-Application-Id文字列
+     */
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    /**
+     * デコードされたX-Wap-Application-Id(バイナリ値)を取得
+     *
+     * @return X-Wap-Application-Idバイナリ値
+     */
+    public int getBinaryApplicationId() {
+        return binaryApplicationId;
     }
 
     /**
@@ -349,10 +435,10 @@ public class WapPdu {
      * @return 16進数文字列
      */
     public String getHexString() {
-    	if (wapData != null) {
-    		return bytes2hex(wapData);
-    	}
-    	return null;
+        if (wapData != null) {
+            return bytes2hex(wapData);
+        }
+        return null;
     }
 
     /**

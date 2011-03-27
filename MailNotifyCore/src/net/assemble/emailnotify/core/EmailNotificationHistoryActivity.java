@@ -74,6 +74,7 @@ public class EmailNotificationHistoryActivity extends ListActivity {
         if (cur.moveToFirst()) {
             String wapData = cur.getString(cur.getColumnIndex("wap_data"));
             String contentType = cur.getString(cur.getColumnIndex("content_type"));
+            String applicationId = cur.getString(cur.getColumnIndex("application_id"));
             Date timestampDate = null;
             long timestamp =  cur.getLong(cur.getColumnIndex("timestamp"));
             if (timestamp > 0) {
@@ -96,9 +97,9 @@ public class EmailNotificationHistoryActivity extends ListActivity {
             }
 
             StringBuffer textBuf = new StringBuffer();
-            textBuf.append("[" + id + "]\n");
-            textBuf.append(contentType + "\n");
-            textBuf.append(wapData + "\n");
+            textBuf.append(wapData + "\n\n");
+            textBuf.append("Content-Type: " + contentType + "\n");
+            textBuf.append("X-Wap-Application-Id: " + applicationId + "\n");
 
             if (timestampDate != null) {
                 textBuf.append("\nR " + timestampDate.toLocaleString());
@@ -114,7 +115,7 @@ public class EmailNotificationHistoryActivity extends ListActivity {
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Detail");
+            builder.setTitle("Detail " + id);
             builder.setMessage(textBuf.toString());
             builder.setPositiveButton(R.string.ok, null);
             AlertDialog alertDialog = builder.create();

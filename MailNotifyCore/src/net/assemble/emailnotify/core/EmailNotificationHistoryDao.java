@@ -85,15 +85,17 @@ public class EmailNotificationHistoryDao {
      * @param ctx Context
      * @param logdate ログチェック日時
      * @param contentType Content-Type
+     * @param applicationId X-Wap-Application-Id
      * @param mailbox メールボックス名
      * @param timestamp タイムスタンプ
      * @param wap_data WAP data
      * @return ID
      */
-    public static long add(Context ctx, Date logdate, String contentType, String mailbox, Date timestamp, String wap_data) {
+    public static long add(Context ctx, Date logdate, String contentType, String applicationId, String mailbox, Date timestamp, String wap_data) {
         ContentValues values = new ContentValues();
         values.put("created_at", Calendar.getInstance().getTimeInMillis() / 1000);
         values.put("content_type", contentType);
+        values.put("application_id", applicationId);
         if (logdate != null) {
             values.put("logged_at", logdate.getTime() / 1000);
         }

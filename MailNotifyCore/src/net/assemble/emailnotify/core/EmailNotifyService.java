@@ -76,7 +76,7 @@ public class EmailNotifyService extends Service {
         }
 
         // 定期的に再startを仕掛けておく
-        mRestartIntent  = PendingIntent.getService(this, 0, 
+        mRestartIntent  = PendingIntent.getService(this, 0,
                 new Intent(this, EmailNotifyService.class), 0);
         mAlarmManager.setRepeating(AlarmManager.RTC, 0, RESTART_INTERVAL, mRestartIntent);
 
@@ -156,7 +156,7 @@ public class EmailNotifyService extends Service {
      * @return WapPdu WAP PDU (null:メール通知ではない)
      */
     private WapPdu checkLogLine(String line) {
-        //if (EmailNotify.DEBUG) Log.v(TAG, "> " + line);
+        //if (EmailNotify.DEBUG) Log.v(EmailNotify.TAG, "> " + line);
         if (line.length() >= 19 && line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
             Calendar ccal = getLogDate(line);
             if (ccal == null) {
@@ -334,7 +334,8 @@ public class EmailNotifyService extends Service {
 
             // 記録
             final long historyId = EmailNotificationHistoryDao.add(mCtx, logdate,
-                    pdu.getContentType(), pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
+                    pdu.getContentType(), pdu.getApplicationId(),
+                    pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
 
             // 通知
             mHandler.post(new Runnable() {
@@ -430,10 +431,10 @@ public class EmailNotifyService extends Service {
                 String wap_data = cur.getString(cur.getColumnIndex("wap_data"));
                 WapPdu pdu;
                 if (wap_data == null) {
-                	pdu = new WapPdu();
+                    pdu = new WapPdu();
                 } else {
-                	pdu = new WapPdu(wap_data);
-                	pdu.decode();
+                    pdu = new WapPdu(wap_data);
+                    pdu.decode();
                 }
                 if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
                     // 未通知なら改めて通知
