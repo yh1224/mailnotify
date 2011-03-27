@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent" android:gravity="center">
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="fill_parent" android:layout_height="fill_parent"
-        android:gravity="center">
-        <ImageView android:id="@+id/main_image"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_weight="8" android:src="@drawable/main" />
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_weight="2" />
-    </LinearLayout>
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="fill_parent" android:layout_height="fill_parent"
-        android:gravity="bottom">
-        <ToggleButton android:id="@+id/enable"
-            android:layout_width="fill_parent" android:layout_height="wrap_content"
-            android:textOn="@string/enabled" android:textOff="@string/disabled" />
-    </LinearLayout>
-</FrameLayout>
+    <ImageView android:id="@+id/main_image" android:src="@drawable/main"
+        android:layout_width="wrap_content" android:layout_height="wrap_content" 
+        android:layout_weight="1" />
+    <ToggleButton android:id="@+id/enable"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:textOn="@string/enabled" android:textOff="@string/disabled" />
+</LinearLayout>
