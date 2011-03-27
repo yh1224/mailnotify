@@ -32,17 +32,9 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFICATION_ICON_KEY = "notification_icon";
     public static final boolean PREF_NOTIFICATION_ICON_DEFAULT = false;
 
-    public static final String PREF_SERVICE_MOPERA_KEY = "service_mopera";
-    public static final boolean PREF_SERVICE_MOPERA_DEFAULT = true;
-
-    public static final String PREF_SERVICE_SPMODE_KEY = "service_spmode";
-    public static final boolean PREF_SERVICE_SPMODE_DEFAULT = true;
-
-    public static final String PREF_SERVICE_IMODE_KEY = "service_imode";
+    public static final String PREF_SERVICE_KEY = "service";
+    public static final boolean PREF_SERVICE_DEFAULT = true;
     public static final boolean PREF_SERVICE_IMODE_DEFAULT = false;
-
-    public static final String PREF_SERVICE_OTHER_KEY = "service_other";
-    public static final boolean PREF_SERVICE_OTHER_DEFAULT = true;
 
     public static final String PREF_NOTIFY_CUSTOM_KEY = "notify_custom";
     public static final boolean PREF_NOTIFY_CUSTOM_DEFAULT = false;
@@ -172,39 +164,15 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * mopera Uメール有効設定を取得
+     * メールサービス設定を取得
      */
-    public static boolean getServiceMopera(Context ctx) {
+    public static boolean getService(Context ctx, String service) {
+        boolean def = PREF_SERVICE_DEFAULT;
+        if (service.equals(SERVICE_IMODE)) {    // iモードのみ初期値変更
+            def = PREF_SERVICE_IMODE_DEFAULT;
+        }
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-                PREF_SERVICE_MOPERA_KEY,
-                PREF_SERVICE_MOPERA_DEFAULT);
-    }
-
-    /**
-     * spモード有効設定を取得
-     */
-    public static boolean getServiceSpmode(Context ctx) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-                PREF_SERVICE_SPMODE_KEY,
-                PREF_SERVICE_SPMODE_DEFAULT);
-    }
-
-    /**
-     * iモード有効設定を取得
-     */
-    public static boolean getServiceImode(Context ctx) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-                PREF_SERVICE_IMODE_KEY,
-                PREF_SERVICE_IMODE_DEFAULT);
-    }
-
-    /**
-     * その他サービス有効設定を取得
-     */
-    public static boolean getServiceOther(Context ctx) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-                PREF_SERVICE_OTHER_KEY,
-                PREF_SERVICE_OTHER_DEFAULT);
+                getServiceKey(PREF_SERVICE_KEY, service), def);
     }
 
     /**
@@ -666,6 +634,17 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * Xperia arc(SO-01C)ワークアラウンドが必要かどうか
+     */
+    public static boolean getXperiaarcWorkaround(Context ctx) {
+        if (Build.MODEL.equals("SO-01C")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * プリファレンスのアップグレード
      */
     public static void upgrade(Context ctx) {
@@ -718,9 +697,9 @@ public class EmailNotifyPreferences
         if (EmailNotifyPreferences.getLynxWorkaround(ctx)) {
             // LYNXでは鳴り分けは不可
             Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-            e.putBoolean(PREF_SERVICE_MOPERA_KEY, false);
-            e.putBoolean(PREF_SERVICE_SPMODE_KEY, false);
-            e.putBoolean(PREF_SERVICE_IMODE_KEY, false);
+            e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_MOPERA), false);
+            e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_SPMODE), false);
+            e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_IMODE), false);
             e.commit();
         }
 

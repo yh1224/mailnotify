@@ -8,7 +8,7 @@ public class EmailNotificationHistoryOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "email_history";
 
     private static final String DB_NAME = "emailnotify.db";
-    private static final int DB_VERSION = 9;
+    private static final int DB_VERSION = 10;
     private static final String DB_CREATE_SQL = "create table " + TABLE_NAME + " ("
             + "_id integer primary key autoincrement, "
             + "created_at timestamp,"   // レコード追加日時
@@ -19,6 +19,7 @@ public class EmailNotificationHistoryOpenHelper extends SQLiteOpenHelper {
             + "application_id text,"    // X-Wap-Application-Id
             + "mailbox text,"           // mailbox属性
             + "timestamp timestamp,"    // timestamp属性
+            + "service_name text,"      // サービス名
             + "wap_data text);";
     private static final String DB_DROP_SQL = "drop table " + TABLE_NAME;
 

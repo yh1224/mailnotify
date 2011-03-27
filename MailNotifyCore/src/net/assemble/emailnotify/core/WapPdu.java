@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.orleaf.android.HexUtils;
+
 import android.util.Log;
 
 import com.android.internal.telephony.WspTypeDecoder;
@@ -18,6 +20,7 @@ public class WapPdu {
     private int binaryApplicationId;
     private String mailBox = "unknown";
     private byte[] timestamp = null;
+    private String serviceName = null;
 
     /**
      * Constructor
@@ -29,15 +32,17 @@ public class WapPdu {
     /**
      * Constructor
      *
-     * @param ctype Content-Type (binary)
+     * WAP ボディのみ
+     *
+     * @param ctype Content-Type (string)
      * @param appid X-Wap-Application-Id (binary)
      * @param body WAP body
      */
-    public WapPdu(int ctype, int appid, byte[] body) {
-        binaryContentType = ctype;
-        contentType = convertContentType(binaryContentType);
+    public WapPdu(String ctype, int appid, byte[] body) {
+        contentType = ctype;
+        binaryContentType = convertContentType(contentType);
         binaryApplicationId = appid;
-        contentType = convertApplicationId(binaryApplicationId);
+        applicationId = convertApplicationId(binaryApplicationId);
         // wapDataはボディ以降を示すため、dataIndexには0を設定
         wapData = body;
         dataIndex = 0;
@@ -54,11 +59,13 @@ public class WapPdu {
 
     /**
      * Constructor
-     *
-     * @param str WAP PDU (string)
+     * 
+     * WAPの生データがないがサービスだけ特定できた場合
      */
-    public WapPdu(String str) {
-        wapData = hex2bytes(str);
+    public WapPdu(String service, String mailbox) {
+        wapData = null;
+        serviceName = service;
+        mailBox = mailbox;
     }
 
     /**
@@ -405,7 +412,7 @@ public class WapPdu {
      */
     public String getTimestampString() {
         if (timestamp != null) {
-            return bytes2hex(timestamp);
+            return HexUtils.bytes2hex(timestamp);
         } else {
             return null;
         }
@@ -421,9 +428,9 @@ public class WapPdu {
         if (timestamp != null) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z");
-                date = sdf.parse(bytes2hex(timestamp) + " GMT");
+                date = sdf.parse(HexUtils.bytes2hex(timestamp) + " GMT");
             } catch (ParseException e) {
-                Log.w(EmailNotify.TAG, "WapPdu: Unexpected timestamp: " + bytes2hex(timestamp));
+                Log.w(EmailNotify.TAG, "WapPdu: Unexpected timestamp: " + HexUtils.bytes2hex(timestamp));
             }
         }
         return date;
@@ -436,41 +443,50 @@ public class WapPdu {
      */
     public String getHexString() {
         if (wapData != null) {
-            return bytes2hex(wapData);
+            return HexUtils.bytes2hex(wapData);
         }
         return null;
     }
 
     /**
-     * バイトデータを16進数文字列に変換
-     *
-     * @param bytes バイトデータ
-     * @return 16進数文字列
+     * サービス名を取得
+     * 
+     * @return サービス名
      */
-    public static String bytes2hex(byte[] bytes) {
-        StringBuffer strbuf = new StringBuffer(bytes.length * 2);
-        for (int i = 0; i < bytes.length; i++) {
-            int bt = bytes[i] & 0xff;
-            if (bt < 0x10) {
-                strbuf.append("0");
-            }
-            strbuf.append(Integer.toHexString(bt));
+    public String getServiceName() {
+        if (serviceName == null) {
+            serviceName = getServiceName(contentType, mailBox); 
         }
-        return strbuf.toString();
+        return serviceName;
     }
 
+
     /**
-     * 16進数文字列をバイトデータに変換
-     *
-     * @param hex 16進数文字列
-     * @return バイナリデータ
+     * サービス名を取得
+     * 
+     * @return サービス名
      */
-    public static byte[] hex2bytes(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) Integer.parseInt(hex.substring(i * 2, (i + 1) * 2), 16);
+    public static String getServiceName(String cype, String mailbox) {
+        String service;
+
+        // メールサービス別通知
+        if (cype != null && cype.equals("application/vnd.wap.emn+wbxml") &&
+                mailbox != null && mailbox.endsWith("docomo.ne.jp")) {
+            // spモードメール
+            service = EmailNotifyPreferences.SERVICE_SPMODE;
+        } else if (cype != null && cype.equals("application/vnd.wap.emn+wbxml") &&
+                mailbox != null  && mailbox.endsWith("mopera.net")) {
+            // mopera Uメール
+            service = EmailNotifyPreferences.SERVICE_MOPERA;
+        } else if (cype != null && cype.equals("application/vnd.wap.slc") &&
+                mailbox != null && mailbox.contains("docomo.ne.jp")) {
+            // iモードメール
+            service = EmailNotifyPreferences.SERVICE_IMODE;
+        } else {
+            // その他
+            service = EmailNotifyPreferences.SERVICE_OTHER;
         }
-        return bytes;
+        return service;
     }
 
 }

@@ -2,6 +2,7 @@ package net.assemble.emailnotify.core;
 
 import java.util.Set;
 
+import net.orleaf.android.HexUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,14 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
             return;
         }
 
+        String contentType = intent.getType();
+        int wapAppId = intent.getIntExtra("wapAppID", 0);
+        byte[] data = intent.getByteArrayExtra("data");
+        if (contentType != null && data != null) {
+            // 通知
+            EmailNotificationService.notify(ctx, contentType, wapAppId, data);
+        }
+
         EmailNotifyService.startService(ctx);
     }
 
@@ -30,7 +39,13 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
                 Object[] keys = keySet.toArray();
                 for (int i = 0; i < keys.length; i++) {
                     Object o = extras.get((String)keys[i]);
-                    Log.d(EmailNotify.TAG, "  " + (String)keys[i] + " = (" + o.getClass().getName() + ") " + o.toString());
+                    String val;
+                    if (o instanceof byte[]) {
+                        val = HexUtils.bytes2hex((byte[])o);
+                    } else {
+                        val = o.toString();
+                    }
+                    Log.d(EmailNotify.TAG, " " + (String)keys[i] + " = (" + o.getClass().getName() + ") " + val);
                 }
             }
         }

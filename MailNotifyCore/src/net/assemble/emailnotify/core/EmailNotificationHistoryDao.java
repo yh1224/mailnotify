@@ -88,26 +88,39 @@ public class EmailNotificationHistoryDao {
      * @param applicationId X-Wap-Application-Id
      * @param mailbox メールボックス名
      * @param timestamp タイムスタンプ
+     * @param serviceName サービス名
      * @param wap_data WAP data
-     * @return ID
+     * @return ID (<0:同じ通知がすでに存在するため記録せず)
      */
-    public static long add(Context ctx, Date logdate, String contentType, String applicationId, String mailbox, Date timestamp, String wap_data) {
-        ContentValues values = new ContentValues();
-        values.put("created_at", Calendar.getInstance().getTimeInMillis() / 1000);
-        values.put("content_type", contentType);
-        values.put("application_id", applicationId);
-        if (logdate != null) {
-            values.put("logged_at", logdate.getTime() / 1000);
+    public static long add(Context ctx, Date logdate, String contentType, String applicationId, String mailbox, Date timestamp, String serviceName, String wap_data) {
+        long id = -1;
+        getDb(ctx).beginTransaction();
+        try {
+            if (!exists(ctx, mailbox, timestamp)) {
+                ContentValues values = new ContentValues();
+                values.put("created_at", Calendar.getInstance().getTimeInMillis() / 1000);
+                values.put("content_type", contentType);
+                values.put("application_id", applicationId);
+                if (logdate != null) {
+                    values.put("logged_at", logdate.getTime() / 1000);
+                }
+                if (mailbox != null) {
+                    values.put("mailbox", mailbox);
+                }
+                if (timestamp != null) {
+                    values.put("timestamp", timestamp.getTime() / 1000);
+                }
+                if (serviceName != null) {
+                    values.put("service_name", serviceName);
+                }
+                values.put("wap_data", wap_data);
+                id = getDb(ctx).insert(EmailNotificationHistoryOpenHelper.TABLE_NAME, null, values);
+                rotate(ctx, id);
+                getDb(ctx).setTransactionSuccessful();
+            }
+        } finally {
+            getDb(ctx).endTransaction();
         }
-        if (mailbox != null) {
-            values.put("mailbox", mailbox);
-        }
-        if (timestamp != null) {
-            values.put("timestamp", timestamp.getTime() / 1000);
-        }
-        values.put("wap_data", wap_data);
-        long id = getDb(ctx).insert(EmailNotificationHistoryOpenHelper.TABLE_NAME, null, values);
-        rotate(ctx, id);
         return id;
     }
 

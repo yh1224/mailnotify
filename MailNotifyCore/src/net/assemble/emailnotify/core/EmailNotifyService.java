@@ -40,6 +40,7 @@ public class EmailNotifyService extends Service {
     private LogCheckThread mLogCheckThread;
     private boolean mStopLogCheckThread;
     private long mLastCheck;
+    private int mSaveApplicationId;
     private Handler mHandler = new Handler();
     private PendingIntent mRestartIntent = null;
 
@@ -157,7 +158,12 @@ public class EmailNotifyService extends Service {
      */
     private WapPdu checkLogLine(String line) {
         //if (EmailNotify.DEBUG) Log.v(EmailNotify.TAG, "> " + line);
-        if (line.length() >= 19 && line.substring(19).startsWith("D/WAP PUSH")/* && line.contains(": Rx: ")*/) {
+        if (line.length() >= 19 &&
+                (line.substring(19).startsWith("D/WAP PUSH") || line.substring(19).startsWith("D/EmailPushNotification"))) {
+            String[] lines =line.split(": ", 2); 
+            String tag = lines[0].substring(19);
+            String log = lines[1];
+
             Calendar ccal = getLogDate(line);
             if (ccal == null) {
                 return null;
@@ -168,23 +174,42 @@ public class EmailNotifyService extends Service {
                 return null;
             }
 
+            String data = null;
+            WapPdu pdu = null;
+
             // LYNX(SH-01B)対応
-            if (EmailNotifyPreferences.getLynxWorkaround(this) && line.endsWith(": Receive EMN")) {
+            if (EmailNotifyPreferences.getLynxWorkaround(this) &&
+                    tag.startsWith("D/WAP PUSH") && log.equals("Receive EMN")) {
                 MyLog.i(this, EmailNotify.TAG, "Received EMN");
                 mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu();
             }
 
-            if (line.contains(": Rx: ")) {
-                String data = line.split(": Rx: ")[1];
-
-                // データ解析
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                for (int i = 0; i < data.length(); i += 2){
-                    int b = Integer.parseInt(data.substring(i, i + 2), 16);
-                    baos.write(b);
+            // Xperia arc(SO-01C)対応
+            if (EmailNotifyPreferences.getXperiaarcWorkaround(this)) {
+                // spモードメール
+                if (tag.startsWith("D/WAP PUSH") && log.equals("call startService : Intent { act=android.provider.Telephony.WAP_PUSH_RECEIVED typ=application/vnd.wap.emn+wbxml cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }")) {
+                    MyLog.i(this, EmailNotify.TAG, "Detected broadcast WAP_PUSH_RECEIVED for sp-mode");
+                    mLastCheck = ccal.getTimeInMillis();
+                    return new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "spmode");
                 }
-                WapPdu pdu = new WapPdu(baos.toByteArray());
+                // mopera Uメール
+                if (tag.startsWith("D/EmailPushNotification") && log.startsWith("Wap data : ")) {
+                    if (mSaveApplicationId == 0x09) {
+                        // Content-Type: application/vnd.wap.emn+wbxml と仮定する
+                        data = log.split("Wap data : ")[1];
+                        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Found Wap data : " + data);
+                        pdu = new WapPdu("application/vnd.wap.emn+wbxml", 0x09, hex2bytes(data));
+                    }
+                }
+            }
+
+            if (tag.startsWith("D/WAP PUSH") && log.contains("Rx: ")) {
+                data = log.split("Rx: ")[1];
+                pdu = new WapPdu(hex2bytes(data));
+            }
+
+            if (pdu != null) {
                 if (!pdu.decode()) {
                     MyLog.w(this, EmailNotify.TAG, "Unexpected PDU: " + data);
                     return null;
@@ -200,6 +225,21 @@ public class EmailNotifyService extends Service {
             }
         }
         return null;
+    }
+
+    /**
+     * 16進数文字列をバイト配列に変換
+     *
+     * @param hex 16進数文字列
+     * @return バイト配列
+     */
+    private byte[] hex2bytes(String hex) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (int i = 0; i < hex.length(); i += 2){
+            int b = Integer.parseInt(hex.substring(i, i + 2), 16);
+            baos.write(b);
+        }
+        return baos.toByteArray();
     }
 
     /**
@@ -325,23 +365,34 @@ public class EmailNotifyService extends Service {
          * @param logdate
          * @param pdu
          */
-        private void notify(Date logdate, final WapPdu pdu) {
-            // 重複通知チェック
-            if (EmailNotificationHistoryDao.exists(mCtx, pdu.getMailbox(), pdu.getTimestampDate())) {
-                MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: " + pdu.getTimestampString());
+        private void notify(Date logdate, WapPdu pdu) {
+            final String contentType = pdu.getContentType();
+            final Date timestamp = pdu.getTimestampDate();
+            final String mailbox = pdu.getMailbox();
+            final String serviceName = pdu.getServiceName();
+
+            // 重複チェックに必要な情報がない場合、通知しない
+            if (contentType != null && (mailbox == null || timestamp == null)) {
+                MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Ignored: Not enough info to check duplication."
+                        + " mailbox=" + mailbox + ", timestamp=" + pdu.getTimestampString());
                 return;
             }
 
             // 記録
             final long historyId = EmailNotificationHistoryDao.add(mCtx, logdate,
-                    pdu.getContentType(), pdu.getApplicationId(),
-                    pdu.getMailbox(), pdu.getTimestampDate(), pdu.getHexString());
+                    contentType, pdu.getApplicationId(), mailbox, timestamp, serviceName, pdu.getHexString());
+            if (historyId < 0) {
+                MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: "
+                        + "mailbox=" + mailbox + ", timestamp=" + pdu.getTimestampString());
+                return;
+            }
 
             // 通知
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    doNotify(pdu, historyId, false);
+                    doNotify(EmailNotifyService.this, contentType, mailbox, timestamp,
+                            serviceName, historyId, false);
                 }
             });
         }
@@ -374,46 +425,27 @@ public class EmailNotifyService extends Service {
     /**
      * メール着信通知
      *
-     * @param pdu WAP PDU
+     * @param ctx Context
+     * @param contentType Content-Type
+     * @param timestampDate タイムスタンプ
+     * @param mailbox メールボックス名
+     * @param serviceName サービス名
+     * @param historyId 履歴ID
      * @param restore 復元
      */
-    private void doNotify(WapPdu pdu, long historyId, boolean restore) {
-        String service = null;
-        String mailbox = pdu.getMailbox();
-
-        // メールサービス別通知
-        int type = pdu.getBinaryContentType();
-        if (type == 0x030a && mailbox != null && mailbox.endsWith("docomo.ne.jp")) {
-            // spモードメール
-            if (EmailNotifyPreferences.getServiceSpmode(this)) {
-                service = EmailNotifyPreferences.SERVICE_SPMODE;
-            }
-        } else if (type == 0x030a && mailbox != null  && mailbox.endsWith("mopera.net")) {
-            // mopera Uメール
-            if (EmailNotifyPreferences.getServiceMopera(this)) {
-                service = EmailNotifyPreferences.SERVICE_MOPERA;
-            }
-        } else if (type == 0x30 && mailbox != null && mailbox.contains("docomo.ne.jp")) {
-            // iモードメール
-            if (EmailNotifyPreferences.getServiceImode(this)) {
-                service = EmailNotifyPreferences.SERVICE_IMODE;
-            }
-        } else if (EmailNotifyPreferences.getServiceOther(this)) {
-            // その他
-            service = EmailNotifyPreferences.SERVICE_OTHER;
-        }
-
-        if (service != null) {
-            if (EmailNotifyPreferences.inExcludeHours(this, service)) {
-                MyLog.d(this, EmailNotify.TAG, "This is exclude hours now.");
+    public static void doNotify(Context ctx, String contentType, String mailbox, Date timestampDate, String serviceName, long historyId, boolean restore) {
+        if (EmailNotifyPreferences.getService(ctx, serviceName)) {
+            if (EmailNotifyPreferences.inExcludeHours(ctx, serviceName)) {
+                MyLog.d(ctx, EmailNotify.TAG, "Ignored: This is exclude hours now.");
                 // PENDING: あとで通知する?
-                EmailNotificationHistoryDao.ignored(this, historyId);
+                EmailNotificationHistoryDao.ignored(ctx, historyId);
                 return;
             }
-            EmailNotificationManager.showNotification(this,
-                    service, mailbox, pdu.getTimestampDate(), restore);
+            EmailNotificationManager.showNotification(ctx,
+                    serviceName, mailbox, timestampDate, restore);
         } else {
-            EmailNotificationHistoryDao.ignored(this, historyId);
+            MyLog.d(ctx, EmailNotify.TAG, "Ignored: This is exclude service.");
+            EmailNotificationHistoryDao.ignored(ctx, historyId);
         }
     }
 
@@ -428,20 +460,20 @@ public class EmailNotifyService extends Service {
             do {
                 long id = cur.getLong(cur.getColumnIndex(BaseColumns._ID));
                 MyLog.d(this, EmailNotify.TAG, "Restoring notification: " + id);
-                String wap_data = cur.getString(cur.getColumnIndex("wap_data"));
-                WapPdu pdu;
-                if (wap_data == null) {
-                    pdu = new WapPdu();
-                } else {
-                    pdu = new WapPdu(wap_data);
-                    pdu.decode();
+                String contentType = cur.getString(cur.getColumnIndex("content_type"));
+                String mailbox = cur.getString(cur.getColumnIndex("mailbox"));
+                Date timestampDate = null;
+                long timestamp = cur.getLong(cur.getColumnIndex("timestamp"));
+                String serviceName = cur.getString(cur.getColumnIndex("service_name"));
+                if (timestamp > 0) {
+                    timestampDate = new Date(timestamp * 1000);
                 }
                 if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
                     // 未通知なら改めて通知
-                    doNotify(pdu, id, false);
+                    doNotify(this, contentType, mailbox, timestampDate, serviceName, id, false);
                 } else {
                     // 通知済みなら表示のみ
-                    doNotify(pdu, id, true);
+                    doNotify(this, contentType, mailbox, timestampDate, serviceName, id, true);
                 }
             } while (cur.moveToNext());
         }

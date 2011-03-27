@@ -35,7 +35,8 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        <receiver android:name="net.assemble.emailnotify.core.EmailNotifyWapPushReceiver">
+        <receiver
+            android:name="net.assemble.emailnotify.core.EmailNotifyWapPushReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
                 <data android:mimeType="application/vnd.wap.slc" />
@@ -50,6 +51,8 @@
         <activity
             android:name="net.assemble.emailnotify.core.EmailNotificationHistoryActivity" />
         <service android:name="net.assemble.emailnotify.core.EmailNotifyService" />
+        <service
+            android:name="net.assemble.emailnotify.core.EmailNotificationService" />
         <activity android:name="net.orleaf.android.MyLogActivity" />
         <activity android:name="net.orleaf.android.AboutActivity"
             android:theme="@android:style/Theme.Dialog" />
