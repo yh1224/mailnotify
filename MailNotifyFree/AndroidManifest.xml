@@ -35,6 +35,16 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+        <receiver android:name="net.assemble.emailnotify.core.EmailNotifyWapPushReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.slc" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.emn+wbxml" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="net.assemble.emailnotify.core.EmailNotificationReceiver" />
         <activity
@@ -68,5 +78,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-sdk android:minSdkVersion="4" />
 </manifest>
