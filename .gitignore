@@ -5,9 +5,9 @@ MailNotifyCore/gen/
 MailNotifyFree/bin/
 MailNotifyFree/gen/
 MailNotifyFree/proguard/
-MailNotifyPaid/bin/
-MailNotifyPaid/gen/
-MailNotifyPaid/proguard/
+MailNotifyPlus/bin/
+MailNotifyPlus/gen/
+MailNotifyPlus/proguard/
 MailNotifyLiveViewPlugin/bin/
 MailNotifyLiveViewPlugin/gen/
 MailNotifyLiveViewPlugin/proguard/
