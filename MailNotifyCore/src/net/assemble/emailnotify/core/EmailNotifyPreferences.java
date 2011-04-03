@@ -699,7 +699,6 @@ public class EmailNotifyPreferences
             Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
             e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_MOPERA), false);
             e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_SPMODE), false);
-            e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_IMODE), false);
             e.commit();
         }
 
