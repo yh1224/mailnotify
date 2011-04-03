@@ -103,6 +103,9 @@ public class EmailNotifyPreferences
 
     public static final String PREF_EXCLUDE_HOURS_KEY = "exclude_hours";
 
+    public static final String PREF_WORKAROUND_LYNX_KEY = "workaround_lynx";
+    public static final String PREF_WORKAROUND_XPERIAARC_KEY = "workaround_xperiaarc";
+
     // 最終チェック日時保存用
     public static final String PREF_LAST_CHECK_KEY = "last_check";
 
@@ -629,7 +632,8 @@ public class EmailNotifyPreferences
         if (Build.MODEL.equals("SH-10B")) {
             return true;
         } else {
-            return false;
+            return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                    PREF_WORKAROUND_LYNX_KEY, false);
         }
     }
 
@@ -640,7 +644,8 @@ public class EmailNotifyPreferences
         if (Build.MODEL.equals("SO-01C")) {
             return true;
         } else {
-            return false;
+            return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                    PREF_WORKAROUND_XPERIAARC_KEY, false);
         }
     }
 

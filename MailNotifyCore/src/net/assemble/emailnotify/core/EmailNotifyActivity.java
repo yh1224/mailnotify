@@ -64,6 +64,18 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
                     return true;
                 }
             });
+
+            MenuItem menuDebug = menu.add("Debug");
+            menuDebug.setIcon(android.R.drawable.ic_menu_manage);
+            menuDebug.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent intent = new Intent().setClass(EmailNotifyActivity.this,
+                            EmailNotifyDebugActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
         }
 
         // 購入メニュー (FREE/TRIAL版)

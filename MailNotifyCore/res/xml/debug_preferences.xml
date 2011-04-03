@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Rx mail">
+        <Preference android:key="test_mopera"
+            android:title="Rx: mopera U" />
+        <Preference android:key="test_spmode"
+            android:title="Rx: sp-mode" />
+        <Preference android:key="test_imode"
+            android:title="Rx: i-mode" />
+        <Preference android:key="test_spmode_xperiaarc"
+            android:title="Rx: sp-mode (Xperia arc)" />
+        <Preference android:key="test_lynx"
+            android:title="Rx: LYNX" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Rx mail (intent)">
+        <Preference android:key="test_mopera_intent"
+            android:title="Intent: mopera U" />
+        <Preference android:key="test_imode_intent"
+            android:title="Intent: i-mode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Workaround">
+        <CheckBoxPreference android:key="workaround_lynx"
+            android:title="WA: LYNX mode" android:defaultValue="false" />
+        <CheckBoxPreference android:key="workaround_xperiaarc"
+            android:title="WA: Xperiaarc mode" android:defaultValue="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
