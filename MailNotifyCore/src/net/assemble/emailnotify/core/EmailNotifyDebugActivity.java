@@ -28,7 +28,7 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
-        
+
         if (preference == findPreference("test_mopera")) {
             Log.d("WAP PUSH", "Rx: 0006060302030aaf89030d6a00850703796831323234406d6f70657261008705c307"
                     + getTimestamp() + "01");
@@ -58,6 +58,10 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             intent.putExtra("contentTypeParameters", new HashMap<Void, Void>());
             intent.putExtra("transactionId", 0);
             sendBroadcast(intent);
+        } else if (preference == findPreference("numberformatexception")) {
+            Log.d("WAP PUSH", "Rx: 0g");
+        } else if (preference == findPreference("stringindexoutofboundsexception")) {
+            Log.d("WAP PUSH", "Rx: 0");
         } else if (preference == findPreference("test_spmode_xperiaarc")) {
             Log.d("WAP PUSH", "call startService : Intent { act=android.provider.Telephony.WAP_PUSH_RECEIVED typ=application/vnd.wap.emn+wbxml cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }");
         } else if (preference == findPreference("test_lynx")) {

@@ -160,7 +160,7 @@ public class EmailNotifyService extends Service {
         //if (EmailNotify.DEBUG) Log.v(EmailNotify.TAG, "> " + line);
         if (line.length() >= 19 &&
                 (line.substring(19).startsWith("D/WAP PUSH") || line.substring(19).startsWith("D/EmailPushNotification"))) {
-            String[] lines =line.split(": ", 2); 
+            String[] lines =line.split(": ", 2);
             String tag = lines[0].substring(19);
             String log = lines[1];
 
@@ -199,14 +199,24 @@ public class EmailNotifyService extends Service {
                         // Content-Type: application/vnd.wap.emn+wbxml と仮定する
                         data = log.split("Wap data : ")[1];
                         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Found Wap data : " + data);
-                        pdu = new WapPdu("application/vnd.wap.emn+wbxml", 0x09, hex2bytes(data));
+                        try {
+                            pdu = new WapPdu("application/vnd.wap.emn+wbxml", 0x09, hex2bytes(data));
+                        } catch (Exception e) {
+                            MyLog.w(this, EmailNotify.TAG, "Invalid PDU: " + data);
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
 
             if (tag.startsWith("D/WAP PUSH") && log.contains("Rx: ")) {
                 data = log.split("Rx: ")[1];
-                pdu = new WapPdu(hex2bytes(data));
+                try {
+                    pdu = new WapPdu(hex2bytes(data));
+                } catch (Exception e) {
+                    MyLog.w(this, EmailNotify.TAG, "Invalid PDU: " + data);
+                    e.printStackTrace();
+                }
             }
 
             if (pdu != null) {

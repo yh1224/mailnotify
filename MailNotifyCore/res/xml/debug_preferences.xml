@@ -17,6 +17,12 @@
         <Preference android:key="test_imode_intent"
             android:title="Intent: i-mode" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Invalid">
+        <Preference android:key="numberformatexception"
+            android:title="NumberFormatException" />
+        <Preference android:key="stringindexoutofboundsexception"
+            android:title="IndexOutOfBoundsException" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="Workaround">
         <CheckBoxPreference android:key="workaround_lynx"
             android:title="WA: LYNX mode" android:defaultValue="false" />
