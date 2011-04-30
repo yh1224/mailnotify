@@ -2,9 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent" android:gravity="center">
-    <com.admob.android.ads.AdView
-        android:id="@+id/ad" android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:visible="false" />
+    <LinearLayout android:id="@+id/ad"
+        android:layout_width="fill_parent" android:layout_height="wrap_content" />
     <ImageView android:id="@+id/main_image" android:src="@drawable/main"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_weight="1" />

@@ -2,15 +2,14 @@ package net.assemble.emailnotify;
 
 import net.assemble.emailnotify.core.R;
 import net.assemble.emailnotify.core.EmailNotify;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.view.View;
+import android.widget.LinearLayout;
 
-import com.admob.android.ads.AdView;
+import com.google.ads.*;
 
 public class EmailNotifyActivity extends
         net.assemble.emailnotify.core.EmailNotifyActivity {
+    private static final String MY_AD_UNIT_ID = "a14d316803d0e29";
 
     @Override
     protected void onResume() {
@@ -18,17 +17,11 @@ public class EmailNotifyActivity extends
 
         // AdMob
         if (EmailNotify.isFreeVersion(this)) {
-            AdView adView = (AdView) findViewById(R.id.ad);
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
-                //AdManager.setTestDevices( new String[] { "388141A967D061433E2A0DD6CD552C68" });
-                adView.requestFreshAd();
-                adView.setVisibility(View.VISIBLE);
-            } else {
-                // ネットワーク未接続時はエラーになるので表示しない
-                adView.setVisibility(View.INVISIBLE);
-            }
+            AdView adView = new AdView(this, AdSize.BANNER, MY_AD_UNIT_ID);
+            LinearLayout adLayout = (LinearLayout) findViewById(R.id.ad);
+            adLayout.addView(adView);
+            adView.loadAd(new AdRequest());
+            adView.setVisibility(View.VISIBLE);
         }
     }
 
