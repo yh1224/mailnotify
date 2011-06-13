@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -71,8 +73,13 @@ public class MyLogActivity extends ListActivity {
         } else if (item == mMenuReport) {
             Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(
                     "mailto:" + getResources().getString(R.string.feedback_to)));
+
+            WebView webView = new WebView(this);
+            WebSettings webSettings = webView.getSettings();
+            String ua = webSettings.getUserAgentString();
+
             intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_TEXT, MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));
+            intent.putExtra(Intent.EXTRA_TEXT, ua + "\n\n" + MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));
             startActivity(intent);
         }
         return true;
