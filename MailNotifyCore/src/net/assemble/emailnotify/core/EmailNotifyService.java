@@ -381,15 +381,6 @@ public class EmailNotifyService extends Service {
             final String mailbox = pdu.getMailbox();
             final String serviceName = pdu.getServiceName();
 
-            // インテント契機でも受信するが重複チェックに必要な情報がない場合、
-            // ここでは通知しない
-            if (contentType != null && contentType.equals("application/vnd.wap.slc") && 
-                    (mailbox == null || timestamp == null)) {
-                MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Ignored: Not enough info to check duplication."
-                        + " mailbox=" + mailbox + ", timestamp=" + pdu.getTimestampString());
-                return;
-            }
-
             // 記録
             final long historyId = EmailNotificationHistoryDao.add(mCtx, logdate,
                     contentType, pdu.getApplicationId(), mailbox, timestamp, serviceName, pdu.getHexString());

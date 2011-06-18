@@ -14,6 +14,13 @@ public class EmailNotificationHistoryDao {
      * ログ保持数
      */
     private static final long LOG_ROTATE_LIMIT = 100;
+    
+    /**
+     * 重複判定閾値(秒)
+     * *timestampが存在しない場合*の重複チェックでは、
+     * 保存日時がこの時間内であれば重複とみなす。
+     */
+    private static final int DUPLICATE_CHECK_THRESHOLD_SEC = 15;
 
     private static SQLiteDatabase mDb;
 
@@ -177,16 +184,27 @@ public class EmailNotificationHistoryDao {
      * @return true:すでに存在する
      */
     public static boolean exists(Context ctx, String mailbox, Date timestamp) {
-        if (mailbox == null || timestamp == null) {
+        if (mailbox == null/* || timestamp == null*/) {
             // 材料が揃っていない場合は判定不可
             return false;
         }
 
         boolean result = false;
-        Cursor c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
-                null, "mailbox = ? AND timestamp = ?",
-                new String[] { mailbox, String.valueOf(timestamp.getTime() / 1000) },
-                null, null, null, null);
+        Cursor c;
+        if (timestamp != null) {
+            // mailboxとtimestampが一致するものを検索
+            c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+                    null, "mailbox = ? AND timestamp = ?",
+                    new String[] { mailbox, String.valueOf(timestamp.getTime() / 1000) },
+                    null, null, null, null);
+        } else {
+            // timestampがない場合、保存日時が閾値以内かどうかで判断する
+            long cur = Calendar.getInstance().getTimeInMillis() / 1000;
+            c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+                    null, "mailbox = ? AND created_at > ? AND created_at <= ?",
+                    new String[] { mailbox, String.valueOf(cur - DUPLICATE_CHECK_THRESHOLD_SEC), String.valueOf(cur) },
+                    null, null, null, null);
+        }
         if (c.moveToFirst()) {
             result = true;
         }
