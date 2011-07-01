@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -79,7 +80,11 @@ public class MyLogActivity extends ListActivity {
             String ua = webSettings.getUserAgentString();
 
             intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_TEXT, ua + "\n\n" + MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));
+            intent.putExtra(Intent.EXTRA_TEXT,
+                    Build.BRAND + "/" + Build.MODEL + "/" + Build.ID + "\n" +
+                    Build.FINGERPRINT + "\n" +
+                    Build.VERSION.CODENAME + "/" + Build.VERSION.INCREMENTAL + "/" + Build.VERSION.RELEASE + "\n" +
+                    ua + "\n--\n" + MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));
             startActivity(intent);
         }
         return true;
