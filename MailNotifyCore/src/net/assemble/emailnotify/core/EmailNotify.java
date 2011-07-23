@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
 public class EmailNotify {
@@ -15,6 +17,7 @@ public class EmailNotify {
     public static final String PACKAGE_NAME_PAID = "net.assemble.mailnotify";
 
     public static final String ACTION_MAIL_PUSH_RECEIVED = "net.assemble.emailnotify.MAIL_PUSH_RECEIVED";
+    public static final String ACTION_LOG_SENT = "net.assemble.emailnotify.LOG_SENT";
 
     /**
      * デバッグ版
@@ -34,6 +37,21 @@ public class EmailNotify {
      */
     public static boolean isFreeVersion(Context ctx) {
         return ctx.getPackageName().equals(PACKAGE_NAME_FREE);
+    }
+
+    /**
+     * アプリバージョン取得
+     */
+    public static String getAppVersion(Context ctx) {
+        String ver = "";
+        try {
+            PackageInfo pi = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+            ver = pi.versionName;
+        } catch (NameNotFoundException e) {}
+        if (DEBUG) {
+            ver += "(DEBUG)";
+        }
+        return ver;
     }
 
     /**

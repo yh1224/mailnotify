@@ -1,6 +1,8 @@
 package net.assemble.emailnotify.core;
 
 import java.util.Calendar;
+import java.util.Map;
+import java.util.UUID;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +18,8 @@ public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
     private static final int CURRENT_PREFERENCE_VERSION = 5;
+
+    private static final String PREF_PREFERENCE_ID_KEY = "preference_id";
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
@@ -103,6 +107,9 @@ public class EmailNotifyPreferences
 
     public static final String PREF_EXCLUDE_HOURS_KEY = "exclude_hours";
 
+    public static final String PREF_SEND_LOG_KEY = "log_send";
+    public static final boolean PREF_SEND_LOG_DEFAULT = false;
+
     public static final String PREF_WORKAROUND_LYNX_KEY = "workaround_lynx";
     public static final String PREF_WORKAROUND_XPERIAARC_KEY = "workaround_xperiaarc";
 
@@ -120,6 +127,31 @@ public class EmailNotifyPreferences
     public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX = "prefix";
     public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX = "suffix";
     public static final String PREF_NETWORK_SAVE_WIFI_ENABLE_KEY = "network_save_wifi_enable";
+
+    // 前回ログ送信日時
+    public static final String PREF_LOG_SENT_KEY = "log_sent";
+
+    /**
+     * IDを取得
+     */
+    public static String getPreferenceId(Context ctx) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        String uniqueId = pref.getString(PREF_PREFERENCE_ID_KEY, null);
+        if (uniqueId == null) {
+            uniqueId = UUID.randomUUID().toString();
+            Editor editor = pref.edit();
+            editor.putString(PREF_PREFERENCE_ID_KEY, uniqueId);
+            editor.commit();
+        }
+        return uniqueId;
+    }
+
+    /**
+     * すべて取得
+     */
+    public static Map<String, ?> getAll(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getAll();
+    }
 
     /**
      * 有効フラグを取得
@@ -507,6 +539,33 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * ログ送信フラグを保存
+     */
+    public static boolean getSendLog(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_SEND_LOG_KEY,
+                PREF_SEND_LOG_DEFAULT);
+    }
+
+    /**
+     * ログ送信フラグを保存
+     */
+    public static void setSendLog(Context ctx, boolean val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putBoolean(PREF_SEND_LOG_KEY, val);
+        e.commit();
+    }
+
+    /**
+     * ログ送信フラグの設定有無確認
+     */
+    @SuppressWarnings("rawtypes")
+    public static boolean hasSendLog(Context ctx) {
+        Map map = PreferenceManager.getDefaultSharedPreferences(ctx).getAll();
+        return map.containsKey(PREF_SEND_LOG_KEY);
+    }
+
+    /**
      * 現在が通知抑止期間かどうか
      */
     public static boolean inExcludeHours(Context ctx, String service) {
@@ -622,6 +681,23 @@ public class EmailNotifyPreferences
         e.remove(PREF_NETWORK_SAVE_APN_MODIFIER_STRING_KEY);
         e.remove(PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_KEY);
         e.remove(PREF_NETWORK_SAVE_WIFI_ENABLE_KEY);
+        e.commit();
+    }
+
+    /**
+     * 前回ログ送信日時を取得
+     */
+    public static long getLogSent(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getLong(
+                PREF_LOG_SENT_KEY, 0);
+    }
+
+    /**
+     * 前回ログ送信日時を保存
+     */
+    public static void setLogSent(Context ctx, long val) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putLong(PREF_LOG_SENT_KEY, val);
         e.commit();
     }
 

@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import net.orleaf.android.MyLog;
+import net.orleaf.android.MyLogReportService;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -30,6 +31,7 @@ import android.widget.Toast;
  */
 public class EmailNotifyService extends Service {
     private final long RESTART_INTERVAL = 30 * 60 * 1000;
+    private final long LOG_SEND_INTERVAL = 24 * 60 * 60 * 1000;
 
     private AlarmManager mAlarmManager;
 
@@ -46,7 +48,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onCreate() {
-        MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onCreate()");
+        MyLog.v(this, EmailNotify.TAG, "+");
         super.onCreate();
 
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -86,7 +88,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onStart()");
+        MyLog.v(this, EmailNotify.TAG, "-");
         super.onStart(intent, startId);
         startCheck();
     }
@@ -101,12 +103,25 @@ public class EmailNotifyService extends Service {
             EmailNotificationManager.clearNotificationIcon(this);
         }
 
+        // ログ送信
+        if (EmailNotify.isFreeVersion(this) && EmailNotifyPreferences.getSendLog(this)) {
+            long prev = EmailNotifyPreferences.getLogSent(this);
+            long current = Calendar.getInstance().getTimeInMillis();
+            if (prev == 0 || current - prev > LOG_SEND_INTERVAL) {
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Sending report.");
+                Intent intent = new Intent(this, EmailNotifyReceiver.class);
+                intent.setAction(EmailNotify.ACTION_LOG_SENT);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+                MyLogReportService.startService(this, EmailNotifyPreferences.getPreferenceId(this), pendingIntent);
+            }
+        }
+
         // リアルタイムログ監視開始
         startLogCheckThread();
     }
 
     public void onDestroy() {
-        MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onDestroy()");
+        MyLog.v(this, EmailNotify.TAG, "!");
         super.onDestroy();
         mActive = false;
 
@@ -173,6 +188,8 @@ public class EmailNotifyService extends Service {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + ")");
                 return null;
             }
+
+            MyLog.v(this, EmailNotify.TAG, "> " + line);
 
             String data = null;
             WapPdu pdu = null;
