@@ -56,6 +56,7 @@
         <activity
             android:name="net.assemble.emailnotify.core.EmailNotifyDebugActivity" />
         <activity android:name="net.orleaf.android.MyLogActivity" />
+        <service android:name="net.orleaf.android.MyLogReportService" />
         <activity android:name="net.orleaf.android.AboutActivity"
             android:theme="@android:style/Theme.Dialog" />
 

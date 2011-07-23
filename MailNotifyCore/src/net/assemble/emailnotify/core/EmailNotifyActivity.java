@@ -1,6 +1,8 @@
 package net.assemble.emailnotify.core;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +44,29 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         }
 
         updateService();
+
+        confirmReport();
+    }
+
+    /**
+     * レポート送信可否確認
+     */
+    private void confirmReport() {
+        if (!EmailNotifyPreferences.hasSendLog(this)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.warning);
+            builder.setMessage(getResources().getString(R.string.pref_debug_log_send_warning));
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    EmailNotifyPreferences.setSendLog(EmailNotifyActivity.this, true);
+                }
+            });
+            builder.setNegativeButton(R.string.disallow, null);
+            builder.setCancelable(true);
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
 
     /**
@@ -51,15 +76,16 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
-        // 着信履歴 (デバッグ版のみ)
+        // デバッグ用メニュー追加
         if (EmailNotify.DEBUG) {
-            MenuItem menuBuy = menu.add(R.string.history);
-            menuBuy.setIcon(android.R.drawable.ic_menu_view);
-            menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            MenuItem menuReport = menu.add("Log");
+            menuReport.setIcon(android.R.drawable.ic_menu_view);
+            menuReport.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = new Intent().setClass(EmailNotifyActivity.this,
-                            EmailNotificationHistoryActivity.class);
+                    Intent intent = new Intent().setClass(EmailNotifyActivity.this, MyLogActivity.class);
+                    intent.putExtra("level", MyLog.LEVEL_VERBOSE);
+                    intent.putExtra("debug_menu", true);
                     startActivity(intent);
                     return true;
                 }
@@ -108,12 +134,9 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             intent = new Intent().setClass(this, EmailNotifyPreferencesActivity.class);
             startActivity(intent);
             break;
-        case R.id.menu_log:
-            intent = new Intent().setClass(this, MyLogActivity.class);
-            if (EmailNotify.DEBUG) {
-                intent.putExtra("level", MyLog.LEVEL_VERBOSE);
-            }
-            intent.putExtra("debug_menu", true);
+        case R.id.menu_history:
+            intent = new Intent().setClass(EmailNotifyActivity.this,
+                    EmailNotificationHistoryActivity.class);
             startActivity(intent);
             break;
         case R.id.menu_help:

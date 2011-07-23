@@ -15,6 +15,7 @@ public class EmailNotify {
     public static final String PACKAGE_NAME_PAID = "net.assemble.mailnotify";
 
     public static final String ACTION_MAIL_PUSH_RECEIVED = "net.assemble.emailnotify.MAIL_PUSH_RECEIVED";
+    public static final String ACTION_LOG_SENT = "net.assemble.emailnotify.LOG_SENT";
 
     /**
      * デバッグ版

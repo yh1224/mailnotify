@@ -5,16 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -72,20 +68,22 @@ public class MyLogActivity extends ListActivity {
             MyLog.clearAll(this);
             updateList();
         } else if (item == mMenuReport) {
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(
-                    "mailto:" + getResources().getString(R.string.feedback_to)));
+            MyLogReportService.startServiceWithProgress(this);
 
-            WebView webView = new WebView(this);
-            WebSettings webSettings = webView.getSettings();
-            String ua = webSettings.getUserAgentString();
-
-            intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_TEXT,
-                    Build.BRAND + "/" + Build.MODEL + "/" + Build.ID + "\n" +
-                    Build.FINGERPRINT + "\n" +
-                    Build.VERSION.CODENAME + "/" + Build.VERSION.INCREMENTAL + "/" + Build.VERSION.RELEASE + "\n" +
-                    ua + "\n--\n" + MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));
-            startActivity(intent);
+//            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(
+//                    "mailto:" + getResources().getString(R.string.feedback_to)));
+//
+//            WebView webView = new WebView(this);
+//            WebSettings webSettings = webView.getSettings();
+//            String ua = webSettings.getUserAgentString();
+//
+//            intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+//            intent.putExtra(Intent.EXTRA_TEXT,
+//                    Build.BRAND + "/" + Build.MODEL + "/" + Build.ID + "\n" +
+//                    Build.FINGERPRINT + "\n" +
+//                    Build.VERSION.CODENAME + "/" + Build.VERSION.INCREMENTAL + "/" + Build.VERSION.RELEASE + "\n" +
+//                    ua + "\n--\n" + MyLog.getLogText(this, MyLog.LEVEL_VERBOSE));
+//            startActivity(intent);
         }
         return true;
     }

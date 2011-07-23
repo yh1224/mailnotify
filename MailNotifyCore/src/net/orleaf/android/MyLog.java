@@ -18,7 +18,7 @@ public class MyLog {
     /**
      * ログ保持期間
      */
-    private static final long LOG_ROTATE_LIMIT_SEC = 8 * 60 * 60; // 8 hours
+    private static final long LOG_ROTATE_LIMIT_SEC = 2 * 24 * 60 * 60; // 2 days
 
     private static SQLiteDatabase mDb;
 

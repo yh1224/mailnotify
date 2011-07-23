@@ -201,6 +201,16 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_IMODE, "Test for i-mode");
         } else if (preference == mPrefTestNotify) {
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test");
+        } else if (preference == findPreference("log_send")) {
+            final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
+            if (checkbox.isChecked()) {
+                alertMessage(R.string.pref_debug_log_send_warning, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        checkbox.setChecked(false);
+                    }
+                });
+            }
         }
         return true;
     }

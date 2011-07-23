@@ -70,58 +70,60 @@ public class EmailNotificationHistoryActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Cursor cur = EmailNotificationHistoryDao.getHistory(this, id);
-        if (cur.moveToFirst()) {
-            String wapData = cur.getString(cur.getColumnIndex("wap_data"));
-            String contentType = cur.getString(cur.getColumnIndex("content_type"));
-            String applicationId = cur.getString(cur.getColumnIndex("application_id"));
-            String mailbox = cur.getString(cur.getColumnIndex("mailbox"));
-            Date timestampDate = null;
-            long timestamp =  cur.getLong(cur.getColumnIndex("timestamp"));
-            if (timestamp > 0) {
-                timestampDate = new Date(timestamp * 1000);
+        if (EmailNotify.DEBUG) {
+            Cursor cur = EmailNotificationHistoryDao.getHistory(this, id);
+            if (cur.moveToFirst()) {
+                String wapData = cur.getString(cur.getColumnIndex("wap_data"));
+                String contentType = cur.getString(cur.getColumnIndex("content_type"));
+                String applicationId = cur.getString(cur.getColumnIndex("application_id"));
+                String mailbox = cur.getString(cur.getColumnIndex("mailbox"));
+                Date timestampDate = null;
+                long timestamp =  cur.getLong(cur.getColumnIndex("timestamp"));
+                if (timestamp > 0) {
+                    timestampDate = new Date(timestamp * 1000);
+                }
+                Date loggedDate = null;
+                long logged =  cur.getLong(cur.getColumnIndex("logged_at"));
+                if (logged > 0) {
+                    loggedDate = new Date(logged * 1000);
+                }
+                Date notifiedDate = null;
+                long notified =  cur.getLong(cur.getColumnIndex("notified_at"));
+                if (notified > 0) {
+                    notifiedDate = new Date(notified * 1000);
+                }
+                Date clearedDate = null;
+                long cleared =  cur.getLong(cur.getColumnIndex("cleared_at"));
+                if (cleared > 0) {
+                    clearedDate = new Date(cleared * 1000);
+                }
+    
+                StringBuffer textBuf = new StringBuffer();
+                textBuf.append(wapData + "\n\n");
+                textBuf.append("Content-Type: " + contentType + "\n");
+                textBuf.append("X-Wap-Application-Id: " + applicationId + "\n");
+                textBuf.append("mailbox: " + mailbox + "\n");
+    
+                if (timestampDate != null) {
+                    textBuf.append("\nR " + timestampDate.toLocaleString());
+                }
+                if (loggedDate != null) {
+                    textBuf.append("\nL " + loggedDate.toLocaleString());
+                }
+                if (notifiedDate != null) {
+                    textBuf.append("\nN " + notifiedDate.toLocaleString());
+                }
+                if (clearedDate != null) {
+                    textBuf.append("\nC " + clearedDate.toLocaleString());
+                }
+    
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Detail #" + id);
+                builder.setMessage(textBuf.toString());
+                builder.setPositiveButton(R.string.ok, null);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
-            Date loggedDate = null;
-            long logged =  cur.getLong(cur.getColumnIndex("logged_at"));
-            if (logged > 0) {
-                loggedDate = new Date(logged * 1000);
-            }
-            Date notifiedDate = null;
-            long notified =  cur.getLong(cur.getColumnIndex("notified_at"));
-            if (notified > 0) {
-                notifiedDate = new Date(notified * 1000);
-            }
-            Date clearedDate = null;
-            long cleared =  cur.getLong(cur.getColumnIndex("cleared_at"));
-            if (cleared > 0) {
-                clearedDate = new Date(cleared * 1000);
-            }
-
-            StringBuffer textBuf = new StringBuffer();
-            textBuf.append(wapData + "\n\n");
-            textBuf.append("Content-Type: " + contentType + "\n");
-            textBuf.append("X-Wap-Application-Id: " + applicationId + "\n");
-            textBuf.append("mailbox: " + mailbox + "\n");
-
-            if (timestampDate != null) {
-                textBuf.append("\nR " + timestampDate.toLocaleString());
-            }
-            if (loggedDate != null) {
-                textBuf.append("\nL " + loggedDate.toLocaleString());
-            }
-            if (notifiedDate != null) {
-                textBuf.append("\nN " + notifiedDate.toLocaleString());
-            }
-            if (clearedDate != null) {
-                textBuf.append("\nC " + clearedDate.toLocaleString());
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Detail #" + id);
-            builder.setMessage(textBuf.toString());
-            builder.setPositiveButton(R.string.ok, null);
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
         }
     }
 

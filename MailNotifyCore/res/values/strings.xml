@@ -14,6 +14,7 @@
     <string name="restored_network">ネットワーク設定を復元しました。</string>
     <string name="warning">警告</string>
     <string name="ok">OK</string>
+    <string name="disallow">許可しない</string>
     <string name="cancel">キャンセル</string>
     <string name="preferences">設定</string>
     <string name="log">ログ</string>
@@ -133,6 +134,11 @@
     <string name="pref_exclude_hours_invalid">時間帯の指定が無効です。</string>
     <string name="pref_exclude_hours_from">:00～</string>
     <string name="pref_exclude_hours_to">:00</string>
+    <string name="pref_group_debug">デバッグ</string>
+    <string name="pref_debug_log_send_title">ログ送信</string>
+    <string name="pref_debug_log_send_summary">動作状況を開発者に送信します。</string>
+    <string name="pref_debug_log_send_warning">アプリの動作精度向上を目的とし、定期的に動作ログの送信をおこないます。送信されるログにはメールアドレスの情報が含まれます。ログは暗号化されて送信され、開発用途以外には使用しません。\n\n動作ログの送信を許可しますか？
+    </string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
     <string name="enable">有効化</string>
     <string name="enabled">監視中</string>

@@ -1,5 +1,8 @@
 package net.assemble.emailnotify.core;
 
+import java.util.Calendar;
+
+import net.orleaf.android.MyLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,11 +34,15 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                     intent.getData().equals(Uri.fromParts("package", ctx.getPackageName(), null))) {
                     // Restart service
                     Log.i(EmailNotify.TAG, "EmailNotify restarted. (package replaced)");
+                    MyLog.i(ctx, EmailNotify.TAG, "Package replaced.");
                     EmailNotifyService.startService(ctx);
                 }
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)
                     || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
                 EmailNotifyService.startService(ctx);
+            } else if (intent.getAction().equals(EmailNotify.ACTION_LOG_SENT)) {
+                MyLog.i(ctx, EmailNotify.TAG, "Log sent.");
+                EmailNotifyPreferences.setLogSent(ctx, Calendar.getInstance().getTimeInMillis());
             }
             return;
         }
