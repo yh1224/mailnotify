@@ -2,6 +2,7 @@ package net.assemble.emailnotify.core;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.UUID;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,6 +18,8 @@ public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
     private static final int CURRENT_PREFERENCE_VERSION = 5;
+
+    private static final String PREF_PREFERENCE_ID_KEY = "preference_id";
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
@@ -127,6 +130,28 @@ public class EmailNotifyPreferences
 
     // 前回ログ送信日時
     public static final String PREF_LOG_SENT_KEY = "log_sent";
+
+    /**
+     * IDを取得
+     */
+    public static String getPreferenceId(Context ctx) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        String uniqueId = pref.getString(PREF_PREFERENCE_ID_KEY, null);
+        if (uniqueId == null) {
+            uniqueId = UUID.randomUUID().toString();
+            Editor editor = pref.edit();
+            editor.putString(PREF_PREFERENCE_ID_KEY, uniqueId);
+            editor.commit();
+        }
+        return uniqueId;
+    }
+
+    /**
+     * すべて取得
+     */
+    public static Map<String, ?> getAll(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getAll();
+    }
 
     /**
      * 有効フラグを取得

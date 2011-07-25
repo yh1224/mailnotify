@@ -45,7 +45,9 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
 
         updateService();
 
-        confirmReport();
+        if (EmailNotify.isFreeVersion(this)) {
+            confirmReport();
+        }
     }
 
     /**
@@ -84,8 +86,12 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     Intent intent = new Intent().setClass(EmailNotifyActivity.this, MyLogActivity.class);
-                    intent.putExtra("level", MyLog.LEVEL_VERBOSE);
-                    intent.putExtra("debug_menu", true);
+                    intent.putExtra(MyLogActivity.EXTRA_REPORTER_ID,
+                            EmailNotifyPreferences.getPreferenceId(EmailNotifyActivity.this));
+                    if (EmailNotify.DEBUG) {
+                        intent.putExtra(MyLogActivity.EXTRA_LEVEL, MyLog.LEVEL_VERBOSE);
+                        intent.putExtra(MyLogActivity.EXTRA_DEBUG_MENU, true);
+                    }
                     startActivity(intent);
                     return true;
                 }

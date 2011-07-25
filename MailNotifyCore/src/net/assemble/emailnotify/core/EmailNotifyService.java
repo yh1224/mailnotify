@@ -48,7 +48,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onCreate() {
-        MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onCreate()");
+        MyLog.v(this, EmailNotify.TAG, "+");
         super.onCreate();
 
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -88,7 +88,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onStart()");
+        MyLog.v(this, EmailNotify.TAG, "-");
         super.onStart(intent, startId);
         startCheck();
     }
@@ -112,7 +112,7 @@ public class EmailNotifyService extends Service {
                 Intent intent = new Intent(this, EmailNotifyReceiver.class);
                 intent.setAction(EmailNotify.ACTION_LOG_SENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-                MyLogReportService.startService(this, pendingIntent);
+                MyLogReportService.startService(this, EmailNotifyPreferences.getPreferenceId(this), pendingIntent);
             }
         }
 
@@ -121,7 +121,7 @@ public class EmailNotifyService extends Service {
     }
 
     public void onDestroy() {
-        MyLog.d(this, EmailNotify.TAG, "EmailNotifyService.onDestroy()");
+        MyLog.v(this, EmailNotify.TAG, "!");
         super.onDestroy();
         mActive = false;
 

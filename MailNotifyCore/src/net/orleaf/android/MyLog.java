@@ -14,6 +14,7 @@ public class MyLog {
     public static final int LEVEL_INFO = 3;
     public static final int LEVEL_DEBUG = 4;
     public static final int LEVEL_VERBOSE = 5;
+    public static final int LEVEL_MAX = LEVEL_VERBOSE;
 
     /**
      * ログ保持期間
@@ -101,6 +102,7 @@ public class MyLog {
     /**
      * ログを取得
      *
+     * @param maxlevel 取得するログレベルの閾値
      * @return 全ログの文字列
      */
     public static String getLogText(Context ctx, int maxlevel) { 
@@ -117,6 +119,10 @@ public class MyLog {
             } while (c.moveToNext());
         }
         return buf.toString();
+    }
+
+    public static String getLogText(Context ctx) {
+        return getLogText(ctx, LEVEL_MAX);
     }
 
     /**

@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
@@ -26,14 +27,21 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.provider.Settings.Secure;
 import android.widget.Toast;
 
 public class MyLogReportService extends Service {
+    public static final String EXTRA_PROGRESS = "progress";
+    public static final String EXTRA_REPORTER_ID = "reporter_id";
+    public static final String EXTRA_INTENT = "intent";
+
     private static final String REPORT_URL = "https://orleaf-tracker.appspot.com/report";
 
     private static ComponentName mService;
 
     private PendingIntent mCallbackIntent;
+    private String mReporterId;
     private boolean mProgress;
     private BroadcastReceiver mConnectivityReceiver;
     private boolean mStarted = false;
@@ -45,8 +53,9 @@ public class MyLogReportService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        mCallbackIntent = (PendingIntent) intent.getParcelableExtra("intent");
-        mProgress = intent.getBooleanExtra("progress", false);
+        mCallbackIntent = (PendingIntent) intent.getParcelableExtra(EXTRA_INTENT);
+        mProgress = intent.getBooleanExtra(EXTRA_PROGRESS, false);
+        mReporterId = intent.getStringExtra(EXTRA_REPORTER_ID);
         start();
     }
 
@@ -105,15 +114,17 @@ public class MyLogReportService extends Service {
                 posts.put("app_name", getResources().getString(pi.applicationInfo.labelRes));
                 posts.put("app_version", pi.versionName);
             } catch (NameNotFoundException e) {}
-            //params.put("ANDROID_ID", Secure.ANDROID_ID);
-            posts.put("Build.BRAND", Build.BRAND);
-            posts.put("Build.MODEL", Build.MODEL);
-            posts.put("Build.ID", Build.ID);
-            //params.put("Build.FINGERPRINT", Build.FINGERPRINT);
-            //params.put("Build.VERSION.CODENAMET", Build.VERSION.CODENAME);
-            //params.put("Build.VERSION.INCREMENTAL", Build.VERSION.INCREMENTAL);
-            //params.put("Build.VERSION.RELEASE", Build.VERSION.RELEASE);
-            posts.put("log", MyLog.getLogText(MyLogReportService.this, MyLog.LEVEL_VERBOSE));
+            posts.put("reporter_id", mReporterId);
+            posts.put("android_id", Secure.getString(getContentResolver(), Secure.ANDROID_ID));
+            posts.put("build_brand", Build.BRAND);
+            posts.put("build_model", Build.MODEL);
+            posts.put("build_id", Build.ID);
+            posts.put("build_fingerprint", Build.FINGERPRINT);
+            //posts.put("Build.VERSION.CODENAMET", Build.VERSION.CODENAME);
+            //posts.put("Build.VERSION.INCREMENTAL", Build.VERSION.INCREMENTAL);
+            //posts.put("Build.VERSION.RELEASE", Build.VERSION.RELEASE);
+            posts.put("log", MyLog.getLogText(MyLogReportService.this));
+            posts.put("preferences", getPreferencesString());
             return postTo(REPORT_URL, posts);
         }
 
@@ -195,6 +206,17 @@ public class MyLogReportService extends Service {
         }
     }
 
+    private String getPreferencesString() {
+        StringBuffer strBuf = new StringBuffer();
+        Map<String, ?> prefs = PreferenceManager.getDefaultSharedPreferences(this).getAll();
+        for (Iterator<?> it = prefs.entrySet().iterator(); it.hasNext(); ) {
+            @SuppressWarnings("unchecked")
+            Map.Entry<String, ?> entry = (Entry<String, ?>) it.next();
+            strBuf.append(entry.getKey() + "=" + entry.getValue().toString() + "\n");
+        }
+        return strBuf.toString();
+    }
+    
     /**
      * ネットワーク接続監視開始
      */
@@ -235,16 +257,18 @@ public class MyLogReportService extends Service {
     /**
      * サービス開始
      */
-    public static boolean startServiceWithProgress(Context ctx) {
+    public static boolean startServiceWithProgress(Context ctx, String id) {
         Intent intent = new Intent(ctx, MyLogReportService.class);
-        intent.putExtra("progress", true);
+        intent.putExtra(EXTRA_REPORTER_ID, id);
+        intent.putExtra(EXTRA_PROGRESS, true);
         mService = ctx.startService(intent);
         return (mService != null);
     }
 
-    public static boolean startService(Context ctx, PendingIntent callbackIntent) {
+    public static boolean startService(Context ctx, String reporterId, PendingIntent callbackIntent) {
         Intent intent = new Intent(ctx, MyLogReportService.class);
-        intent.putExtra("intent", callbackIntent);
+        intent.putExtra(EXTRA_REPORTER_ID, reporterId);
+        intent.putExtra(EXTRA_INTENT, callbackIntent);
         mService = ctx.startService(intent);
         return (mService != null);
     }
