@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.assemble.mailnotify" android:versionCode="368"
-    android:versionName="3.10">
+    package="net.assemble.mailnotify" android:versionCode="371"
+    android:versionName="3.11">
     <application android:icon="@drawable/icon"
         android:label="@string/app_name">
         <activity android:name=".EmailNotifyActivity"
