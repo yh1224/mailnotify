@@ -212,7 +212,11 @@ public class MyLogReportService extends Service {
         for (Iterator<?> it = prefs.entrySet().iterator(); it.hasNext(); ) {
             @SuppressWarnings("unchecked")
             Map.Entry<String, ?> entry = (Entry<String, ?>) it.next();
-            strBuf.append(entry.getKey() + "=" + entry.getValue().toString() + "\n");
+            if (entry.getValue() == null) {
+                strBuf.append(entry.getKey() + "=(null)\n");
+            } else {
+                strBuf.append(entry.getKey() + "=" + entry.getValue().toString() + "\n");
+            }
         }
         return strBuf.toString();
     }
