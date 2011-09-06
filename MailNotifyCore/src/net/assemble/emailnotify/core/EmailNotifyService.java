@@ -345,7 +345,10 @@ public class EmailNotifyService extends Service {
                         }
                     }
                     bufferedReader.close();
-                    String errMsg = getErrorMessage(process);
+                    String errMsg = "";
+                    if (line == null) {
+                        errMsg = getErrorMessage(process);
+                    }
                     process.destroy();
                     if (!mStopLogCheckThread) {
                         // 不正終了
