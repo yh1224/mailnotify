@@ -1,6 +1,8 @@
 Copyright 2010-2011 Orange leaf
 
 [改版履歴]
+v3.11.1
+- プロセスが増殖するバグを修正
 v3.11
 - Xperia acro(SO-02C)対応
 v3.10
