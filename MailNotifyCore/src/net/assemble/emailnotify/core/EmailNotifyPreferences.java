@@ -717,7 +717,10 @@ public class EmailNotifyPreferences
      * Xperia arc(SO-01C)ワークアラウンドが必要かどうか
      */
     public static boolean getXperiaarcWorkaround(Context ctx) {
-        if (Build.MODEL.equals("SO-01C") || Build.MODEL.equals("SO-02C")) {
+        if (Build.MODEL.equals("SO-01C") /* Xperia arc */
+                || Build.MODEL.equals("SO-02C") /* Xperia acro */
+                || Build.MODEL.equals("SO-03C") /* Xperia ray */
+                ) {
             return true;
         } else {
             return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
