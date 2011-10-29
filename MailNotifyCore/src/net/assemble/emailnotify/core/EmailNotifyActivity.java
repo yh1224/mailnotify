@@ -135,25 +135,20 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         Intent intent;
-        switch (itemId) {
-        case R.id.menu_preferences:
+        if (itemId == R.id.menu_preferences) {
             intent = new Intent().setClass(this, EmailNotifyPreferencesActivity.class);
             startActivity(intent);
-            break;
-        case R.id.menu_history:
+        } else if (itemId == R.id.menu_history) {
             intent = new Intent().setClass(EmailNotifyActivity.this,
                     EmailNotificationHistoryActivity.class);
             startActivity(intent);
-            break;
-        case R.id.menu_help:
+        } else if (itemId == R.id.menu_help) {
             intent = new Intent().setClass(this, EmailNotifyHelpActivity.class);
             startActivity(intent);
-            break;
-        case R.id.menu_about:
+        } else if (itemId == R.id.menu_about) {
             intent = new Intent().setClass(this, AboutActivity.class);
             intent.putExtra("body_asset", "about.txt");
             startActivity(intent);
-            break;
         }
         return true;
     }
