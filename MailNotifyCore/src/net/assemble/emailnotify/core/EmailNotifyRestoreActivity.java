@@ -33,7 +33,7 @@ public class EmailNotifyRestoreActivity extends Activity {
         mTelManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
         Intent intent = getIntent();
-        if (intent.getAction().equals(ACTION_RESTORE_NETWORK)) {
+        if (intent != null && intent.getAction().equals(ACTION_RESTORE_NETWORK)) {
             // ネットワーク復元
             restoreNetwork();
             Toast.makeText(this, R.string.restored_network, Toast.LENGTH_LONG).show();
