@@ -1,6 +1,8 @@
 Copyright 2010-2011 Orange leaf
 
 [改版履歴]
+v2.10
+- Xperia PLAY(SO-01D)対応
 v2.9
 - Xperia ray(SO-03C)対応
 v2.8.2
