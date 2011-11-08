@@ -720,6 +720,7 @@ public class EmailNotifyPreferences
         if (Build.MODEL.equals("SO-01C") /* Xperia arc */
                 || Build.MODEL.equals("SO-02C") /* Xperia acro */
                 || Build.MODEL.equals("SO-03C") /* Xperia ray */
+                || Build.MODEL.equals("SO-01D") /* Xperia PLAY */
                 ) {
             return true;
         } else {
