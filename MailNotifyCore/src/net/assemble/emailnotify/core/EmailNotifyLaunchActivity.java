@@ -7,8 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,8 +27,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import net.orleaf.android.MyLog;
 
 public class EmailNotifyLaunchActivity extends Activity {
     private static final String SPMODE_APN = "spmode.ne.jp";
@@ -102,16 +98,9 @@ public class EmailNotifyLaunchActivity extends Activity {
             new AsyncTask<Object, Object, Boolean>() {
                 @Override
                 protected Boolean doInBackground(Object... params) {
-                    // Wi-Fi無効化
-                    boolean wifiChanged = disableWifi();
-
                     // APN有効化 (現状spモードのみ)
-                    boolean apnChanged = enableAPN(SPMODE_APN);
-
-                    if (wifiChanged || apnChanged) {
-                        // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
-                        EmailNotifyPreferences.saveNetworkInfo(EmailNotifyLaunchActivity.this);
-
+                    boolean changed = new MobileNetworkManager(EmailNotifyLaunchActivity.this).enableAPN(SPMODE_APN);
+                    if (changed) {
                         // 復元用の通知を表示
                         EmailNotificationManager.showRestoreNetworkIcon(EmailNotifyLaunchActivity.this);
                         return true;
@@ -234,147 +223,6 @@ public class EmailNotifyLaunchActivity extends Activity {
             mMessageText.setText(getResources().getString(R.string.network_disabled));
         }
         return false;
-    }
-
-    /**
-     * Wi-Fi無効化
-     *
-     * @return true:無効化した false:何もしてない(すでに無効)
-     */
-    private boolean disableWifi() {
-        boolean wifiEnabled = mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED;
-
-        // Wi-Fiが有効であれば無効化
-        if (wifiEnabled) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
-            mWifiManager.setWifiEnabled(false);
-        } else {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
-        }
-
-        // ネットワーク復元情報(Wi-Fi)を保存
-        EmailNotifyPreferences.saveNetworkWifiInfo(this, wifiEnabled);
-
-        return wifiEnabled;
-    }
-
-    /**
-     * APN有効化
-     *
-     * @return true:設定を変更した false:何もしなかった
-     */
-    private boolean enableAPN(String target_apn) {
-        boolean changed = false;
-        ContentResolver resolver = getContentResolver();
-        ContentValues values;
-        Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
-                new String[] { BaseColumns._ID, "apn", "type" },
-                "numeric = " + mTelManager.getSimOperator(), null, null);
-
-        // APNのkeyと付加文字列検索 (ex:apndroid)
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Checking for enable APN...");
-        String apnKey = null;
-        String modifierStr = null;
-        String modifierType = null;
-        if (cursor.moveToFirst()) {
-            do {
-                String key = cursor.getString(0);
-                String apn = cursor.getString(1);
-                String type = cursor.getString(2);
-                if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
-
-                if (apn.equals(target_apn)) {
-                    if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Found valid APN.");
-                    apnKey = key;
-                    break;
-                }
-                if (apn.startsWith(target_apn)) {
-                    String ex = apn.substring(target_apn.length());
-                    if (type.endsWith(ex)) {
-                        apnKey = key;
-                        modifierStr = ex;
-                        modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX;
-                        if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
-                    }
-                } else if (apn.endsWith(target_apn)) {
-                    String ex = apn.substring(0, apn.length() - target_apn.length());
-                    if (type.startsWith(ex)) {
-                        apnKey = key;
-                        modifierStr = ex;
-                        modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX;
-                        if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
-                    }
-                }
-            } while (cursor.moveToNext());
-        }
-
-        if (modifierStr != null) {
-            if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Enabling APNs...");
-            // Activate APNs
-            if (cursor.moveToFirst()) {
-                do {
-                    String key = cursor.getString(0);
-                    String apn = cursor.getString(1);
-                    String type = cursor.getString(2);
-
-                    String new_apn;
-                    String new_type;
-                    if (apn.startsWith(modifierStr) && type.startsWith(modifierStr)) {
-                        new_apn = apn.substring(modifierStr.length());
-                        new_type = type.substring(modifierStr.length());
-                    } else if (apn.endsWith(modifierStr) && type.endsWith(modifierStr)) {
-                        new_apn = apn.substring(0, apn.length() - modifierStr.length());
-                        new_type = type.substring(0, type.length() - modifierStr.length());
-                    } else {
-                        if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
-                        continue;
-                    }
-
-                    // APN設定をもとに戻す
-                    values = new ContentValues();
-                    values.put("apn", new_apn);
-                    values.put("type", new_type);
-                    Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
-                    resolver.update(url, values, null, null);
-                    changed = true;
-                    MyLog.d(this, EmailNotify.TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
-                } while (cursor.moveToNext());
-            }
-        }
-        cursor.close();
-
-        String prevApnKey = null;
-        if (apnKey != null) {
-            if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Activating APN...");
-
-            // 現在の接続先を取得
-            cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
-                    new String[] {"_id"}, null, null, null);
-            if (cursor.moveToFirst()) {
-                prevApnKey = cursor.getString(0);
-                if (EmailNotify.DEBUG) MyLog.d(this, EmailNotify.TAG, "Current APN ID: " + prevApnKey);
-            }
-            cursor.close();
-
-            if (prevApnKey == null || !prevApnKey.equals(apnKey)) {
-                // 接続先APNを変更
-                values = new ContentValues();
-                values.put("apn_id", apnKey);
-                resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
-                changed = true;
-                MyLog.d(this, EmailNotify.TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
-            }
-        }
-
-        if (changed) {
-            // ネットワーク復元情報(APN)を保存
-            EmailNotifyPreferences.saveNetworkApnInfo(this, prevApnKey, modifierStr, modifierType);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network: apnKey=" + prevApnKey +
-                    ", modifier=" + modifierStr + ", type=" + modifierType);
-        } else {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "APN is already active.");
-        }
-        return changed;
     }
 
     // アプリ起動
