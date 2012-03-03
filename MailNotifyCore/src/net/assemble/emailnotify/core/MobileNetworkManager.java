@@ -1,5 +1,8 @@
 package net.assemble.emailnotify.core;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.provider.BaseColumns;
@@ -18,8 +22,6 @@ import android.util.Log;
 
 public class MobileNetworkManager {
 
-    private TelephonyManager mTelManager;
-
     public class ApnInfo {
         long ID;
         public String KEY;
@@ -27,30 +29,35 @@ public class MobileNetworkManager {
         public String APN_NAME;
     }
 
-    private Context mCtx;
-    private WifiManager mWifiManager;
-    private ContentResolver mResolver;
+    private final Context mCtx;
+    private TelephonyManager mTelManager;
+    private final WifiManager mWifiManager;
+    private final ConnectivityManager mConnManager;
+    private final ContentResolver mResolver;
 
     public MobileNetworkManager(Context ctx) {
         mCtx = ctx;
         mTelManager = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
         mWifiManager = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
+        mConnManager = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
         mResolver = mCtx.getContentResolver();
     }
 
     /**
      * APNリスト取得
+     * 
+     * @return APNリスト (null:取得失敗)
      */
     public List<ApnInfo> getApnList() {
         ArrayList<ApnInfo> apnList = new ArrayList<ApnInfo>();
-        String whereCaluse = null;
         String simOp = mTelManager.getSimOperator();
-        if (simOp != null) {
-            whereCaluse = "numeric = " + simOp;
+        if (simOp == null || simOp.length() == 0) {
+            return null;
         }
+        
         Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type", "numeric" },
-                whereCaluse, null, BaseColumns._ID);
+                "numeric = ?", new String[] { simOp }, BaseColumns._ID);
 
         if (cursor.moveToFirst()) {
             do {
@@ -74,17 +81,67 @@ public class MobileNetworkManager {
     }
 
     /**
+     * データ通信の有効/無効を取得
+     *
+     * @return true:有効 false:無効
+     */
+    private boolean getMobileDataEnabled()
+            throws ClassNotFoundException, SecurityException, NoSuchFieldException, IllegalArgumentException,
+            IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        final Class<?> conmanClass = Class.forName(mConnManager.getClass().getName());
+        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+        iConnectivityManagerField.setAccessible(true);
+        final Object iConnectivityManager = iConnectivityManagerField.get(mConnManager);
+        final Class<?> iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+        final Method getMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("getMobileDataEnabled");
+        getMobileDataEnabledMethod.setAccessible(true);
+        return (Boolean) getMobileDataEnabledMethod.invoke(iConnectivityManager);
+    }
+
+    /**
+     * データ通信の有効化/無効化
+     *
+     * @param enabled true:有効化 false:無効化
+     * @return true:設定を変更した false:何もしなかった
+     */
+    private boolean setMobileDataEnabled(boolean enabled) {
+        try {
+            if (getMobileDataEnabled() != enabled) {
+                final Class<?> conmanClass = Class.forName(mConnManager.getClass().getName());
+                final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+                iConnectivityManagerField.setAccessible(true);
+                final Object iConnectivityManager = iConnectivityManagerField.get(mConnManager);
+                final Class<?> iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+                final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+                setMobileDataEnabledMethod.setAccessible(true);
+                setMobileDataEnabledMethod.invoke(iConnectivityManager, enabled);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
      * APN有効化
      *
      * @return true:設定を変更した false:何もしなかった
      */
-    public boolean enableAPN(String target_apn) {
-        boolean changed = disableWifi();
-        ContentResolver resolver = mCtx.getContentResolver();
-        ContentValues values;
-        Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
+    private boolean enableAPN(String target_apn) {
+        boolean changed = false;
+
+        String simOp = mTelManager.getSimOperator();
+        if (simOp == null || simOp.length() == 0) {
+            MyLog.d(mCtx, EmailNotify.TAG, "simOp not set.");
+            return false;
+        }
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "simOp = " + simOp);
+        Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type" },
-                "numeric = " + mTelManager.getSimOperator(), null, null);
+                "numeric = ?", new String[] { simOp }, null);
+
+        ContentValues values;
 
         // APNのkeyと付加文字列検索 (ex:apndroid)
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Checking for enable APN...");
@@ -150,9 +207,13 @@ public class MobileNetworkManager {
                     values.put("apn", new_apn);
                     values.put("type", new_type);
                     Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
-                    resolver.update(url, values, null, null);
-                    changed = true;
-                    MyLog.d(mCtx, EmailNotify.TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
+                    try {
+                        mResolver.update(url, values, null, null);
+                        changed = true;
+                        MyLog.d(mCtx, EmailNotify.TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
+                    } catch (SecurityException e) {
+                        MyLog.e(mCtx, EmailNotify.TAG, "Unable to update APN settings for security reasons.");
+                    }
                 } while (cursor.moveToNext());
             }
         }
@@ -163,7 +224,7 @@ public class MobileNetworkManager {
             if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Activating APN...");
 
             // 現在の接続先を取得
-            cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
+            cursor = mResolver.query(Uri.parse("content://telephony/carriers/preferapn"),
                     new String[] {"_id"}, null, null, null);
             if (cursor.moveToFirst()) {
                 prevApnKey = cursor.getString(0);
@@ -175,9 +236,13 @@ public class MobileNetworkManager {
                 // 接続先APNを変更
                 values = new ContentValues();
                 values.put("apn_id", apnKey);
-                resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
-                changed = true;
-                MyLog.d(mCtx, EmailNotify.TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
+                try {
+                    mResolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
+                    changed = true;
+                    MyLog.d(mCtx, EmailNotify.TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
+                } catch (SecurityException e) {
+                    MyLog.e(mCtx, EmailNotify.TAG, "Unable to update APN settings for security reasons.");
+                }
             }
         }
 
@@ -189,10 +254,6 @@ public class MobileNetworkManager {
         } else {
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "APN is already active.");
         }
-        if (changed) {
-            // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
-            EmailNotifyPreferences.saveNetworkInfo(mCtx);
-        }
         return changed;
     }
 
@@ -201,7 +262,7 @@ public class MobileNetworkManager {
      *
      * @return true:無効化した false:何もしてない(すでに無効)
      */
-    public boolean disableWifi() {
+    private boolean disableWifi() {
         boolean wifiEnabled = mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED;
 
         // Wi-Fiが有効であれば無効化
@@ -219,70 +280,117 @@ public class MobileNetworkManager {
     }
 
     /**
-     * ネットワークを復元する
+     * APNを復元する
+     */
+    private void restoreAPN() {
+        String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(mCtx);
+        String modifierStr = EmailNotifyPreferences.getNetworkSaveApnModifierString(mCtx);
+        String modifierType = EmailNotifyPreferences.getNetworkSaveApnModifierType(mCtx);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring APN: apnKey=" + apnKey + ", modifier=" + modifierStr +
+                ", type=" + modifierType);
+
+        ContentValues values;
+
+        if (modifierStr != null) {
+            Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
+                    new String[] { BaseColumns._ID, "apn", "type" },
+                    "numeric = ?", new String[] { mTelManager.getSimOperator() }, null);
+
+            // APN設定を復元
+            if (cursor.moveToFirst()) {
+                do {
+                    String key = cursor.getString(0);
+                    String apn = cursor.getString(1);
+                    String type = cursor.getString(2);
+
+                    String new_apn;
+                    String new_type;
+                    if (modifierType.equals(EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX) &&
+                            !(apn.startsWith(modifierStr) || type.startsWith(modifierStr))) {
+                        new_apn = modifierStr + apn;
+                        new_type = modifierStr + type;
+                    } else if (modifierType.equals(EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX) &&
+                            !(apn.endsWith(modifierStr) || type.endsWith(modifierStr))) {
+                        new_apn = apn + modifierStr;
+                        new_type = type + modifierStr;
+                    } else {
+                        // すでに無効化されているので何もしない
+                        if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                        continue;
+                    }
+
+                    values = new ContentValues();
+                    values.put("apn", new_apn);
+                    values.put("type", new_type);
+                    Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
+                    try {
+                        mResolver.update(url, values, null, null);
+                        MyLog.d(mCtx, EmailNotify.TAG, "APN disabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
+                    } catch (SecurityException e) {
+                        MyLog.e(mCtx, EmailNotify.TAG, "Unable to update APN settings for security reasons.");
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+
+        // 接続先APNを復元
+        if (apnKey != null) {
+            values = new ContentValues();
+            values.put("apn_id", apnKey);
+            try {
+                mResolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
+                MyLog.d(mCtx, EmailNotify.TAG, "APN restored: -> " + apnKey);
+            } catch (SecurityException e) {
+                MyLog.e(mCtx, EmailNotify.TAG, "Unable to update APN settings for security reasons.");
+            }
+        }
+    }
+
+    /**
+     * 指定したAPNへ接続
+     *
+     * @return true:設定を変更した false:何もしなかった
+     */
+    public boolean connectAPN(String target_apn) {
+        // Wi-Fi無効化
+        boolean wifiChanged = disableWifi();
+
+        // データ通信有効化
+        boolean mobileChanged = setMobileDataEnabled(true);
+
+        // APN設定を有効化
+        boolean apnChanged = enableAPN(target_apn);
+
+        boolean changed = wifiChanged || mobileChanged || apnChanged; 
+        if (changed) {
+            // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
+            EmailNotifyPreferences.saveNetworkInfo(mCtx);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
+        }
+
+        return changed;
+    }
+
+    /**
+     * ネットワーク設定を復元する
      */
     public void restoreNetwork() {
         if (EmailNotifyPreferences.hasNetworkSave(mCtx)) {
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network...");
+            
+            // APN設定を復元
+            restoreAPN();
 
-            String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(mCtx);
-            String modifierStr = EmailNotifyPreferences.getNetworkSaveApnModifierString(mCtx);
-            String modifierType = EmailNotifyPreferences.getNetworkSaveApnModifierType(mCtx);
-            boolean wifiEnable = EmailNotifyPreferences.getNetworkSaveWifiEnable(mCtx);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network: apnKey=" + apnKey + ", modifier=" + modifierStr +
-                    ", type=" + modifierType + ", wifiEnable=" + wifiEnable);
-
-            ContentValues values;
-
-            if (modifierStr != null) {
-                Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
-                        new String[] { BaseColumns._ID, "apn", "type" },
-                        "numeric = " + mTelManager.getSimOperator(), null, null);
-
-                // APN設定を復元
-                if (cursor.moveToFirst()) {
-                    do {
-                        String key = cursor.getString(0);
-                        String apn = cursor.getString(1);
-                        String type = cursor.getString(2);
-
-                        String new_apn;
-                        String new_type;
-                        if (modifierType.equals(EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX) &&
-                                !(apn.startsWith(modifierStr) || type.startsWith(modifierStr))) {
-                            new_apn = modifierStr + apn;
-                            new_type = modifierStr + type;
-                        } else if (modifierType.equals(EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX) &&
-                                !(apn.endsWith(modifierStr) || type.endsWith(modifierStr))) {
-                            new_apn = apn + modifierStr;
-                            new_type = type + modifierStr;
-                        } else {
-                            // すでに無効化されているので何もしない
-                            if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
-                            continue;
-                        }
-
-                        values = new ContentValues();
-                        values.put("apn", new_apn);
-                        values.put("type", new_type);
-                        Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
-                        mResolver.update(url, values, null, null);
-                        MyLog.d(mCtx, EmailNotify.TAG, "APN disabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
-                    } while (cursor.moveToNext());
-                }
-                cursor.close();
+            // データ通信設定を復元 (無効化)
+            if (!EmailNotifyPreferences.getNetworkSaveMobileDataEnable(mCtx)) {
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Mobile Data...");
+                setMobileDataEnabled(false);
+                MyLog.d(mCtx, EmailNotify.TAG, "Mobile Data disabled.");
             }
 
-            // 接続先APNを復元
-            if (apnKey != null) {
-                values = new ContentValues();
-                values.put("apn_id", apnKey);
-                mResolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
-                MyLog.d(mCtx, EmailNotify.TAG, "APN restored: -> " + apnKey);
-            }
-
-            // Wi-Fi状態を復元
-            if (wifiEnable) {
+            // Wi-Fi設定を復元 (有効化)
+            if (EmailNotifyPreferences.getNetworkSaveWifiEnable(mCtx)) {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
                 mWifiManager.setWifiEnabled(true);
                 MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi enabled.");

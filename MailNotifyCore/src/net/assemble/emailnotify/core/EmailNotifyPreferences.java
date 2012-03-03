@@ -127,6 +127,7 @@ public class EmailNotifyPreferences
     public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX = "prefix";
     public static final String PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX = "suffix";
     public static final String PREF_NETWORK_SAVE_WIFI_ENABLE_KEY = "network_save_wifi_enable";
+    public static final String PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY = "network_save_mobiledata_enable";
 
     // 前回ログ送信日時
     public static final String PREF_LOG_SENT_KEY = "log_sent";
@@ -635,7 +636,15 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * ネットワーク復元情報：Wi-Fi状態を取得
+     * ネットワーク復元情報：データ通信設定を取得
+     */
+    public static boolean getNetworkSaveMobileDataEnable(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY, false);
+    }
+
+    /**
+     * ネットワーク復元情報：Wi-Fi設定を取得
      */
     public static boolean getNetworkSaveWifiEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
@@ -663,7 +672,16 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * ネットワーク復元情報：Wi-Fi情報を保存
+     * ネットワーク復元情報：データ通信設定を保存
+     */
+    public static void saveNetworkMobileDataInfo(Context ctx, boolean enable) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.putBoolean(PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY, enable);
+        e.commit();
+    }
+
+    /**
+     * ネットワーク復元情報：Wi-Fi設定を保存
      */
     public static void saveNetworkWifiInfo(Context ctx, boolean enable) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
@@ -680,6 +698,7 @@ public class EmailNotifyPreferences
         e.remove(PREF_NETWORK_SAVE_APN_KEY_KEY);
         e.remove(PREF_NETWORK_SAVE_APN_MODIFIER_STRING_KEY);
         e.remove(PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_KEY);
+        e.remove(PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY);
         e.remove(PREF_NETWORK_SAVE_WIFI_ENABLE_KEY);
         e.commit();
     }

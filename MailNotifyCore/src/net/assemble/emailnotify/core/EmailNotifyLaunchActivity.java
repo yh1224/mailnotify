@@ -99,7 +99,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                 @Override
                 protected Boolean doInBackground(Object... params) {
                     // APN有効化 (現状spモードのみ)
-                    boolean changed = new MobileNetworkManager(EmailNotifyLaunchActivity.this).enableAPN(SPMODE_APN);
+                    boolean changed = new MobileNetworkManager(EmailNotifyLaunchActivity.this).connectAPN(SPMODE_APN);
                     if (changed) {
                         // 復元用の通知を表示
                         EmailNotificationManager.showRestoreNetworkIcon(EmailNotifyLaunchActivity.this);
