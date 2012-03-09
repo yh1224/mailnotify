@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -13,6 +14,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.widget.Toast;
 
 /**
  * 設定画面
@@ -194,12 +196,16 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else if (preference == findPreference("exclude_hours")) {
             alertMessage(R.string.pref_exclude_hours_warning, null);
         } else if (preference == mPrefTestNotifyMopera) {
+            checkNotificatioinSettings();
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_MOPERA, "Test for mopera U");
         } else if (preference == mPrefTestNotifySpmode) {
+            checkNotificatioinSettings();
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_SPMODE, "Test for sp-mode");
         } else if (preference == mPrefTestNotifyImode) {
+            checkNotificatioinSettings();
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_IMODE, "Test for i-mode");
         } else if (preference == mPrefTestNotify) {
+            checkNotificatioinSettings();
             EmailNotificationManager.testNotification(this, EmailNotifyPreferences.SERVICE_OTHER, "Test");
         } else if (preference == findPreference("log_send")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
@@ -213,6 +219,24 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             }
         }
         return true;
+    }
+
+    /**
+     * 通知音/通知バイブレーションのシステム設定を確認し、
+     * 無効であればメッセージを表示する。
+     */
+    private void checkNotificatioinSettings() {
+        String message = "";
+        AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (am.getStreamVolume(AudioManager.STREAM_NOTIFICATION) == 0) {
+            message += getString(R.string.notification_muted_now);
+        }
+        if (!am.shouldVibrate(AudioManager.VIBRATE_TYPE_NOTIFICATION)) {
+            message += getString(R.string.vibration_disabled_now);
+        }
+        if (message.length() > 0) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

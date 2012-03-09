@@ -139,6 +139,8 @@
     <string name="pref_debug_log_send_summary">動作状況を開発者に送信します。</string>
     <string name="pref_debug_log_send_warning">アプリの動作精度向上を目的とし、定期的に動作ログの送信をおこないます。送信されるログにはメールアドレスの情報が含まれます。ログは暗号化されて送信され、開発用途以外には使用しません。\n\n動作ログの送信を許可しますか？
     </string>
+    <string name="notification_muted_now">通知音が無音に設定されています。</string>
+    <string name="vibration_disabled_now">通知バイブレーションが無効に設定されています。</string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
     <string name="enable">有効化</string>
     <string name="enabled">監視中</string>
