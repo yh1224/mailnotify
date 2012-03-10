@@ -6,18 +6,14 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -29,8 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class EmailNotifyLaunchActivity extends Activity {
-    private static final String SPMODE_APN = "spmode.ne.jp";
-
     private ConnectivityManager mConnManager;
     private WifiManager mWifiManager;
     private TelephonyManager mTelManager;
@@ -92,31 +86,42 @@ public class EmailNotifyLaunchActivity extends Activity {
             }
         });
 
-        // spモード自動接続設定
+        // 自動接続設定
         if (EmailNotifyPreferences.getNotifyAutoConnect(this, mService) &&
                 !EmailNotifyPreferences.hasNetworkSave(this)) {
-            new AsyncTask<Object, Object, Boolean>() {
-                @Override
-                protected Boolean doInBackground(Object... params) {
-                    // APN有効化 (現状spモードのみ)
-                    boolean changed = new MobileNetworkManager(EmailNotifyLaunchActivity.this).connectAPN(SPMODE_APN);
-                    if (changed) {
-                        // 復元用の通知を表示
-                        EmailNotificationManager.showRestoreNetworkIcon(EmailNotifyLaunchActivity.this);
-                        return true;
-                    } else {
-                        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "No need to modify network configuration.");
-                        return false;
+            if (EmailNotifyPreferences.getNotifyAutoConnectForce(this, mService) ||
+                    !isNetworkAvailable()) {
+                // 強制接続またはネットワーク未接続時
+                final String connectApn = EmailNotifyPreferences.getNotifyAutoConnectApn(this, mService);
+                final String connectType = EmailNotifyPreferences.getNotifyAutoConnectType(this, mService);
+                new AsyncTask<Object, Object, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(Object... params) {
+                        MobileNetworkManager nm = new MobileNetworkManager(EmailNotifyLaunchActivity.this);
+                        boolean changed;
+                        if (connectType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
+                            changed = nm.connectApn(connectApn);
+                        } else {
+                            changed = nm.connectWifi();
+                        }
+                        if (changed) {
+                            // 復元用の通知を表示
+                            EmailNotificationManager.showRestoreNetworkIcon(EmailNotifyLaunchActivity.this);
+                            return true;
+                        } else {
+                            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "No need to modify network configuration.");
+                            return false;
+                        }
                     }
-                }
 
-                protected void onPostExecute(Boolean result) {
-                    if (result) {
-                        Toast.makeText(EmailNotifyLaunchActivity.this,
-                                R.string.autoconnected_network, Toast.LENGTH_LONG).show();
+                    protected void onPostExecute(Boolean result) {
+                        if (result) {
+                            Toast.makeText(EmailNotifyLaunchActivity.this,
+                                    R.string.autoconnected_network, Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            }.execute();
+                }.execute();
+            }
         }
 
         // 3G状態リスナ登録
@@ -170,30 +175,25 @@ public class EmailNotifyLaunchActivity extends Activity {
      *
      */
     private boolean isNetworkAvailable() {
-        // spモード自動接続設定時は、spモードAPNのみを対象
-        if (EmailNotifyPreferences.getNotifyAutoConnect(this, mService)) {
-            NetworkInfo dataNetworkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            if (dataNetworkInfo.isConnected()) {
-                String apnname = getPreferApnName();
-                if (apnname != null && apnname.equals(SPMODE_APN)) {
-                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connected to spmode");
-                    return true;
-                } else {
-                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connected but not spmode");
-                    return false;
-                }
+        NetworkInfo networkInfo;
+        if (EmailNotifyPreferences.getNotifyAutoConnect(this, mService) &&
+                EmailNotifyPreferences.getNotifyAutoConnectForce(this, mService)) {
+            // 強制接続時は指定されたネットワーク種別のみチェック
+            String networkType = EmailNotifyPreferences.getNotifyAutoConnectType(this, mService);
+            if (networkType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
+                networkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            } else {
+                networkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             }
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "not connected to spmode");
-            return false;
+        } else {
+            networkInfo = mConnManager.getActiveNetworkInfo();
         }
-
-        NetworkInfo networkInfo = mConnManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connected to " + networkInfo.getType());
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connected to " + networkInfo.getTypeName());
             return true;
         }
 
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "not connected to any network");
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "not connected.");
         return false;
     }
 
@@ -211,7 +211,6 @@ public class EmailNotifyLaunchActivity extends Activity {
 
         if (mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED ||
                 mTelManager.getDataState() != TelephonyManager.DATA_DISCONNECTED) {
-            // TODO: 3G無効かどうかはAPNまで見て判断する?
             // 接続処理中
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connecting to network");
             mProgressBar.setVisibility(View.VISIBLE);
@@ -241,40 +240,6 @@ public class EmailNotifyLaunchActivity extends Activity {
             Toast.makeText(this, R.string.application_not_found, Toast.LENGTH_LONG).show();
             Log.d(EmailNotify.TAG, e.getMessage());
         }
-    }
-
-    /**
-     * 現在の接続先を取得
-     */
-    private String getPreferApnKey() {
-        String apnKey = null;
-        ContentResolver resolver = getContentResolver();
-        Cursor cur = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
-                new String[] { BaseColumns._ID }, null, null, null);
-        if (cur.moveToFirst()) {
-            apnKey = cur.getString(0);
-        }
-        cur.close();
-        return apnKey;
-    }
-
-    /**
-     * 現在の接続先名を取得
-     */
-    private String getPreferApnName() {
-        String apnName = null;
-        ContentResolver resolver = getContentResolver();
-        String apnKey = getPreferApnKey();
-        if (apnKey != null) {
-            Cursor cur = resolver.query(Uri.parse("content://telephony/carriers"),
-                    new String[] { "apn" }, BaseColumns._ID + " = " + apnKey, null, null);
-            if (cur.moveToFirst()) {
-                apnName = cur.getString(0);
-            }
-            cur.close();
-        }
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "preferapn key=" + apnKey + " name=" + apnName);
-        return apnName;
     }
 
     private static void logIntent(Intent intent) {

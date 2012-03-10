@@ -110,6 +110,17 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
 
+    public static final String PREF_NOTIFY_AUTO_CONNECT_TYPE_KEY = "notify_auto_connect_type";
+    public static final String NETWORK_TYPE_MOBILE = "mobile";
+    public static final String NETWORK_TYPE_WIFI = "wifi";
+    public static final String PREF_NOTIFY_AUTO_CONNECT_TYPE_DEFAULT = NETWORK_TYPE_MOBILE;
+
+    public static final String PREF_NOTIFY_AUTO_CONNECT_APN_KEY = "notify_auto_connect_apn";
+    public static final String PREF_NOTIFY_AUTO_CONNECT_APN_DEFAULT = "";
+
+    public static final String PREF_NOTIFY_AUTO_CONNECT_FORCE_KEY = "notify_auto_connect_force";
+    public static final boolean PREF_NOTIFY_AUTO_CONNECT_FORCE_DEFAULT = false;
+
     public static final String PREF_EXCLUDE_HOURS_KEY = "exclude_hours";
 
     public static final String PREF_SEND_LOG_KEY = "log_send";
@@ -519,10 +530,51 @@ public class EmailNotifyPreferences
      */
     public static boolean getNotifyAutoConnect(Context ctx, String service) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        // TODO: 試験実装中のため、サービス毎設定の有効無効に結び付けない。
-        if (service != null/* && isNotifyCustomized(ctx, service)*/) {
+        if (service != null && isNotifyCustomized(ctx, service)) {
             return pref.getBoolean(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_KEY, service),
                 PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
+        } else {
+            return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_KEY,
+                PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
+        }
+    }
+
+    /**
+     * 自動接続先ネットワーク種別設定を取得
+     */
+    public static String getNotifyAutoConnectType(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getString(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_TYPE_KEY, service),
+                PREF_NOTIFY_AUTO_CONNECT_TYPE_DEFAULT);
+        } else {
+            return pref.getString(PREF_NOTIFY_AUTO_CONNECT_TYPE_KEY,
+                PREF_NOTIFY_AUTO_CONNECT_TYPE_DEFAULT);
+        }
+    }
+
+    /**
+     * 自動接続先APN設定を取得
+     */
+    public static String getNotifyAutoConnectApn(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getString(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_APN_KEY, service),
+                    PREF_NOTIFY_AUTO_CONNECT_APN_DEFAULT);
+        } else {
+            return pref.getString(PREF_NOTIFY_AUTO_CONNECT_APN_KEY,
+                    PREF_NOTIFY_AUTO_CONNECT_APN_DEFAULT);
+        }
+    }
+
+    /**
+     * 強制自動接続設定を取得
+     */
+    public static boolean getNotifyAutoConnectForce(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getBoolean(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_FORCE_KEY, service),
+                PREF_NOTIFY_AUTO_CONNECT_FORCE_DEFAULT);
         } else {
             return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_KEY,
                 PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
@@ -659,11 +711,27 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * ネットワーク復元情報：データ通信設定の有無
+     */
+    public static boolean hasNetworkSaveMobileDataEnable(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).contains(
+                PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY);
+    }
+
+    /**
      * ネットワーク復元情報：データ通信設定を取得
      */
     public static boolean getNetworkSaveMobileDataEnable(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY, false);
+    }
+
+    /**
+     * ネットワーク復元情報：Wi-Fi設定の有無
+     */
+    public static boolean hasNetworkSaveWifiEnable(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).contains(
+                PREF_NETWORK_SAVE_WIFI_ENABLE_KEY);
     }
 
     /**
@@ -697,7 +765,7 @@ public class EmailNotifyPreferences
     /**
      * ネットワーク復元情報：データ通信設定を保存
      */
-    public static void saveNetworkMobileDataInfo(Context ctx, boolean enable) {
+    public static void saveNetworkMobileDataEnable(Context ctx, boolean enable) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_NETWORK_SAVE_MOBILEDATA_ENABLE_KEY, enable);
         e.commit();
@@ -807,8 +875,8 @@ public class EmailNotifyPreferences
             changed = true;
         }
 
-        if (EmailNotifyPreferences.getLynxWorkaround(ctx)) {
-            // LYNXでは鳴り分けは不可
+        // LYNXでは鳴り分けは不可
+        if (getLynxWorkaround(ctx)) {
             e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_MOPERA), false);
             e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_SPMODE), false);
             changed = true;
@@ -823,6 +891,13 @@ public class EmailNotifyPreferences
                 e.remove(getServiceKey(PREF_NOTIFY_SUPPORT_KEY, SERVICES[i]));
             }
             MyLog.d(ctx, EmailNotify.TAG, "Preference: reset support information.");
+            changed = true;
+        }
+
+        // spモードメールはspモードAPN以外では受信できないため、接続先APNのデフォルトとする
+        if (pref.getString(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_APN_KEY, SERVICE_SPMODE), null) == null) {
+            e.putString(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_APN_KEY, SERVICE_SPMODE), "spmode.ne.jp");
+            e.putBoolean(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_FORCE_KEY, SERVICE_SPMODE), true);
             changed = true;
         }
 

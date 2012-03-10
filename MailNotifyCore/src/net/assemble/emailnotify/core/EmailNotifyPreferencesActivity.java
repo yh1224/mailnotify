@@ -1,9 +1,16 @@
 package net.assemble.emailnotify.core;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import net.assemble.emailnotify.core.MobileNetworkManager.ApnInfo;
+import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -34,6 +41,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalMopera;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountMopera;
     private NumberSeekbarPreference mPrefNotifyDelayMopera;
+    private ListPreference mPrefNotifyAutoConnectTypeMopera;
+    private ListPreference mPrefNotifyAutoConnectApnMopera;
     private Preference mPrefTestNotifyMopera;
 
     // spモードメール通知設定
@@ -46,6 +55,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalSpmode;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountSpmode;
     private NumberSeekbarPreference mPrefNotifyDelaySpmode;
+    private ListPreference mPrefNotifyAutoConnectTypeSpmode;
+    private ListPreference mPrefNotifyAutoConnectApnSpmode;
     private Preference mPrefTestNotifySpmode;
 
     // iモードメール通知設定
@@ -57,6 +68,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyRenotifyIntervalImode;
     private NumberSeekbarPreference mPrefNotifyRenotifyCountImode;
     private NumberSeekbarPreference mPrefNotifyDelayImode;
+    private ListPreference mPrefNotifyAutoConnectTypeImode;
+    private ListPreference mPrefNotifyAutoConnectApnImode;
     private Preference mPrefTestNotifyImode;
 
     // 基本通知設定
@@ -69,9 +82,15 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyRenotifyInterval;
     private NumberSeekbarPreference mPrefNotifyRenotifyCount;
     private NumberSeekbarPreference mPrefNotifyDelay;
+    private ListPreference mPrefNotifyAutoConnectType;
+    private ListPreference mPrefNotifyAutoConnectApn;
     private Preference mPrefTestNotify;
 
     private EditTextPreference mPrefExcludeHours;
+
+    private String[] mApnEntries;
+    private String[] mApnEntryValues;
+    private boolean mApnWritable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +102,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else {
             addPreferencesFromResource(R.xml.preferences);
         }
+
+        mApnWritable = getPackageManager().checkPermission(permission.WRITE_APN_SETTINGS, getPackageName()) == PackageManager.PERMISSION_GRANTED;
+        mApnEntries = getApnEntries();
+        mApnEntryValues = getApnEntryValues();
 
         mPrefServiceMopera = (CheckBoxPreference) findPreference("service_mopera");
         mPrefServiceSpmode = (CheckBoxPreference) findPreference("service_spmode");
@@ -98,6 +121,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyCountMopera = (NumberSeekbarPreference) findPreference("notify_renotify_count_mopera");
             mPrefNotifyDelayMopera = (NumberSeekbarPreference) findPreference("notify_delay_mopera");
             mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
+            mPrefNotifyAutoConnectTypeMopera = (ListPreference) findPreference("notify_auto_connect_type_mopera");
+            mPrefNotifyAutoConnectApnMopera = (ListPreference) findPreference("notify_auto_connect_apn_mopera");
+            if (mApnEntries.length > 0) {
+                mPrefNotifyAutoConnectApnMopera.setEntries(mApnEntries);
+                mPrefNotifyAutoConnectApnMopera.setEntryValues(mApnEntryValues);
+            }
 
             // spモードメール通知設定
             mPrefNotifySoundSpmode = (RingtonePreference) findPreference("notify_sound_spmode");
@@ -109,6 +138,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyCountSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_count_spmode");
             mPrefNotifyDelaySpmode = (NumberSeekbarPreference) findPreference("notify_delay_spmode");
             mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
+            mPrefNotifyAutoConnectTypeSpmode = (ListPreference) findPreference("notify_auto_connect_type_spmode");
+            mPrefNotifyAutoConnectApnSpmode = (ListPreference) findPreference("notify_auto_connect_apn_spmode");
+            if (mApnEntries.length > 0) {
+                mPrefNotifyAutoConnectApnSpmode.setEntries(mApnEntries);
+                mPrefNotifyAutoConnectApnSpmode.setEntryValues(mApnEntryValues);
+            }
 
             // iモードメール通知設定
             mPrefNotifySoundImode = (RingtonePreference) findPreference("notify_sound_imode");
@@ -120,6 +155,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyCountImode = (NumberSeekbarPreference) findPreference("notify_renotify_count_imode");
             mPrefNotifyDelayImode = (NumberSeekbarPreference) findPreference("notify_delay_imode");
             mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
+            mPrefNotifyAutoConnectTypeImode = (ListPreference) findPreference("notify_auto_connect_type_imode");
+            mPrefNotifyAutoConnectApnImode = (ListPreference) findPreference("notify_auto_connect_apn_imode");
+            if (mApnEntries.length > 0) {
+                mPrefNotifyAutoConnectApnImode.setEntries(mApnEntries);
+                mPrefNotifyAutoConnectApnImode.setEntryValues(mApnEntryValues);
+            }
         }
 
         // 基本通知設定
@@ -133,6 +174,12 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyInterval = (NumberSeekbarPreference) findPreference("notify_renotify_interval");
             mPrefNotifyRenotifyCount = (NumberSeekbarPreference) findPreference("notify_renotify_count");
             mPrefNotifyDelay = (NumberSeekbarPreference) findPreference("notify_delay");
+        }
+        mPrefNotifyAutoConnectType = (ListPreference) findPreference("notify_auto_connect_type");
+        mPrefNotifyAutoConnectApn = (ListPreference) findPreference("notify_auto_connect_apn");
+        if (mApnEntries.length > 0) {
+            mPrefNotifyAutoConnectApn.setEntries(mApnEntries);
+            mPrefNotifyAutoConnectApn.setEntryValues(mApnEntryValues);
         }
         mPrefTestNotify = (Preference) findPreference("test_notify");
 
@@ -181,10 +228,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     }
                 });
             }
-        } else if (preference == findPreference("notify_auto_connect_spmode")) {
+        } else if (preference == findPreference("notify_auto_connect") ||
+                preference == findPreference("notify_auto_connect_mopera") ||
+                preference == findPreference("notify_auto_connect_spmode") ||
+                preference == findPreference("notify_auto_connect_imode")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
-                alertMessage(R.string.pref_notify_auto_connect_spmode_warning, new DialogInterface.OnCancelListener() {
+                alertMessage(R.string.pref_notify_auto_connect_warning, new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         checkbox.setChecked(false);
@@ -308,7 +358,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 return entries[i];
             }
         }
-        return null;
+        return val;
     }
 
     /**
@@ -316,6 +366,8 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
      */
     private void updateSummary() {
         String launchAppName;
+        String networkType;
+        String apnName;
 
         if (EmailNotifyPreferences.getLynxWorkaround(this)) {
             // LYNX(SH-10B)では鳴り分けは不可
@@ -360,6 +412,30 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                         mPrefNotifyDelayMopera.getValue() +
                         getResources().getString(R.string.pref_notify_delay_unit));
             }
+            networkType = EmailNotifyPreferences.getNotifyAutoConnectType(this, EmailNotifyPreferences.SERVICE_MOPERA);
+            if (networkType != null) {
+                mPrefNotifyAutoConnectTypeMopera.setSummary(
+                        getEntryString(mPrefNotifyAutoConnectTypeMopera.getValue(),
+                            getResources().getStringArray(R.array.entries_auto_connect_type),
+                            getResources().getStringArray(R.array.entryvalues_auto_connect_type)));
+            }
+            if (mApnWritable) {
+                if (mApnEntries.length > 0 &&
+                        EmailNotifyPreferences.getNotifyAutoConnect(this, EmailNotifyPreferences.SERVICE_MOPERA) &&
+                        networkType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
+                    mPrefNotifyAutoConnectApnMopera.setEnabled(true);
+                } else {
+                    mPrefNotifyAutoConnectApnMopera.setEnabled(false);
+                }
+                apnName = EmailNotifyPreferences.getNotifyAutoConnectApn(this, EmailNotifyPreferences.SERVICE_MOPERA);
+                if (apnName != null) {
+                    mPrefNotifyAutoConnectApnMopera.setSummary(
+                            getEntryString(mPrefNotifyAutoConnectApnMopera.getValue(), mApnEntries, mApnEntryValues));
+                }
+            } else {
+                mPrefNotifyAutoConnectApnMopera.setSummary(R.string.apn_not_writable);
+                mPrefNotifyAutoConnectApnMopera.setEnabled(false);
+            }
 
             // spモードメール通知設定
             mPrefNotifyVibrationPatternSpmode.setSummary(
@@ -397,6 +473,30 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                         mPrefNotifyDelaySpmode.getValue() +
                         getResources().getString(R.string.pref_notify_delay_unit));
             }
+            networkType = EmailNotifyPreferences.getNotifyAutoConnectType(this, EmailNotifyPreferences.SERVICE_SPMODE);
+            if (networkType != null) {
+                mPrefNotifyAutoConnectTypeSpmode.setSummary(
+                        getEntryString(mPrefNotifyAutoConnectTypeSpmode.getValue(),
+                            getResources().getStringArray(R.array.entries_auto_connect_type),
+                            getResources().getStringArray(R.array.entryvalues_auto_connect_type)));
+            }
+            if (mApnWritable) {
+                if (mApnEntries.length > 0 &&
+                        EmailNotifyPreferences.getNotifyAutoConnect(this, EmailNotifyPreferences.SERVICE_SPMODE) &&
+                        networkType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
+                    mPrefNotifyAutoConnectApnSpmode.setEnabled(true);
+                } else {
+                    mPrefNotifyAutoConnectApnSpmode.setEnabled(false);
+                }
+                apnName = EmailNotifyPreferences.getNotifyAutoConnectApn(this, EmailNotifyPreferences.SERVICE_SPMODE);
+                if (apnName != null) {
+                    mPrefNotifyAutoConnectApnSpmode.setSummary(
+                            getEntryString(mPrefNotifyAutoConnectApnSpmode.getValue(), mApnEntries, mApnEntryValues));
+                }
+            } else {
+                mPrefNotifyAutoConnectApnSpmode.setSummary(R.string.apn_not_writable);
+                mPrefNotifyAutoConnectApnSpmode.setEnabled(false);
+            }
 
             // iモードメール通知設定
             mPrefNotifyVibrationPatternImode.setSummary(
@@ -433,6 +533,30 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 mPrefNotifyDelayImode.setSummary(
                         mPrefNotifyDelayImode.getValue() +
                         getResources().getString(R.string.pref_notify_delay_unit));
+            }
+            networkType = EmailNotifyPreferences.getNotifyAutoConnectType(this, EmailNotifyPreferences.SERVICE_IMODE);
+            if (networkType != null) {
+                mPrefNotifyAutoConnectTypeImode.setSummary(
+                        getEntryString(mPrefNotifyAutoConnectTypeImode.getValue(),
+                            getResources().getStringArray(R.array.entries_auto_connect_type),
+                            getResources().getStringArray(R.array.entryvalues_auto_connect_type)));
+            }
+            if (mApnWritable) {
+                if (mApnEntries.length > 0 &&
+                        EmailNotifyPreferences.getNotifyAutoConnect(this, EmailNotifyPreferences.SERVICE_IMODE) &&
+                        networkType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
+                    mPrefNotifyAutoConnectApnImode.setEnabled(true);
+                } else {
+                    mPrefNotifyAutoConnectApnImode.setEnabled(false);
+                }
+                apnName = EmailNotifyPreferences.getNotifyAutoConnectApn(this, EmailNotifyPreferences.SERVICE_IMODE);
+                if (apnName != null) {
+                    mPrefNotifyAutoConnectApnImode.setSummary(
+                            getEntryString(mPrefNotifyAutoConnectApnImode.getValue(), mApnEntries, mApnEntryValues));
+                }
+            } else {
+                mPrefNotifyAutoConnectApnImode.setSummary(R.string.apn_not_writable);
+                mPrefNotifyAutoConnectApnImode.setEnabled(false);
             }
         }
 
@@ -474,6 +598,30 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                         getResources().getString(R.string.pref_notify_delay_unit));
             }
         }
+        networkType = EmailNotifyPreferences.getNotifyAutoConnectType(this, null);
+        if (networkType != null) {
+            mPrefNotifyAutoConnectType.setSummary(
+                    getEntryString(mPrefNotifyAutoConnectType.getValue(),
+                        getResources().getStringArray(R.array.entries_auto_connect_type),
+                        getResources().getStringArray(R.array.entryvalues_auto_connect_type)));
+        }
+        if (mApnWritable) {
+            if (mApnEntries.length > 0 &&
+                    EmailNotifyPreferences.getNotifyAutoConnect(this, null) &&
+                    networkType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
+                mPrefNotifyAutoConnectApn.setEnabled(true);
+            } else {
+                mPrefNotifyAutoConnectApn.setEnabled(false);
+            }
+            apnName = EmailNotifyPreferences.getNotifyAutoConnectApn(this, null);
+            if (apnName != null) {
+                mPrefNotifyAutoConnectApn.setSummary(
+                    getEntryString(mPrefNotifyAutoConnectApn.getValue(), mApnEntries, mApnEntryValues));
+            }
+        } else {
+            mPrefNotifyAutoConnectApn.setSummary(R.string.apn_not_writable);
+            mPrefNotifyAutoConnectApn.setEnabled(false);
+        }
 
         // その他
         if (!EmailNotify.isFreeVersion(this)) {
@@ -508,6 +656,70 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else {
             mPrefExcludeHours.setSummary(getResources().getString(R.string.pref_exclude_hours_summary));
         }
+    }
+
+    /**
+     * APN名リスト取得
+     *
+     * @return APN名の配列
+     */
+    private ArrayList<String> getApnNames() {
+        // APN候補
+        final String[] candidateApn = new String[] {
+            "mopera.net",
+            "0120.mopera.net",
+            "0120.mopera.ne.jp",
+            "mopera.flat.foma.ne.jp",
+            "mpr.ex-pkt.net",
+            "mpr.bizho.net",
+            "mpr2.bizho.net",
+            "open.mopera.net",
+            "spmode.ne.jp",
+        };
+
+        ArrayList<String> apnnames = new ArrayList<String>();
+        List<ApnInfo> apnList = new MobileNetworkManager(this).getApnList();
+        if (apnList != null) {
+            for (Iterator<ApnInfo> it = apnList.iterator(); it.hasNext(); ) {
+                ApnInfo apn = (ApnInfo) it.next();
+                int i;
+                for (i = 0; i < candidateApn.length; i++) {
+                    if (apn.APN_NAME.startsWith(candidateApn[i]) ||
+                            apn.APN_NAME.endsWith(candidateApn[i])) {
+                        // 候補のAPN文字列が含まれる(無効化されている)
+                        apnnames.add(candidateApn[i]);
+                        break;
+                    }
+                }
+                if (i == candidateApn.length) {
+                    // 候補になければそのまま追加
+                    apnnames.add(apn.APN_NAME);
+                }
+            }
+        }
+        return apnnames;
+    }
+
+    /**
+     * APN名リスト取得
+     *
+     * @return APN名の配列
+     */
+    private String[] getApnEntryValues() {
+        ArrayList<String> apnnames = getApnNames();
+        apnnames.add("");
+        return apnnames.toArray(new String[apnnames.size()]);
+    }
+
+    /**
+     * APN名リスト取得
+     *
+     * @return APN名の配列
+     */
+    private String[] getApnEntries() {
+        ArrayList<String> apnnames = getApnNames();
+        apnnames.add(getString(R.string.apn_not_specify));
+        return apnnames.toArray(new String[apnnames.size()]);
     }
 
     /**

@@ -44,8 +44,42 @@ public class MobileNetworkManager {
     }
 
     /**
+     * 現在の接続先APNを取得
+     */
+    private String getPreferApnKey() {
+        String apnKey = null;
+        ContentResolver resolver = mCtx.getContentResolver();
+        Cursor cur = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
+                new String[] { BaseColumns._ID }, null, null, null);
+        if (cur.moveToFirst()) {
+            apnKey = cur.getString(0);
+        }
+        cur.close();
+        return apnKey;
+    }
+
+    /**
+     * 現在の接続先APN名を取得
+     */
+    public String getPreferApnName() {
+        String apnName = null;
+        ContentResolver resolver = mCtx.getContentResolver();
+        String apnKey = getPreferApnKey();
+        if (apnKey != null) {
+            Cursor cur = resolver.query(Uri.parse("content://telephony/carriers"),
+                    new String[] { "apn" }, BaseColumns._ID + " = " + apnKey, null, null);
+            if (cur.moveToFirst()) {
+                apnName = cur.getString(0);
+            }
+            cur.close();
+        }
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "preferapn key=" + apnKey + " name=" + apnName);
+        return apnName;
+    }
+
+    /**
      * APNリスト取得
-     * 
+     *
      * @return APNリスト (null:取得失敗)
      */
     public List<ApnInfo> getApnList() {
@@ -54,7 +88,7 @@ public class MobileNetworkManager {
         if (simOp == null || simOp.length() == 0) {
             return null;
         }
-        
+
         Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type", "numeric" },
                 "numeric = ?", new String[] { simOp }, BaseColumns._ID);
@@ -101,12 +135,12 @@ public class MobileNetworkManager {
     /**
      * データ通信の有効化/無効化
      *
-     * @param enabled true:有効化 false:無効化
+     * @param enable true:有効化 false:無効化
      * @return true:設定を変更した false:何もしなかった
      */
-    private boolean setMobileDataEnabled(boolean enabled) {
+    private boolean setMobileDataEnabled(boolean enable) {
         try {
-            if (getMobileDataEnabled() != enabled) {
+            if (getMobileDataEnabled() != enable) {
                 final Class<?> conmanClass = Class.forName(mConnManager.getClass().getName());
                 final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
                 iConnectivityManagerField.setAccessible(true);
@@ -114,7 +148,7 @@ public class MobileNetworkManager {
                 final Class<?> iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
                 final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
                 setMobileDataEnabledMethod.setAccessible(true);
-                setMobileDataEnabledMethod.invoke(iConnectivityManager, enabled);
+                setMobileDataEnabledMethod.invoke(iConnectivityManager, enable);
                 return true;
             }
         } catch (Exception e) {
@@ -126,9 +160,12 @@ public class MobileNetworkManager {
     /**
      * APN有効化
      *
+     * android.permission.WRITE_APN_SETTINGS が必要
+     *
+     * @param target_apn APN
      * @return true:設定を変更した false:何もしなかった
      */
-    private boolean enableAPN(String target_apn) {
+    private boolean activateAPN(String target_apn) {
         boolean changed = false;
 
         String simOp = mTelManager.getSimOperator();
@@ -258,25 +295,35 @@ public class MobileNetworkManager {
     }
 
     /**
-     * Wi-Fi無効化
+     * Wi-Fi有効化/無効化
      *
-     * @return true:無効化した false:何もしてない(すでに無効)
+     * @param enable true:有効化 false:無効化
+     * @return true:設定を変更した false:何もしなかった
      */
-    private boolean disableWifi() {
-        boolean wifiEnabled = mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED;
+    private boolean setWifiEnabled(boolean enable) {
+        boolean changed = false;
 
-        // Wi-Fiが有効であれば無効化
-        if (wifiEnabled) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
-            mWifiManager.setWifiEnabled(false);
+        if (mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
+            if (!enable) {
+                // 有効→無効化
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
+                mWifiManager.setWifiEnabled(false);
+                changed = true;
+            } else {
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already enabled.");
+            }
         } else {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
+            if (enable) {
+                // 無効→有効化
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
+                mWifiManager.setWifiEnabled(true);
+                changed = true;
+            } else {
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
+            }
         }
 
-        // ネットワーク復元情報(Wi-Fi)を保存
-        EmailNotifyPreferences.saveNetworkWifiInfo(mCtx, wifiEnabled);
-
-        return wifiEnabled;
+        return changed;
     }
 
     /**
@@ -350,19 +397,53 @@ public class MobileNetworkManager {
     /**
      * 指定したAPNへ接続
      *
+     * @param apn APN (null:変更しない)
      * @return true:設定を変更した false:何もしなかった
      */
-    public boolean connectAPN(String target_apn) {
+    public boolean connectApn(String apn) {
         // Wi-Fi無効化
-        boolean wifiChanged = disableWifi();
+        boolean wifiChanged = setWifiEnabled(false);
+        if (wifiChanged) {
+            // ネットワーク復元情報(Wi-Fi)を保存
+            EmailNotifyPreferences.saveNetworkWifiInfo(mCtx, true);
+        }
 
         // データ通信有効化
         boolean mobileChanged = setMobileDataEnabled(true);
+        if (mobileChanged) {
+         // ネットワーク復元情報(データ通信)を保存
+            EmailNotifyPreferences.saveNetworkMobileDataEnable(mCtx, false);
+        }
 
         // APN設定を有効化
-        boolean apnChanged = enableAPN(target_apn);
+        boolean apnChanged = false;
+        if (apn != null && apn.length() > 0) {
+            apnChanged = activateAPN(apn);
+        }
 
-        boolean changed = wifiChanged || mobileChanged || apnChanged; 
+        boolean changed = wifiChanged || mobileChanged || apnChanged;
+        if (changed) {
+            // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
+            EmailNotifyPreferences.saveNetworkInfo(mCtx);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
+        }
+
+        return changed;
+    }
+
+    /**
+     * Wi-Fiへ接続
+     *
+     * @return true:設定を変更した false:何もしなかった
+     */
+    public boolean connectWifi() {
+        // Wi-Fi有効化
+        boolean wifiChanged = setWifiEnabled(true);
+        if (wifiChanged) {
+            EmailNotifyPreferences.saveNetworkWifiInfo(mCtx, false);
+        }
+
+        boolean changed = wifiChanged;
         if (changed) {
             // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
             EmailNotifyPreferences.saveNetworkInfo(mCtx);
@@ -378,22 +459,34 @@ public class MobileNetworkManager {
     public void restoreNetwork() {
         if (EmailNotifyPreferences.hasNetworkSave(mCtx)) {
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network...");
-            
+
             // APN設定を復元
             restoreAPN();
 
-            // データ通信設定を復元 (無効化)
-            if (!EmailNotifyPreferences.getNetworkSaveMobileDataEnable(mCtx)) {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Mobile Data...");
-                setMobileDataEnabled(false);
-                MyLog.d(mCtx, EmailNotify.TAG, "Mobile Data disabled.");
+            // データ通信設定を復元
+            if (EmailNotifyPreferences.hasNetworkSaveMobileDataEnable(mCtx)) {
+                if (EmailNotifyPreferences.getNetworkSaveMobileDataEnable(mCtx)) {
+                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Mobile Data...");
+                    setMobileDataEnabled(true);
+                    MyLog.d(mCtx, EmailNotify.TAG, "Mobile Data enabled.");
+                } else {
+                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Mobile Data...");
+                    setMobileDataEnabled(false);
+                    MyLog.d(mCtx, EmailNotify.TAG, "Mobile Data disabled.");
+                }
             }
 
-            // Wi-Fi設定を復元 (有効化)
-            if (EmailNotifyPreferences.getNetworkSaveWifiEnable(mCtx)) {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
-                mWifiManager.setWifiEnabled(true);
-                MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi enabled.");
+            // Wi-Fi設定を復元
+            if (EmailNotifyPreferences.hasNetworkSaveWifiEnable(mCtx)) {
+                if (EmailNotifyPreferences.getNetworkSaveWifiEnable(mCtx)) {
+                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
+                    mWifiManager.setWifiEnabled(true);
+                    MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi enabled.");
+                } else {
+                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
+                    mWifiManager.setWifiEnabled(false);
+                    MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi disabled.");
+                }
             }
         }
     }

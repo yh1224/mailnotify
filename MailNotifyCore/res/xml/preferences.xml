@@ -105,6 +105,25 @@
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
                 </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_network">
+                    <CheckBoxPreference android:key="notify_auto_connect_mopera"
+                            android:summary="@string/pref_notify_auto_connect_summary"
+                            android:title="@string/pref_notify_auto_connect_title"
+                            android:defaultValue="false"
+                            android:dependency="notify_custom_mopera" />
+                    <ListPreference android:key="notify_auto_connect_type_mopera"
+                            android:title="@string/pref_notify_auto_connect_type_title"
+                            android:entries="@array/entries_auto_connect_type"
+                            android:entryValues="@array/entryvalues_auto_connect_type"
+                            android:defaultValue="mobile" android:dependency="notify_auto_connect_mopera" />
+                    <ListPreference android:key="notify_auto_connect_apn_mopera"
+                            android:title="@string/pref_notify_auto_connect_apn_title"
+                            android:defaultValue="" android:enabled="false" />
+                    <CheckBoxPreference android:key="notify_auto_connect_force_mopera"
+                            android:summary="@string/pref_notify_auto_connect_force_summary"
+                            android:title="@string/pref_notify_auto_connect_force_title"
+                            android:defaultValue="false" android:dependency="notify_auto_connect_mopera" />
+                </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_other">
                     <net.assemble.emailnotify.core.NumberSeekbarPreference
                         android:key="notify_delay_mopera" android:title="@string/pref_notify_delay_title"
@@ -198,6 +217,25 @@
                         minValue="0" maxValue="30"
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_network">
+                    <CheckBoxPreference android:key="notify_auto_connect_spmode"
+                            android:summary="@string/pref_notify_auto_connect_summary"
+                            android:title="@string/pref_notify_auto_connect_title"
+                            android:defaultValue="false"
+                            android:dependency="notify_custom_spmode" />
+                    <ListPreference android:key="notify_auto_connect_type_spmode"
+                            android:title="@string/pref_notify_auto_connect_type_title"
+                            android:entries="@array/entries_auto_connect_type"
+                            android:entryValues="@array/entryvalues_auto_connect_type"
+                            android:defaultValue="mobile" android:dependency="notify_auto_connect_spmode" />
+                    <ListPreference android:key="notify_auto_connect_apn_spmode"
+                            android:title="@string/pref_notify_auto_connect_apn_title"
+                            android:defaultValue="" android:enabled="false" />
+                    <CheckBoxPreference android:key="notify_auto_connect_force_spmode"
+                            android:summary="@string/pref_notify_auto_connect_force_summary"
+                            android:title="@string/pref_notify_auto_connect_force_title"
+                            android:defaultValue="false" android:dependency="notify_auto_connect_spmode" />
                 </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_other">
                     <net.assemble.emailnotify.core.NumberSeekbarPreference
@@ -293,6 +331,25 @@
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
                 </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_network">
+                    <CheckBoxPreference android:key="notify_auto_connect_imode"
+                            android:summary="@string/pref_notify_auto_connect_summary"
+                            android:title="@string/pref_notify_auto_connect_title"
+                            android:defaultValue="false"
+                            android:dependency="notify_custom_imode" />
+                    <ListPreference android:key="notify_auto_connect_type_imode"
+                            android:title="@string/pref_notify_auto_connect_type_title"
+                            android:entries="@array/entries_auto_connect_type"
+                            android:entryValues="@array/entryvalues_auto_connect_type"
+                            android:defaultValue="mobile" android:dependency="notify_auto_connect_imode" />
+                    <ListPreference android:key="notify_auto_connect_apn_imode"
+                            android:title="@string/pref_notify_auto_connect_apn_title"
+                            android:defaultValue="" android:enabled="false" />
+                    <CheckBoxPreference android:key="notify_auto_connect_force_imode"
+                            android:summary="@string/pref_notify_auto_connect_force_summary"
+                            android:title="@string/pref_notify_auto_connect_force_title"
+                            android:defaultValue="false" android:dependency="notify_auto_connect_imode" />
+                </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_other">
                     <net.assemble.emailnotify.core.NumberSeekbarPreference
                         android:key="notify_delay_imode" android:title="@string/pref_notify_delay_title"
@@ -380,6 +437,24 @@
                         unit="@string/pref_notify_renotify_count_unit"
                         zero="@string/pref_notify_renotify_count_zero" />
                 </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_network">
+                    <CheckBoxPreference android:key="notify_auto_connect"
+                            android:summary="@string/pref_notify_auto_connect_summary"
+                            android:title="@string/pref_notify_auto_connect_title"
+                            android:defaultValue="false" />
+                    <ListPreference android:key="notify_auto_connect_type"
+                            android:title="@string/pref_notify_auto_connect_type_title"
+                            android:entries="@array/entries_auto_connect_type"
+                            android:entryValues="@array/entryvalues_auto_connect_type"
+                            android:defaultValue="mobile" android:dependency="notify_auto_connect" />
+                    <ListPreference android:key="notify_auto_connect_apn"
+                            android:title="@string/pref_notify_auto_connect_apn_title"
+                            android:defaultValue="" android:enabled="false" />
+                    <CheckBoxPreference android:key="notify_auto_connect_force"
+                            android:summary="@string/pref_notify_auto_connect_force_summary"
+                            android:title="@string/pref_notify_auto_connect_force_title"
+                            android:defaultValue="false" android:dependency="notify_auto_connect" />
+                </PreferenceCategory>
                 <PreferenceCategory android:title="@string/pref_group_other">
                     <net.assemble.emailnotify.core.NumberSeekbarPreference
                         android:key="notify_delay" android:title="@string/pref_notify_delay_title"
@@ -418,10 +493,6 @@
             android:key="notify_sound_length" android:title="@string/pref_notify_sound_length_title"
             android:defaultValue="0" minValue="0" maxValue="60"
             unit="@string/pref_notify_sound_length_unit" zero="@string/pref_notify_sound_length_zero" />
-        <CheckBoxPreference android:key="notify_auto_connect_spmode"
-            android:summary="@string/pref_notify_auto_connect_spmode_summary"
-            android:title="@string/pref_notify_auto_connect_spmode_title"
-            android:defaultValue="false" android:dependency="service_spmode" />
         <EditTextPreference android:key="exclude_hours"
             android:summary="@string/pref_exclude_hours_summary"
             android:title="@string/pref_exclude_hours_title"

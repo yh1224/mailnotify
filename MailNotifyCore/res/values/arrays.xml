@@ -32,4 +32,12 @@
         <item>ffff00ff</item>
         <item>ffffffff</item>
     </string-array>
+    <string-array name="entries_auto_connect_type">
+        <item>@string/mobile_network</item>
+        <item>@string/wifi</item>
+    </string-array>
+    <string-array name="entryvalues_auto_connect_type">
+        <item>mobile</item>
+        <item>wifi</item>
+        </string-array>
 </resources>

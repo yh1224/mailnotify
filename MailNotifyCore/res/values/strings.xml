@@ -95,15 +95,23 @@
     <string name="pref_notify_view_summary">通知バーにアイコンを表示します。</string>
     <string name="pref_notify_view_warning">通知バーに表示しない場合でも、通知音・バイブレーション・LEDを停止するには通知バーを引き出す必要があります。\n\n非表示にしてよろしいですか?
     </string>
+    <string name="pref_group_notify_launch">メールアプリ設定</string>
     <string name="pref_notify_launch_app_title">起動アプリ</string>
     <string name="pref_notify_launch_app_is">通知タップ時に起動するアプリ:</string>
-    <string name="pref_notify_launch_app_summary">通知をクリックしたときに起動するアプリを選択してください。</string>
+    <string name="pref_notify_launch_app_summary">通知をタップしたときに起動するアプリを選択してください。</string>
     <string name="select_app">アプリ選択</string>
-    <string name="pref_notify_auto_connect_spmode_title">spモード自動接続</string>
-    <string name="pref_notify_auto_connect_spmode_summary">spモードメール通知をタップしたときにspモードに自動接続します。</string>
-    <string name="pref_notify_auto_connect_spmode_warning">spモードのメール通知をタップ時に、Wi-Fiを無効化およびspモードAPNに接続してから指定したアプリを起動します。モバイルネットワークの有効化については以下のアプリに対応していますが、各アプリでの有効/無効表示には正しく反映されない場合があります。また他のアプリで正常に動作しない場合はご報告ください。\n\n-
-        APNdroid\n- Extended Control\n- Quick
-        Settings\n\nspモード自動接続を有効にしてよろしいですか?</string>
+    <string name="pref_group_notify_network">ネットワーク</string>
+    <string name="pref_notify_auto_connect_title">自動接続</string>
+    <string name="pref_notify_auto_connect_summary">通知をタップしたときにネットワークに自動的に接続します。</string>
+    <string name="pref_notify_auto_connect_warning">モバイルネットワークまたは Wi-Fi に接続するよう一時的に設定を変更してから指定したアプリを起動します。メール受信後は復元アイコンをタップすることで元の設定に復元できます。\n\nモバイルネットワークへの接続については、ご使用の端末や環境によっては正常に動作しない場合があります。Android 4.0 以降では接続先 APN を指定することはできません。\n\n自動接続を有効にしてよろしいですか?</string>
+    <string name="pref_notify_auto_connect_type_title">ネットワーク種別</string>
+    <string name="mobile_network">モバイルネットワーク</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="pref_notify_auto_connect_apn_title">接続先APN</string>
+    <string name="pref_notify_auto_connect_force_title">接続時も切り替え</string>
+    <string name="pref_notify_auto_connect_force_summary">別のネットワークに接続済みの場合でも、指定したネットワークに切り替えます。</string>
+    <string name="apn_not_writable">APNを変更する権限がありません</string>
+    <string name="apn_not_specify">変更しない</string>
     <string name="pref_group_notify_renotify">再通知設定</string>
     <string name="pref_notify_renotify_title">再通知</string>
     <string name="pref_notify_renotify_summary">通知を消去するまで定期的に再通知します。</string>
