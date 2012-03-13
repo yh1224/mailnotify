@@ -1,6 +1,10 @@
 Copyright 2010-2011 Orange leaf
 
 [改版履歴]
+v3.14
+- データ通信無効時のspモード自動接続対応
+- Android 4.0でspモード自動接続時に不正終了するバグを修正
+- Android 4.0で端末起動時に起動しないバグを修正
 v3.13
 - Xperia PLAY(SO-01D)対応
 v3.12
