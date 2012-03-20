@@ -64,7 +64,12 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
                     EmailNotifyPreferences.setSendLog(EmailNotifyActivity.this, true);
                 }
             });
-            builder.setNegativeButton(R.string.disallow, null);
+            builder.setNegativeButton(R.string.disallow, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    EmailNotifyPreferences.setSendLog(EmailNotifyActivity.this, false);
+                }
+            });
             builder.setCancelable(true);
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
