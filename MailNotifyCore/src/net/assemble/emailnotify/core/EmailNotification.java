@@ -20,7 +20,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * メール着信通知
@@ -196,6 +198,19 @@ public class EmailNotification {
             mImoniNotifier = new ImoniNotifier();
             mImoniNotifier.start();
          }
+
+        // SMSで通知
+        if (EmailNotifyPreferences.getNotifySms(mCtx, mService)) {
+            String destAddr =  EmailNotifyPreferences.getNotifySmsTel(mCtx, mService);
+            try {
+                PendingIntent sentNotify = getPendingIntent(EmailNotificationReceiver.ACTION_SMS_SENT);
+                SmsManager.getDefault().sendTextMessage(destAddr, null,
+                        mCtx.getString(R.string.app_name) + "\n" + mMailbox, sentNotify, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(mCtx, R.string.notify_sms_failed, Toast.LENGTH_LONG).show();
+            }
+        }
 
         // 通知遅延 (再通知タイマを使う)
         if (!skipDelay) {

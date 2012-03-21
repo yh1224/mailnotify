@@ -43,6 +43,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyDelayMopera;
     private ListPreference mPrefNotifyAutoConnectTypeMopera;
     private ListPreference mPrefNotifyAutoConnectApnMopera;
+    private EditTextPreference mPrefNotifySmsTelMopera;
     private Preference mPrefTestNotifyMopera;
 
     // spモードメール通知設定
@@ -57,6 +58,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyDelaySpmode;
     private ListPreference mPrefNotifyAutoConnectTypeSpmode;
     private ListPreference mPrefNotifyAutoConnectApnSpmode;
+    private EditTextPreference mPrefNotifySmsTelSpmode;
     private Preference mPrefTestNotifySpmode;
 
     // iモードメール通知設定
@@ -70,6 +72,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyDelayImode;
     private ListPreference mPrefNotifyAutoConnectTypeImode;
     private ListPreference mPrefNotifyAutoConnectApnImode;
+    private EditTextPreference mPrefNotifySmsTelImode;
     private Preference mPrefTestNotifyImode;
 
     // 基本通知設定
@@ -84,6 +87,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private NumberSeekbarPreference mPrefNotifyDelay;
     private ListPreference mPrefNotifyAutoConnectType;
     private ListPreference mPrefNotifyAutoConnectApn;
+    private EditTextPreference mPrefNotifySmsTel;
     private Preference mPrefTestNotify;
 
     private EditTextPreference mPrefExcludeHours;
@@ -120,13 +124,14 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyIntervalMopera = (NumberSeekbarPreference) findPreference("notify_renotify_interval_mopera");
             mPrefNotifyRenotifyCountMopera = (NumberSeekbarPreference) findPreference("notify_renotify_count_mopera");
             mPrefNotifyDelayMopera = (NumberSeekbarPreference) findPreference("notify_delay_mopera");
-            mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
             mPrefNotifyAutoConnectTypeMopera = (ListPreference) findPreference("notify_auto_connect_type_mopera");
             mPrefNotifyAutoConnectApnMopera = (ListPreference) findPreference("notify_auto_connect_apn_mopera");
             if (mApnEntries.length > 0) {
                 mPrefNotifyAutoConnectApnMopera.setEntries(mApnEntries);
                 mPrefNotifyAutoConnectApnMopera.setEntryValues(mApnEntryValues);
             }
+            mPrefNotifySmsTelMopera = (EditTextPreference) findPreference("notify_sms_tel_mopera");
+            mPrefTestNotifyMopera = (Preference) findPreference("test_notify_mopera");
 
             // spモードメール通知設定
             mPrefNotifySoundSpmode = (RingtonePreference) findPreference("notify_sound_spmode");
@@ -137,13 +142,14 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyIntervalSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_spmode");
             mPrefNotifyRenotifyCountSpmode = (NumberSeekbarPreference) findPreference("notify_renotify_count_spmode");
             mPrefNotifyDelaySpmode = (NumberSeekbarPreference) findPreference("notify_delay_spmode");
-            mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
             mPrefNotifyAutoConnectTypeSpmode = (ListPreference) findPreference("notify_auto_connect_type_spmode");
             mPrefNotifyAutoConnectApnSpmode = (ListPreference) findPreference("notify_auto_connect_apn_spmode");
             if (mApnEntries.length > 0) {
                 mPrefNotifyAutoConnectApnSpmode.setEntries(mApnEntries);
                 mPrefNotifyAutoConnectApnSpmode.setEntryValues(mApnEntryValues);
             }
+            mPrefNotifySmsTelSpmode = (EditTextPreference) findPreference("notify_sms_tel_spmode");
+            mPrefTestNotifySpmode = (Preference) findPreference("test_notify_spmode");
 
             // iモードメール通知設定
             mPrefNotifySoundImode = (RingtonePreference) findPreference("notify_sound_imode");
@@ -154,13 +160,14 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotifyRenotifyIntervalImode = (NumberSeekbarPreference) findPreference("notify_renotify_interval_imode");
             mPrefNotifyRenotifyCountImode = (NumberSeekbarPreference) findPreference("notify_renotify_count_imode");
             mPrefNotifyDelayImode = (NumberSeekbarPreference) findPreference("notify_delay_imode");
-            mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
             mPrefNotifyAutoConnectTypeImode = (ListPreference) findPreference("notify_auto_connect_type_imode");
             mPrefNotifyAutoConnectApnImode = (ListPreference) findPreference("notify_auto_connect_apn_imode");
             if (mApnEntries.length > 0) {
                 mPrefNotifyAutoConnectApnImode.setEntries(mApnEntries);
                 mPrefNotifyAutoConnectApnImode.setEntryValues(mApnEntryValues);
             }
+            mPrefNotifySmsTelImode = (EditTextPreference) findPreference("notify_sms_tel_imode");
+            mPrefTestNotifyImode = (Preference) findPreference("test_notify_imode");
         }
 
         // 基本通知設定
@@ -180,6 +187,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         if (mApnEntries.length > 0) {
             mPrefNotifyAutoConnectApn.setEntries(mApnEntries);
             mPrefNotifyAutoConnectApn.setEntryValues(mApnEntryValues);
+        }
+        if (!EmailNotify.isFreeVersion(this)) {
+            mPrefNotifySmsTel = (EditTextPreference) findPreference("notify_sms_tel");
         }
         mPrefTestNotify = (Preference) findPreference("test_notify");
 
@@ -235,6 +245,19 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
                 alertMessage(R.string.pref_notify_auto_connect_warning, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        checkbox.setChecked(false);
+                    }
+                });
+            }
+        } else if (preference == findPreference("notify_sms") ||
+                preference == findPreference("notify_sms_mopera") ||
+                preference == findPreference("notify_sms_spmode") ||
+                preference == findPreference("notify_sms_imode")) {
+            final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
+            if (checkbox.isChecked()) {
+                alertMessage(R.string.pref_notify_sms_warning, new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         checkbox.setChecked(false);
@@ -436,6 +459,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 mPrefNotifyAutoConnectApnMopera.setSummary(R.string.apn_not_writable);
                 mPrefNotifyAutoConnectApnMopera.setEnabled(false);
             }
+            mPrefNotifySmsTelMopera.setSummary(mPrefNotifySmsTelMopera.getText());
 
             // spモードメール通知設定
             mPrefNotifyVibrationPatternSpmode.setSummary(
@@ -497,6 +521,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 mPrefNotifyAutoConnectApnSpmode.setSummary(R.string.apn_not_writable);
                 mPrefNotifyAutoConnectApnSpmode.setEnabled(false);
             }
+            mPrefNotifySmsTelSpmode.setSummary(mPrefNotifySmsTelSpmode.getText());
 
             // iモードメール通知設定
             mPrefNotifyVibrationPatternImode.setSummary(
@@ -558,6 +583,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 mPrefNotifyAutoConnectApnImode.setSummary(R.string.apn_not_writable);
                 mPrefNotifyAutoConnectApnImode.setEnabled(false);
             }
+            mPrefNotifySmsTelImode.setSummary(mPrefNotifySmsTelImode.getText());
         }
 
         // 基本通知設定
@@ -621,6 +647,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         } else {
             mPrefNotifyAutoConnectApn.setSummary(R.string.apn_not_writable);
             mPrefNotifyAutoConnectApn.setEnabled(false);
+        }
+        if (!EmailNotify.isFreeVersion(this)) {
+            mPrefNotifySmsTel.setSummary(mPrefNotifySmsTel.getText());
         }
 
         // その他

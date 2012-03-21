@@ -111,6 +111,12 @@
     <string name="pref_notify_auto_connect_force_summary">別のネットワークに接続済みの場合でも、指定したネットワークに切り替えます。</string>
     <string name="apn_not_writable">APNを変更する権限がありません</string>
     <string name="apn_not_specify">変更しない</string>
+    <string name="pref_group_notify_sms">SMS通知設定</string>
+    <string name="pref_notify_sms_title">SMS通知</string>
+    <string name="pref_notify_sms_summary">指定した電話番号にSMSで通知します。</string>
+    <string name="pref_notify_sms_warning">SMSの送信には送信料がかかります。通知を有効にしますか？</string>
+    <string name="pref_notify_sms_tel_title">通知先電話番号</string>
+    <string name="notify_sms_failed">SMSの送信に失敗しました。</string>
     <string name="pref_group_notify_renotify">再通知設定</string>
     <string name="pref_notify_renotify_title">再通知</string>
     <string name="pref_notify_renotify_summary">通知を消去するまで定期的に再通知します。</string>

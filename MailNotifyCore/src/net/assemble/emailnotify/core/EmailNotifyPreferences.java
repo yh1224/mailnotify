@@ -121,6 +121,11 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_AUTO_CONNECT_FORCE_KEY = "notify_auto_connect_force";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_FORCE_DEFAULT = false;
 
+    public static final String PREF_NOTIFY_SMS_KEY = "notify_sms";
+    public static final boolean PREF_NOTIFY_SMS_DEFAULT = false;
+
+    public static final String PREF_NOTIFY_SMS_TEL_KEY = "notify_sms_tel";
+
     public static final String PREF_EXCLUDE_HOURS_KEY = "exclude_hours";
 
     public static final String PREF_SEND_LOG_KEY = "log_send";
@@ -578,6 +583,30 @@ public class EmailNotifyPreferences
         } else {
             return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_KEY,
                 PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
+        }
+    }
+
+    /**
+     * SMS通知設定を取得
+     */
+    public static boolean getNotifySms(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getBoolean(getServiceKey(PREF_NOTIFY_SMS_KEY, service), PREF_NOTIFY_SMS_DEFAULT);
+        } else {
+            return pref.getBoolean(PREF_NOTIFY_SMS_KEY, PREF_NOTIFY_SMS_DEFAULT);
+        }
+    }
+
+    /**
+     * SMS通知先電話番号設定を取得
+     */
+    public static String getNotifySmsTel(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getString(getServiceKey(PREF_NOTIFY_SMS_TEL_KEY, service), null);
+        } else {
+            return pref.getString(PREF_NOTIFY_SMS_TEL_KEY, null);
         }
     }
 
