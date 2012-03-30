@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import net.orleaf.android.MyLog;
 import net.orleaf.android.MyLogReportService;
@@ -30,8 +31,9 @@ import android.widget.Toast;
  * メール監視サービス
  */
 public class EmailNotifyService extends Service {
-    private final long RESTART_INTERVAL = 30 * 60 * 1000;
-    private final long LOG_SEND_INTERVAL = 24 * 60 * 60 * 1000;
+    private static final long RESTART_INTERVAL = 30 * 60 * 1000;
+    private static final long LOG_SEND_INTERVAL = 24 * 60 * 60 * 1000;
+    private static final int LOG_SEND_DISPERSION = 10 * 60; /* sec */
 
     private AlarmManager mAlarmManager;
 
@@ -108,11 +110,13 @@ public class EmailNotifyService extends Service {
             long prev = EmailNotifyPreferences.getLogSent(this);
             long current = Calendar.getInstance().getTimeInMillis();
             if (prev == 0 || current - prev > LOG_SEND_INTERVAL) {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Sending report.");
+                Random random = new Random();
+                int delay = random.nextInt(LOG_SEND_DISPERSION);  
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Start sending report. (delay=" + delay + ")");
                 Intent intent = new Intent(this, EmailNotifyReceiver.class);
                 intent.setAction(EmailNotify.ACTION_LOG_SENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-                MyLogReportService.startService(this, EmailNotifyPreferences.getPreferenceId(this), pendingIntent);
+                MyLogReportService.startService(this, EmailNotifyPreferences.getPreferenceId(this), pendingIntent, delay);
             }
         }
 

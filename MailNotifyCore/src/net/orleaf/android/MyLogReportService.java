@@ -26,6 +26,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
@@ -35,14 +36,18 @@ public class MyLogReportService extends Service {
     public static final String EXTRA_PROGRESS = "progress";
     public static final String EXTRA_REPORTER_ID = "reporter_id";
     public static final String EXTRA_INTENT = "intent";
+    public static final String EXTRA_DELAY = "delay";
 
-    private static final String REPORT_URL = "https://orleaf-tracker.appspot.com/report";
+    private static final String REPORT_URL = "https://orleaf.net/mailnotify/index.php/report/submit";
 
     private static ComponentName mService;
 
     private PendingIntent mCallbackIntent;
     private String mReporterId;
     private boolean mProgress;
+    private int mDelay;
+
+    private Handler handler = new Handler();
     private BroadcastReceiver mConnectivityReceiver;
     private boolean mStarted = false;
 
@@ -55,8 +60,18 @@ public class MyLogReportService extends Service {
     public void onStart(Intent intent, int startId) {
         mCallbackIntent = (PendingIntent) intent.getParcelableExtra(EXTRA_INTENT);
         mProgress = intent.getBooleanExtra(EXTRA_PROGRESS, false);
+        if (!mProgress) {
+            mDelay = intent.getIntExtra(EXTRA_DELAY, 0);
+        } else {
+            mDelay = 0;
+        }
         mReporterId = intent.getStringExtra(EXTRA_REPORTER_ID);
-        start();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                start();
+            }
+        }, mDelay * 1000);
     }
 
     /**
@@ -80,7 +95,7 @@ public class MyLogReportService extends Service {
      */
     private void startSendReport() {
         if (!mStarted) {
-            mStarted = true; 
+            mStarted = true;
             new ReportTask().execute();
         }
     }
@@ -130,8 +145,8 @@ public class MyLogReportService extends Service {
 
         /**
          * POST
-         * 
-         * @param url 送信先URL 
+         *
+         * @param url 送信先URL
          * @param params POSTパラメタ
          * @return エラー文字列 (null:成功)
          */
@@ -163,7 +178,7 @@ public class MyLogReportService extends Service {
 
         /**
          * クエリ文字列へ変換
-         * 
+         *
          * @param params パラメタ
          * @return クエリ文字列
          */
@@ -220,7 +235,7 @@ public class MyLogReportService extends Service {
         }
         return strBuf.toString();
     }
-    
+
     /**
      * ネットワーク接続監視開始
      */
@@ -259,20 +274,33 @@ public class MyLogReportService extends Service {
 
 
     /**
-     * サービス開始
+     * サービス開始 (送信中を表示)
+     *
+     * @param ctx
+     * @param reporterId
+     * @return サービス起動成否
      */
-    public static boolean startServiceWithProgress(Context ctx, String id) {
+    public static boolean startServiceWithProgress(Context ctx, String reporterId) {
         Intent intent = new Intent(ctx, MyLogReportService.class);
-        intent.putExtra(EXTRA_REPORTER_ID, id);
+        intent.putExtra(EXTRA_REPORTER_ID, reporterId);
         intent.putExtra(EXTRA_PROGRESS, true);
         mService = ctx.startService(intent);
         return (mService != null);
     }
 
-    public static boolean startService(Context ctx, String reporterId, PendingIntent callbackIntent) {
+    /**
+     * サービス開始 (送信完了時インテントを通知)
+     *
+     * @param ctx
+     * @param reporterId
+     * @param callbackIntent 送信完了時に通知するインテント
+     * @return サービス起動成否
+     */
+    public static boolean startService(Context ctx, String reporterId, PendingIntent callbackIntent, int delay) {
         Intent intent = new Intent(ctx, MyLogReportService.class);
         intent.putExtra(EXTRA_REPORTER_ID, reporterId);
         intent.putExtra(EXTRA_INTENT, callbackIntent);
+        intent.putExtra(EXTRA_DELAY, delay);
         mService = ctx.startService(intent);
         return (mService != null);
     }
