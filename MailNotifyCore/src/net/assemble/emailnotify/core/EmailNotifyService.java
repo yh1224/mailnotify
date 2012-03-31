@@ -20,10 +20,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.os.Handler;
 import android.os.IBinder;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,7 +42,6 @@ public class EmailNotifyService extends Service {
     private boolean mStopLogCheckThread;
     private long mLastCheck;
     private int mSaveApplicationId;
-    private Handler mHandler = new Handler();
     private PendingIntent mRestartIntent = null;
 
     @Override
@@ -71,7 +67,7 @@ public class EmailNotifyService extends Service {
             Date d = new Date(mLastCheck);
             MyLog.w(this, EmailNotify.TAG, "Service restarted unexpectedly. Last checked at " + d.toLocaleString());
             // 未消去の通知を復元する
-            restoreNotifications();
+            EmailNotificationService.restoreNotifications(this);
             // ネットワーク復元情報を消去
             EmailNotifyPreferences.unsetNetworkInfo(this);
         } else {
@@ -111,7 +107,7 @@ public class EmailNotifyService extends Service {
             long current = Calendar.getInstance().getTimeInMillis();
             if (prev == 0 || current - prev > LOG_SEND_INTERVAL) {
                 Random random = new Random();
-                int delay = random.nextInt(LOG_SEND_DISPERSION);  
+                int delay = random.nextInt(LOG_SEND_DISPERSION);
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Start sending report. (delay=" + delay + ")");
                 Intent intent = new Intent(this, EmailNotifyReceiver.class);
                 intent.setAction(EmailNotify.ACTION_LOG_SENT);
@@ -345,7 +341,7 @@ public class EmailNotifyService extends Service {
                         if (pdu != null) {
                             // 最終チェック日時を更新
                             EmailNotifyPreferences.setLastCheck(mCtx, mLastCheck);
-                            notify(getLogDate(line).getTime(), pdu);
+                            EmailNotificationService.startService(mCtx, getLogDate(line).getTime(), pdu);
                         }
                     }
                     bufferedReader.close();
@@ -392,37 +388,6 @@ public class EmailNotifyService extends Service {
             mLogCheckThread = null;
             stopSelf();
         }
-
-        /**
-         * メール着信通知
-         *
-         * @param logdate
-         * @param pdu
-         */
-        private void notify(Date logdate, WapPdu pdu) {
-            final String contentType = pdu.getContentType();
-            final Date timestamp = pdu.getTimestampDate();
-            final String mailbox = pdu.getMailbox();
-            final String serviceName = pdu.getServiceName();
-
-            // 記録
-            final long historyId = EmailNotificationHistoryDao.add(mCtx, logdate,
-                    contentType, pdu.getApplicationId(), mailbox, timestamp, serviceName, pdu.getHexString());
-            if (historyId < 0) {
-                MyLog.w(EmailNotifyService.this, EmailNotify.TAG, "Duplicated: "
-                        + "mailbox=" + mailbox + ", timestamp=" + pdu.getTimestampString());
-                return;
-            }
-
-            // 通知
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    doNotify(EmailNotifyService.this, contentType, mailbox, timestamp,
-                            serviceName, historyId, false);
-                }
-            });
-        }
     }
 
     /**
@@ -447,63 +412,6 @@ public class EmailNotifyService extends Service {
             return;
         }
         mStopLogCheckThread = true;
-    }
-
-    /**
-     * メール着信通知
-     *
-     * @param ctx Context
-     * @param contentType Content-Type
-     * @param timestampDate タイムスタンプ
-     * @param mailbox メールボックス名
-     * @param serviceName サービス名
-     * @param historyId 履歴ID
-     * @param restore 復元
-     */
-    public static void doNotify(Context ctx, String contentType, String mailbox, Date timestampDate, String serviceName, long historyId, boolean restore) {
-        if (EmailNotifyPreferences.getService(ctx, serviceName)) {
-            if (EmailNotifyPreferences.inExcludeHours(ctx, serviceName)) {
-                MyLog.d(ctx, EmailNotify.TAG, "Ignored: This is exclude hours now.");
-                // PENDING: あとで通知する?
-                EmailNotificationHistoryDao.ignored(ctx, historyId);
-                return;
-            }
-            EmailNotificationManager.showNotification(ctx,
-                    serviceName, mailbox, timestampDate, restore);
-        } else {
-            MyLog.d(ctx, EmailNotify.TAG, "Ignored: This is exclude service.");
-            EmailNotificationHistoryDao.ignored(ctx, historyId);
-        }
-    }
-
-    /**
-     * 未消去の通知を復元する
-     *
-     * @param pdu WAP PDU
-     */
-    private void restoreNotifications() {
-        Cursor cur = EmailNotificationHistoryDao.getActiveHistories(this);
-        if (cur.moveToFirst()) {
-            do {
-                long id = cur.getLong(cur.getColumnIndex(BaseColumns._ID));
-                MyLog.d(this, EmailNotify.TAG, "Restoring notification: " + id);
-                String contentType = cur.getString(cur.getColumnIndex("content_type"));
-                String mailbox = cur.getString(cur.getColumnIndex("mailbox"));
-                Date timestampDate = null;
-                long timestamp = cur.getLong(cur.getColumnIndex("timestamp"));
-                String serviceName = cur.getString(cur.getColumnIndex("service_name"));
-                if (timestamp > 0) {
-                    timestampDate = new Date(timestamp * 1000);
-                }
-                if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
-                    // 未通知なら改めて通知
-                    doNotify(this, contentType, mailbox, timestampDate, serviceName, id, false);
-                } else {
-                    // 通知済みなら表示のみ
-                    doNotify(this, contentType, mailbox, timestampDate, serviceName, id, true);
-                }
-            } while (cur.moveToNext());
-        }
     }
 
 

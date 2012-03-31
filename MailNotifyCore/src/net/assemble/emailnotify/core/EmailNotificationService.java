@@ -1,12 +1,15 @@
 package net.assemble.emailnotify.core;
 
-import net.orleaf.android.HexUtils;
+import java.util.Date;
+
 import net.orleaf.android.MyLog;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.IBinder;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 /**
@@ -29,40 +32,43 @@ public class EmailNotificationService extends Service {
             return;
         }
 
-        WapPdu pdu = null;
-        String contentType = intent.getStringExtra("contentType");
-        int wapAppId = intent.getIntExtra("wapAppId", 0);
-        byte[] data = intent.getByteArrayExtra("data");
-        if (contentType == null) {
-            // Content-Typeなしの場合はヘッダ込み
-            pdu = new WapPdu(data);
-        } else {
-            // Content-Typeありの場合はボディのみ
-            pdu = new WapPdu(contentType, wapAppId, data);
+        Date logdate = null;
+        if (intent.hasExtra("time")) {
+            long time = intent.getLongExtra("time", 0);
+            logdate = new Date(time);
+            Log.d(EmailNotify.TAG, "time = " + logdate.toLocaleString());
         }
+        WapPdu pdu = intent.getParcelableExtra("wapPdu");
         if (pdu != null) {
-            if (pdu.decode()) {
-                MyLog.d(this, EmailNotify.TAG, "Received WAP data: " + HexUtils.bytes2hex(data) + " (wapAppId=" + wapAppId + ")");
-                if (pdu.getTimestampDate() != null) {
-                    MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
-                } else {
-                    MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox());
-                }
-
-                // 記録
-                long historyId = EmailNotificationHistoryDao.add(this, null,
-                        pdu.getContentType(), pdu.getApplicationId(),
-                        pdu.getMailbox(), pdu.getTimestampDate(),
-                        pdu.getServiceName(), pdu.getHexString());
-                if (historyId < 0) {
-                    MyLog.w(this, EmailNotify.TAG, "Duplicated: "
-                            + "mailbox=" + pdu.getMailbox() + ", timestamp=" + pdu.getTimestampString());
-                    return;
-                }
-
-                EmailNotifyService.doNotify(this, contentType, pdu.getMailbox(), pdu.getTimestampDate(),
-                        pdu.getServiceName(), historyId, false);
+            // 記録
+            long historyId = EmailNotificationHistoryDao.add(this, logdate,
+                    pdu.getContentType(), pdu.getApplicationId(),
+                    pdu.getMailbox(), pdu.getTimestampDate(),
+                    pdu.getServiceName(), pdu.getHexString());
+            if (historyId < 0) {
+                MyLog.w(this, EmailNotify.TAG, "Duplicated: "
+                        + "mailbox=" + pdu.getMailbox() + ", timestamp=" + pdu.getTimestampString());
+                return;
             }
+
+            if (!EmailNotifyPreferences.getService(this, pdu.getServiceName())) {
+                // 非通知サービス
+                MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude service.");
+                EmailNotificationHistoryDao.ignored(this, historyId);
+                return;
+            }
+
+            if (EmailNotifyPreferences.inExcludeHours(this, pdu.getServiceName())) {
+                // 非通知時間帯
+                MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude hours now.");
+                // PENDING: あとで通知する?
+                EmailNotificationHistoryDao.ignored(this, historyId);
+                return;
+            }
+
+            // 通知
+            EmailNotificationManager.showNotification(this,
+                    pdu.getServiceName(), pdu.getMailbox(), pdu.getTimestampDate(), false);
         }
     }
 
@@ -75,12 +81,50 @@ public class EmailNotificationService extends Service {
         return null;
     }
 
+    /**
+     * 未消去の通知を復元する
+     *
+     * @param pdu WAP PDU
+     */
+    public static void restoreNotifications(Context ctx) {
+        Cursor cur = EmailNotificationHistoryDao.getActiveHistories(ctx);
+        if (cur.moveToFirst()) {
+            do {
+                long id = cur.getLong(cur.getColumnIndex(BaseColumns._ID));
+                MyLog.d(ctx, EmailNotify.TAG, "Restoring notification: " + id);
+                String mailbox = cur.getString(cur.getColumnIndex("mailbox"));
+                Date timestampDate = null;
+                long timestamp = cur.getLong(cur.getColumnIndex("timestamp"));
+                String serviceName = cur.getString(cur.getColumnIndex("service_name"));
+                if (timestamp > 0) {
+                    timestampDate = new Date(timestamp * 1000);
+                }
+                if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
+                    // 未通知なら改めて通知
+                    EmailNotificationManager.showNotification(ctx, serviceName, mailbox, timestampDate, false);
+                } else {
+                    // 通知済みなら表示のみ
+                    EmailNotificationManager.showNotification(ctx, serviceName, mailbox, timestampDate, true);
+                }
+            } while (cur.moveToNext());
+        }
+    }
+
 
     /**
      * サービス開始
+     *
+     * @param ctx
+     * @param date 検出日時
+     * @param wapPdu
      */
-    private static boolean startService(Context ctx, Intent intent) {
+    public static boolean startService(Context ctx, Date date, WapPdu wapPdu) {
         boolean result;
+        Intent intent = new Intent(ctx, EmailNotificationService.class);
+        if (date != null) {
+            intent.putExtra("time", date.getTime());
+        }
+        intent.putExtra("wapPdu", wapPdu);
         mService = ctx.startService(intent);
         if (mService == null) {
             Log.e(EmailNotify.TAG, "EmailNotificationService start failed!");
@@ -90,26 +134,6 @@ public class EmailNotificationService extends Service {
             result = true;
         }
         return result;
-    }
-
-    /**
-     * メール通知
-     */
-    public static boolean notify(Context ctx, byte[] wapPdu) {
-        Intent intent = new Intent(ctx, EmailNotificationService.class);
-        intent.putExtra("data", wapPdu);
-        return startService(ctx, intent);
-    }
-
-    /**
-     * メール通知
-     */
-    public static boolean notify(Context ctx, String contentType, int wapAppId, byte[] wapBody) {
-        Intent intent = new Intent(ctx, EmailNotificationService.class);
-        intent.putExtra("contentType", contentType);
-        intent.putExtra("wapAppId", wapAppId);
-        intent.putExtra("data", wapBody);
-        return startService(ctx, intent);
     }
 
 }

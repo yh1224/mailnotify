@@ -6,11 +6,13 @@ import java.util.Date;
 
 import net.orleaf.android.HexUtils;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.android.internal.telephony.WspTypeDecoder;
 
-public class WapPdu {
+public class WapPdu implements Parcelable {
     private byte[] wapData;
     private int dataIndex = -1;
 
@@ -22,6 +24,46 @@ public class WapPdu {
     private byte[] timestamp = null;
     private String serviceName = null;
 
+    public WapPdu(Parcel in) {
+        wapData = in.createByteArray();
+        dataIndex = in.readInt();
+        contentType = in.readString();
+        binaryContentType = in.readInt();
+        applicationId = in.readString();
+        binaryApplicationId = in.readInt();
+        mailBox = in.readString();
+        timestamp = in.createByteArray();
+        serviceName = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByteArray(wapData);
+        dest.writeInt(dataIndex);
+        dest.writeString(contentType);
+        dest.writeInt(binaryContentType);
+        dest.writeString(applicationId);
+        dest.writeInt(binaryApplicationId);
+        dest.writeString(mailBox);
+        dest.writeByteArray(timestamp);
+        dest.writeString(serviceName);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<WapPdu> CREATOR = new Parcelable.Creator<WapPdu>() {  
+        public WapPdu createFromParcel(Parcel in) {  
+            return new WapPdu(in);  
+        }  
+    
+        public WapPdu[] newArray(int size) {  
+            return new WapPdu[size];  
+        }  
+    };  
+    
     /**
      * Constructor
      */

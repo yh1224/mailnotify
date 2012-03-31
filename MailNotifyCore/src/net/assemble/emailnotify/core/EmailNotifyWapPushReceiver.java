@@ -3,6 +3,7 @@ package net.assemble.emailnotify.core;
 import java.util.Set;
 
 import net.orleaf.android.HexUtils;
+import net.orleaf.android.MyLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +23,17 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
         int wapAppId = intent.getIntExtra("wapAppID", 0);
         byte[] data = intent.getByteArrayExtra("data");
         if (contentType != null && data != null) {
-            // 通知
-            EmailNotificationService.notify(ctx, contentType, wapAppId, data);
+            WapPdu pdu = new WapPdu(contentType, wapAppId, data);
+            if (pdu.decode()) {
+                MyLog.d(ctx, EmailNotify.TAG, "Received WAP data: " + HexUtils.bytes2hex(data) + " (wapAppId=" + wapAppId + ")");
+                if (pdu.getTimestampDate() != null) {
+                    MyLog.i(ctx, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
+                } else {
+                    MyLog.i(ctx, EmailNotify.TAG, "Received: " + pdu.getMailbox());
+                }
+                // 通知
+                EmailNotificationService.startService(ctx, null, pdu);
+            }
         }
 
         EmailNotifyService.startService(ctx);
