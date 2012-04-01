@@ -25,6 +25,10 @@ public class EmailNotificationService extends Service {
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
 
+        if (intent == null) {
+            return;
+        }
+
         WapPdu pdu = null;
         String contentType = intent.getStringExtra("contentType");
         int wapAppId = intent.getIntExtra("wapAppId", 0);
