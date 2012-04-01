@@ -21,6 +21,9 @@ public class EmailNotifyPreferences
 
     private static final String PREF_PREFERENCE_ID_KEY = "preference_id";
 
+    private static final String PREF_MODEL_FINGERPRINT_KEY = "model_fingerprint";
+    private static final String PREF_NOTIFY_SUPPORT_KEY = "notify_support";
+
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
     public static final String SERVICE_IMODE = "imode";
@@ -145,6 +148,16 @@ public class EmailNotifyPreferences
             editor.commit();
         }
         return uniqueId;
+    }
+
+    /**
+     * 動作記録
+     */
+    public static void setNotifySupport(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor editor = pref.edit();
+        editor.putBoolean(getServiceKey(PREF_NOTIFY_SUPPORT_KEY, service), true);
+        editor.commit();
     }
 
     /**
@@ -806,6 +819,17 @@ public class EmailNotifyPreferences
             e.commit();
         }
 
+        String fingerprint = pref.getString(PREF_MODEL_FINGERPRINT_KEY, null);
+        if (fingerprint == null || !fingerprint.equals(Build.FINGERPRINT)) {
+            Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+            e.putString(PREF_MODEL_FINGERPRINT_KEY, Build.FINGERPRINT);
+
+            // Model.FINGERPRINT が変更されていたらサポート情報をクリア
+            for (int i = 0; i < SERVICES.length; i++) {
+                e.remove(getServiceKey(PREF_NOTIFY_SUPPORT_KEY, SERVICES[i]));
+            }
+            e.commit();
+        }
     }
 
 }

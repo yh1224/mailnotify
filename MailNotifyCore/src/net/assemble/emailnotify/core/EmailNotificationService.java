@@ -40,7 +40,10 @@ public class EmailNotificationService extends Service {
         }
         WapPdu pdu = intent.getParcelableExtra("wapPdu");
         if (pdu != null) {
-            // 記録
+            // サポートフラグ記録
+            EmailNotifyPreferences.setNotifySupport(this, pdu.getServiceName());
+
+            // 履歴に記録
             long historyId = EmailNotificationHistoryDao.add(this, logdate,
                     pdu.getContentType(), pdu.getApplicationId(),
                     pdu.getMailbox(), pdu.getTimestampDate(),
