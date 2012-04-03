@@ -8,6 +8,8 @@
             android:title="Rx: i-mode" />
         <Preference android:key="test_spmode_xperiaarc"
             android:title="Rx: sp-mode (Xperia arc)" />
+        <Preference android:key="test_processmsg"
+            android:title="Rx: processMsg" />
         <Preference android:key="test_lynx"
             android:title="Rx: LYNX" />
     </PreferenceCategory>

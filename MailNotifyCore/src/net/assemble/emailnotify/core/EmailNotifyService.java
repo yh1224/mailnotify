@@ -196,6 +196,7 @@ public class EmailNotifyService extends Service {
             WapPdu pdu = null;
 
             // LYNX(SH-01B)対応
+            // ex) D/WAP PUSH(XXXXXX): Received EMN
             if (EmailNotifyPreferences.getLynxWorkaround(this) &&
                     tag.startsWith("D/WAP PUSH") && log.equals("Receive EMN")) {
                 MyLog.i(this, EmailNotify.TAG, "Received EMN");
@@ -203,7 +204,18 @@ public class EmailNotifyService extends Service {
                 return new WapPdu();
             }
 
+            // TODO
+            // ex) D/WAP PUSH(XXXXXX): wpman processMsg 36956:application/vnd.wap.emn+wbxml
+            if (tag.startsWith("D/WAP PUSH") &&
+                    log.startsWith("wpman processMsg ") &&
+                    log.endsWith(":application/vnd.wap.emn+wbxml")) {
+                MyLog.i(this, EmailNotify.TAG, "Detected processMsg:application/vnd.wap.emn+wbxml");
+                mLastCheck = ccal.getTimeInMillis();
+                return new WapPdu();
+            }
+
             // Xperia arc(SO-01C)対応
+            // ex) D/WAP PUSH(XXXXXX): call startService : Intent { act=android.provider.Telephony.WAP_PUSH_RECEIVED typ=application/vnd.wap.emn+wbxml cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }
             if (EmailNotifyPreferences.getXperiaarcWorkaround(this)) {
                 // spモードメール
                 if (tag.startsWith("D/WAP PUSH") && log.equals("call startService : Intent { act=android.provider.Telephony.WAP_PUSH_RECEIVED typ=application/vnd.wap.emn+wbxml cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }")) {

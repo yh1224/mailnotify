@@ -64,6 +64,8 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             Log.d("WAP PUSH", "Rx: 0");
         } else if (preference == findPreference("test_spmode_xperiaarc")) {
             Log.d("WAP PUSH", "call startService : Intent { act=android.provider.Telephony.WAP_PUSH_RECEIVED typ=application/vnd.wap.emn+wbxml cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }");
+        } else if (preference == findPreference("test_processmsg")) {
+            Log.d("WAP PUSH", "wpman processMsg 36956:application/vnd.wap.emn+wbxml");
         } else if (preference == findPreference("test_lynx")) {
             Log.d("WAP PUSH", "Receive EMN");
         }
