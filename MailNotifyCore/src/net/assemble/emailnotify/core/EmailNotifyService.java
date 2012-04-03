@@ -20,6 +20,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -46,7 +47,7 @@ public class EmailNotifyService extends Service {
 
     @Override
     public void onCreate() {
-        MyLog.v(this, EmailNotify.TAG, "+");
+        MyLog.v(this, EmailNotify.TAG, "+ " + Build.FINGERPRINT);
         super.onCreate();
 
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
