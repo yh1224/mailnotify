@@ -4,13 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.widget.Toast;
 import net.orleaf.android.HexUtils;
 /**
  * デバッグメニュー
@@ -29,6 +34,9 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
 
+        if (preference == findPreference("show_preferences")) {
+            Toast.makeText(this, getPreferencesString(), Toast.LENGTH_LONG).show();
+        } else
         if (preference == findPreference("test_mopera")) {
             Log.d("WAP PUSH", "Rx: 0006060302030aaf89030d6a00850703796831323234406d6f70657261008705c307"
                     + getTimestamp() + "01");
@@ -77,6 +85,21 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
         Date date = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         return sdf.format(date);
+    }
+
+    private String getPreferencesString() {
+        StringBuffer strBuf = new StringBuffer();
+        Map<String, ?> prefs = PreferenceManager.getDefaultSharedPreferences(this).getAll();
+        for (Iterator<?> it = prefs.entrySet().iterator(); it.hasNext(); ) {
+            @SuppressWarnings("unchecked")
+            Map.Entry<String, ?> entry = (Entry<String, ?>) it.next();
+            if (entry.getValue() == null) {
+                strBuf.append(entry.getKey() + "=(null)\n");
+            } else {
+                strBuf.append(entry.getKey() + "=" + entry.getValue().toString() + "\n");
+            }
+        }
+        return strBuf.toString();
     }
 
 }

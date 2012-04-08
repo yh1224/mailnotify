@@ -1,4 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Information">
+        <Preference android:key="show_preferences"
+            android:title="Show Preferences" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="Rx mail">
         <Preference android:key="test_mopera"
             android:title="Rx: mopera U" />
