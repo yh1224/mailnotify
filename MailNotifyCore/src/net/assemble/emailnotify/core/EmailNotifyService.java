@@ -207,8 +207,7 @@ public class EmailNotifyService extends Service {
             // TODO
             // ex) D/WAP PUSH(XXXXXX): wpman processMsg 36956:application/vnd.wap.emn+wbxml
             if (tag.startsWith("D/WAP PUSH") &&
-                    log.startsWith("wpman processMsg ") &&
-                    log.endsWith(":application/vnd.wap.emn+wbxml")) {
+                    log.contains("wpman processMsg ") && log.endsWith(":application/vnd.wap.emn+wbxml")) {
                 MyLog.i(this, EmailNotify.TAG, "Detected processMsg:application/vnd.wap.emn+wbxml");
                 mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu();
