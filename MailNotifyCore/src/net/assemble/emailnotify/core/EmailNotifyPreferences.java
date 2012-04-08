@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.UUID;
 
+import net.orleaf.android.MyLog;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,7 +19,7 @@ import android.preference.PreferenceManager;
 public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
-    private static final int CURRENT_PREFERENCE_VERSION = 5;
+    private static final int CURRENT_PREFERENCE_VERSION = 6;
 
     private static final String PREF_PREFERENCE_ID_KEY = "preference_id";
 
@@ -766,68 +768,57 @@ public class EmailNotifyPreferences
      */
     public static void upgrade(Context ctx) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor e = pref.edit();
+        boolean changed = false;
+
         int ver = pref.getInt(PREF_PREFERENCE_VERSION_KEY, 0);
+        if (ver < 6) {
+            // 設定が古すぎる場合、一旦クリアしてしまう
+            if (pref.contains("enable")) {
+                MyLog.d(ctx, EmailNotify.TAG, "Preference: clear!");
+                e.clear();
+                changed = true;
+            }
+            try {
+                pref.getInt(PREF_NOTIFY_DELAY_KEY, 0);
+            } catch (ClassCastException ex) {
+                MyLog.d(ctx, EmailNotify.TAG, "Preference: clear!");
+                e.clear();
+                changed = true;
+            }
+            e.remove("notify_to_imoni");
+            e.remove("notify_to_imoni_imode");
+        }
         if (0 < ver && ver < CURRENT_PREFERENCE_VERSION) {
-            Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-            if (ver == 0) {
-                // キー名称を変更
-                e.putBoolean(PREF_LICENSED_KEY, pref.getBoolean("licence", PREF_LICENSED_DEFAULT));
-                e.putBoolean(PREF_ENABLE_KEY, pref.getBoolean("enable", PREF_ENABLE_DEFAULT));
-                e.putString(PREF_NOTIFY_SOUND_KEY, pref.getString("sound", PREF_NOTIFY_SOUND_DEFAULT));
-                e.putBoolean(PREF_NOTIFY_VIBRATION_KEY, pref.getBoolean("vibration", PREF_NOTIFY_VIBRATION_DEFAULT));
-                e.putString(PREF_NOTIFY_VIBRATION_PATTERN_KEY, pref.getString("vibration_patter", PREF_NOTIFY_VIBRATION_PATTERN_DEFAULT));
-                e.putInt(PREF_NOTIFY_VIBRATION_LENGTH_KEY, pref.getInt("vibration_length", PREF_NOTIFY_VIBRATION_LENGTH_DEFAULT));
-                e.putBoolean(PREF_NOTIFY_VIBRATION_MANNERONLY_KEY, pref.getBoolean("vibration_manneronly", PREF_NOTIFY_VIBRATION_MANNERONLY_DEFAULT));
-                e.putString(PREF_NOTIFY_LED_COLOR_KEY, pref.getString("led_color", PREF_NOTIFY_LED_COLOR_DEFAULT));
-                e.putString(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, pref.getString("launch_app_package_name", null));
-                e.putString(PREF_NOTIFY_LAUNCH_APP_CLASS_KEY, pref.getString("launch_app_class_name", null));
-                e.putBoolean(PREF_NOTIFY_RENOTIFY_KEY, pref.getBoolean("renotify", PREF_NOTIFY_RENOTIFY_DEFAULT));
-                e.putInt(PREF_NOTIFY_RENOTIFY_INTERVAL_KEY, pref.getInt("renotify_interval", PREF_NOTIFY_RENOTIFY_INTERVAL_DEFAULT));
-                e.putInt(PREF_NOTIFY_RENOTIFY_COUNT_KEY, pref.getInt("renotify_count", PREF_NOTIFY_RENOTIFY_COUNT_DEFAULT));
-            }
-            if (ver < 2) {
-                // 起動アプリ名を保存するようにした。旧設定からはパッケージ名をコピー。
-                e.putString(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, pref.getString(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, null));
-                for (int i = 0; i < SERVICES.length; i++) {
-                    e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, SERVICES[i]),
-                            pref.getString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, SERVICES[i]), null));
-                }
-            }
-            if (ver < 3) {
-                e.putInt(PREF_NOTIFY_DELAY_KEY, Integer.parseInt(pref.getString(PREF_NOTIFY_DELAY_KEY, "0")));
-                e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_MOPERA),
-                        Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_MOPERA), "0")));
-                e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_SPMODE),
-                        Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_SPMODE), "0")));
-                e.putInt(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE),
-                        Integer.parseInt(pref.getString(getServiceKey(PREF_NOTIFY_DELAY_KEY, SERVICE_IMODE), "0")));
-            }
-            if (ver < 5) {
-                // IMoNi通知設定を削除
-                e.remove("notify_to_imoni");
-                e.remove("notify_to_imoni_imode");
-            }
+                //
+        }
+        if (ver != CURRENT_PREFERENCE_VERSION) {
+            // 設定バージョン更新
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);
-            e.commit();
+            MyLog.d(ctx, EmailNotify.TAG, "Preference: " + ver + " -> " + CURRENT_PREFERENCE_VERSION);
+            changed = true;
         }
 
         if (EmailNotifyPreferences.getLynxWorkaround(ctx)) {
             // LYNXでは鳴り分けは不可
-            Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
             e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_MOPERA), false);
             e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_SPMODE), false);
-            e.commit();
+            changed = true;
         }
 
         String fingerprint = pref.getString(PREF_MODEL_FINGERPRINT_KEY, null);
         if (fingerprint == null || !fingerprint.equals(Build.FINGERPRINT)) {
-            Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
             e.putString(PREF_MODEL_FINGERPRINT_KEY, Build.FINGERPRINT);
 
             // Model.FINGERPRINT が変更されていたらサポート情報をクリア
             for (int i = 0; i < SERVICES.length; i++) {
                 e.remove(getServiceKey(PREF_NOTIFY_SUPPORT_KEY, SERVICES[i]));
             }
+            MyLog.d(ctx, EmailNotify.TAG, "Preference: reset support information.");
+            changed = true;
+        }
+
+        if (changed) {
             e.commit();
         }
     }
