@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -19,9 +20,13 @@ public class EmailNotificationService extends Service {
 
     private static ComponentName mService;
 
+    private Handler handler = new Handler();
+    private boolean mPending;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        mPending = false;
     }
 
     @Override
@@ -32,47 +37,74 @@ public class EmailNotificationService extends Service {
             return;
         }
 
-        Date logdate = null;
+        final Date logdate;
         if (intent.hasExtra("time")) {
             long time = intent.getLongExtra("time", 0);
             logdate = new Date(time);
-            Log.d(EmailNotify.TAG, "time = " + logdate.toLocaleString());
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "time = " + logdate.toLocaleString());
+        } else {
+            logdate = null;
         }
-        WapPdu pdu = intent.getParcelableExtra("wapPdu");
+        final WapPdu pdu = intent.getParcelableExtra("wapPdu");
         if (pdu != null) {
             // サポートフラグ記録
             EmailNotifyPreferences.setNotifySupport(this, pdu.getServiceName());
 
-            // 履歴に記録
-            long historyId = EmailNotificationHistoryDao.add(this, logdate,
-                    pdu.getContentType(), pdu.getApplicationId(),
-                    pdu.getMailbox(), pdu.getTimestampDate(),
-                    pdu.getServiceName(), pdu.getHexString());
-            if (historyId < 0) {
-                MyLog.w(this, EmailNotify.TAG, "Duplicated: "
-                        + "mailbox=" + pdu.getMailbox() + ", timestamp=" + pdu.getTimestampString());
-                return;
+            if (pdu.getServiceName().equals(EmailNotifyPreferences.SERVICE_OTHER)) {
+                // サービス不明の場合、ちょっと待ってから通知
+                mPending = true;
+                MyLog.d(EmailNotificationService.this, EmailNotify.TAG, "Pending notification.");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mPending) {
+                            doNotify(logdate, pdu);
+                        } else {
+                            MyLog.w(EmailNotificationService.this, EmailNotify.TAG, "Pending notification dropped.");
+                        }
+                    }
+                }, 1000);
+            } else {
+                doNotify(logdate, pdu);
             }
-
-            if (!EmailNotifyPreferences.getService(this, pdu.getServiceName())) {
-                // 非通知サービス
-                MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude service.");
-                EmailNotificationHistoryDao.ignored(this, historyId);
-                return;
-            }
-
-            if (EmailNotifyPreferences.inExcludeHours(this, pdu.getServiceName())) {
-                // 非通知時間帯
-                MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude hours now.");
-                // PENDING: あとで通知する?
-                EmailNotificationHistoryDao.ignored(this, historyId);
-                return;
-            }
-
-            // 通知
-            EmailNotificationManager.showNotification(this,
-                    pdu.getServiceName(), pdu.getMailbox(), pdu.getTimestampDate(), false);
         }
+    }
+
+    /**
+     * 記録して通知
+     */
+    private void doNotify(Date logdate, WapPdu pdu) {
+        mPending = false;
+
+        // 履歴に記録
+        long historyId = EmailNotificationHistoryDao.add(this, logdate,
+                pdu.getContentType(), pdu.getApplicationId(),
+                pdu.getMailbox(), pdu.getTimestampDate(),
+                pdu.getServiceName(), pdu.getHexString());
+        if (historyId < 0) {
+            MyLog.w(this, EmailNotify.TAG, "Duplicated: "
+                    + "mailbox=" + pdu.getMailbox() + ", timestamp=" + pdu.getTimestampString());
+            return;
+        }
+
+        if (!EmailNotifyPreferences.getService(this, pdu.getServiceName())) {
+            // 非通知サービス
+            MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude service.");
+            EmailNotificationHistoryDao.ignored(this, historyId);
+            return;
+        }
+
+        if (EmailNotifyPreferences.inExcludeHours(this, pdu.getServiceName())) {
+            // 非通知時間帯
+            MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude hours now.");
+            // PENDING: あとで通知する?
+            EmailNotificationHistoryDao.ignored(this, historyId);
+            return;
+        }
+
+        // 通知
+        EmailNotificationManager.showNotification(this,
+                pdu.getServiceName(), pdu.getMailbox(), pdu.getTimestampDate(), false);
     }
 
     public void onDestroy() {
