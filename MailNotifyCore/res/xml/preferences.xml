@@ -25,6 +25,111 @@
         <PreferenceScreen android:title="@string/pref_notify_title"
             android:summary="@string/pref_notify_summary">
 
+            <!-- 基本 -->
+                <PreferenceCategory android:title="@string/pref_group_notify_sound">
+                    <RingtonePreference android:key="notify_sound"
+                        android:title="@string/pref_notify_sound_title"
+                        android:summary="@string/pref_notify_sound_summary"
+                        android:ringtoneType="notification"
+                        android:defaultValue="content://settings/system/notification_sound" />
+                </PreferenceCategory>
+                <PreferenceCategory
+                    android:title="@string/pref_group_notify_vibration">
+                    <CheckBoxPreference android:key="notify_vibration"
+                        android:summary="@string/pref_notify_vibration_summary"
+                        android:title="@string/pref_notify_vibration_title"
+                        android:defaultValue="true" />
+                    <ListPreference android:key="notify_vibration_pattern"
+                        android:title="@string/pref_notify_vibration_pattern_title"
+                        android:entries="@array/entries_vibration_pattern"
+                        android:entryValues="@array/entryvalues_vibration_pattern"
+                        android:defaultValue="0" android:dependency="notify_vibration" />
+                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                        android:key="notify_vibration_length"
+                        android:title="@string/pref_notify_vibration_length_title"
+                        android:defaultValue="3" android:dependency="notify_vibration"
+                        minValue="1" maxValue="60"
+                        unit="@string/pref_notify_vibration_length_unit" />
+                    <CheckBoxPreference android:key="notify_vibration_manneronly"
+                        android:summary="@string/pref_notify_vibration_manneronly_summary"
+                        android:title="@string/pref_notify_vibration_manneronly_title"
+                        android:defaultValue="false" android:dependency="notify_vibration" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_led">
+                    <CheckBoxPreference android:key="notify_led"
+                        android:summary="@string/pref_notify_led_summary"
+                        android:title="@string/pref_notify_led_title"
+                        android:defaultValue="true" />
+                    <ListPreference android:key="notify_led_color"
+                        android:title="@string/pref_notify_led_color_title"
+                        android:entries="@array/entries_led_color"
+                        android:entryValues="@array/entryvalues_led_color"
+                        android:defaultValue="ff00ff00"
+                        android:dependency="notify_led" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_bar">
+                    <CheckBoxPreference android:key="notify_view"
+                        android:summary="@string/pref_notify_view_summary"
+                        android:title="@string/pref_notify_view_title"
+                        android:defaultValue="true" />
+                    <Preference android:key="notify_launch_app"
+                        android:summary="@string/pref_notify_launch_app_summary"
+                        android:title="@string/pref_notify_launch_app_title"
+                        android:dependency="notify_view" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_renotify">
+                    <CheckBoxPreference android:key="notify_renotify"
+                        android:title="@string/pref_notify_renotify_title"
+                        android:summary="@string/pref_notify_renotify_summary"
+                        android:defaultValue="false" android:dependency="notify_view" />
+                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                        android:key="notify_renotify_interval"
+                        android:title="@string/pref_notify_renotify_interval_title"
+                        android:defaultValue="5" android:dependency="notify_renotify"
+                        minValue="1" maxValue="30"
+                        unit="@string/pref_notify_renotify_interval_unit" />
+                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                        android:key="notify_renotify_count"
+                        android:title="@string/pref_notify_renotify_count_title"
+                        android:defaultValue="5" android:dependency="notify_renotify"
+                        minValue="0" maxValue="30"
+                        unit="@string/pref_notify_renotify_count_unit"
+                        zero="@string/pref_notify_renotify_count_zero" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_network">
+                    <CheckBoxPreference android:key="notify_auto_connect"
+                            android:summary="@string/pref_notify_auto_connect_summary"
+                            android:title="@string/pref_notify_auto_connect_title"
+                            android:defaultValue="false" />
+                    <ListPreference android:key="notify_auto_connect_type"
+                            android:title="@string/pref_notify_auto_connect_type_title"
+                            android:entries="@array/entries_auto_connect_type"
+                            android:entryValues="@array/entryvalues_auto_connect_type"
+                            android:defaultValue="mobile" android:dependency="notify_auto_connect" />
+                    <ListPreference android:key="notify_auto_connect_apn"
+                            android:title="@string/pref_notify_auto_connect_apn_title"
+                            android:defaultValue="" android:enabled="false" />
+                    <CheckBoxPreference android:key="notify_auto_connect_force"
+                            android:summary="@string/pref_notify_auto_connect_force_summary"
+                            android:title="@string/pref_notify_auto_connect_force_title"
+                            android:defaultValue="false" android:dependency="notify_auto_connect" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_other">
+                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                        android:key="notify_delay" android:title="@string/pref_notify_delay_title"
+                        android:summary="@string/pref_notify_delay_summary"
+                        android:defaultValue="0" minValue="0" maxValue="60"
+                        unit="@string/pref_notify_delay_unit" zero="@string/pref_notify_delay_zero" />
+                </PreferenceCategory>
+                <PreferenceCategory android:title="@string/pref_group_notify_test">
+                    <Preference android:title="@string/test_notify"
+                        android:key="test_notify" />
+                </PreferenceCategory>
+
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/pref_notify_custom_title"
+            android:summary="@string/pref_notify_custom_summary">
+
             <!-- mopera U -->
             <PreferenceScreen
                 android:title="@string/pref_notify_custom_mopera_screen_title"
@@ -361,110 +466,6 @@
                 <PreferenceCategory android:title="@string/pref_group_notify_test">
                     <Preference android:key="test_notify_imode"
                         android:title="@string/test_notify" />
-                </PreferenceCategory>
-            </PreferenceScreen>
-
-            <!-- 基本 -->
-            <PreferenceScreen android:title="@string/pref_notify_custom_other_screen_title"
-                android:summary="@string/pref_notify_custom_other_screen_summary">
-                <PreferenceCategory android:title="@string/pref_group_notify_sound">
-                    <RingtonePreference android:key="notify_sound"
-                        android:title="@string/pref_notify_sound_title"
-                        android:summary="@string/pref_notify_sound_summary"
-                        android:ringtoneType="notification"
-                        android:defaultValue="content://settings/system/notification_sound" />
-                </PreferenceCategory>
-                <PreferenceCategory
-                    android:title="@string/pref_group_notify_vibration">
-                    <CheckBoxPreference android:key="notify_vibration"
-                        android:summary="@string/pref_notify_vibration_summary"
-                        android:title="@string/pref_notify_vibration_title"
-                        android:defaultValue="true" />
-                    <ListPreference android:key="notify_vibration_pattern"
-                        android:title="@string/pref_notify_vibration_pattern_title"
-                        android:entries="@array/entries_vibration_pattern"
-                        android:entryValues="@array/entryvalues_vibration_pattern"
-                        android:defaultValue="0" android:dependency="notify_vibration" />
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
-                        android:key="notify_vibration_length"
-                        android:title="@string/pref_notify_vibration_length_title"
-                        android:defaultValue="3" android:dependency="notify_vibration"
-                        minValue="1" maxValue="60"
-                        unit="@string/pref_notify_vibration_length_unit" />
-                    <CheckBoxPreference android:key="notify_vibration_manneronly"
-                        android:summary="@string/pref_notify_vibration_manneronly_summary"
-                        android:title="@string/pref_notify_vibration_manneronly_title"
-                        android:defaultValue="false" android:dependency="notify_vibration" />
-                </PreferenceCategory>
-                <PreferenceCategory android:title="@string/pref_group_notify_led">
-                    <CheckBoxPreference android:key="notify_led"
-                        android:summary="@string/pref_notify_led_summary"
-                        android:title="@string/pref_notify_led_title"
-                        android:defaultValue="true" />
-                    <ListPreference android:key="notify_led_color"
-                        android:title="@string/pref_notify_led_color_title"
-                        android:entries="@array/entries_led_color"
-                        android:entryValues="@array/entryvalues_led_color"
-                        android:defaultValue="ff00ff00"
-                        android:dependency="notify_led" />
-                </PreferenceCategory>
-                <PreferenceCategory android:title="@string/pref_group_notify_bar">
-                    <CheckBoxPreference android:key="notify_view"
-                        android:summary="@string/pref_notify_view_summary"
-                        android:title="@string/pref_notify_view_title"
-                        android:defaultValue="true" />
-                    <Preference android:key="notify_launch_app"
-                        android:summary="@string/pref_notify_launch_app_summary"
-                        android:title="@string/pref_notify_launch_app_title"
-                        android:dependency="notify_view" />
-                </PreferenceCategory>
-                <PreferenceCategory android:title="@string/pref_group_notify_renotify">
-                    <CheckBoxPreference android:key="notify_renotify"
-                        android:title="@string/pref_notify_renotify_title"
-                        android:summary="@string/pref_notify_renotify_summary"
-                        android:defaultValue="false" android:dependency="notify_view" />
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
-                        android:key="notify_renotify_interval"
-                        android:title="@string/pref_notify_renotify_interval_title"
-                        android:defaultValue="5" android:dependency="notify_renotify"
-                        minValue="1" maxValue="30"
-                        unit="@string/pref_notify_renotify_interval_unit" />
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
-                        android:key="notify_renotify_count"
-                        android:title="@string/pref_notify_renotify_count_title"
-                        android:defaultValue="5" android:dependency="notify_renotify"
-                        minValue="0" maxValue="30"
-                        unit="@string/pref_notify_renotify_count_unit"
-                        zero="@string/pref_notify_renotify_count_zero" />
-                </PreferenceCategory>
-                <PreferenceCategory android:title="@string/pref_group_notify_network">
-                    <CheckBoxPreference android:key="notify_auto_connect"
-                            android:summary="@string/pref_notify_auto_connect_summary"
-                            android:title="@string/pref_notify_auto_connect_title"
-                            android:defaultValue="false" />
-                    <ListPreference android:key="notify_auto_connect_type"
-                            android:title="@string/pref_notify_auto_connect_type_title"
-                            android:entries="@array/entries_auto_connect_type"
-                            android:entryValues="@array/entryvalues_auto_connect_type"
-                            android:defaultValue="mobile" android:dependency="notify_auto_connect" />
-                    <ListPreference android:key="notify_auto_connect_apn"
-                            android:title="@string/pref_notify_auto_connect_apn_title"
-                            android:defaultValue="" android:enabled="false" />
-                    <CheckBoxPreference android:key="notify_auto_connect_force"
-                            android:summary="@string/pref_notify_auto_connect_force_summary"
-                            android:title="@string/pref_notify_auto_connect_force_title"
-                            android:defaultValue="false" android:dependency="notify_auto_connect" />
-                </PreferenceCategory>
-                <PreferenceCategory android:title="@string/pref_group_other">
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
-                        android:key="notify_delay" android:title="@string/pref_notify_delay_title"
-                        android:summary="@string/pref_notify_delay_summary"
-                        android:defaultValue="0" minValue="0" maxValue="60"
-                        unit="@string/pref_notify_delay_unit" zero="@string/pref_notify_delay_zero" />
-                </PreferenceCategory>
-                <PreferenceCategory android:title="@string/pref_group_notify_test">
-                    <Preference android:title="@string/test_notify"
-                        android:key="test_notify" />
                 </PreferenceCategory>
             </PreferenceScreen>
 
