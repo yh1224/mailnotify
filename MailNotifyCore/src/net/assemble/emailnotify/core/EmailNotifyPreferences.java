@@ -894,6 +894,14 @@ public class EmailNotifyPreferences
             changed = true;
         }
 
+        // spモードメール用アプリのデフォルト
+        if (pref.getString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, SERVICE_SPMODE), null) == null) {
+            e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_NAME_KEY, SERVICE_SPMODE), "spモードメール");
+            e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_PACKAGE_KEY, SERVICE_SPMODE), "jp.co.nttdocomo.carriermail");
+            e.putString(getServiceKey(PREF_NOTIFY_LAUNCH_APP_CLASS_KEY, SERVICE_SPMODE), "jp.co.nttdocomo.carriermail.activity.EulaViewer");
+            changed = true;
+        }
+
         // spモードメールはspモードAPN以外では受信できないため、接続先APNのデフォルトとする
         if (pref.getString(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_APN_KEY, SERVICE_SPMODE), null) == null) {
             e.putString(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_APN_KEY, SERVICE_SPMODE), "spmode.ne.jp");
