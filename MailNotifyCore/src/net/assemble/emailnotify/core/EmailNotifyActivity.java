@@ -147,9 +147,6 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
             intent = new Intent().setClass(EmailNotifyActivity.this,
                     EmailNotificationHistoryActivity.class);
             startActivity(intent);
-        } else if (itemId == R.id.menu_help) {
-            intent = new Intent().setClass(this, EmailNotifyHelpActivity.class);
-            startActivity(intent);
         } else if (itemId == R.id.menu_about) {
             intent = new Intent().setClass(this, AboutActivity.class);
             intent.putExtra("body_asset", "about.txt");
