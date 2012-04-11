@@ -204,13 +204,23 @@ public class EmailNotifyService extends Service {
                 return new WapPdu();
             }
 
-            // TODO
+            // SH-01D/F-03D/SO-02D/SO-03Dなど
             // ex) D/WAP PUSH(XXXXXX): wpman processMsg 36956:application/vnd.wap.emn+wbxml
             if (tag.startsWith("D/WAP PUSH") &&
                     log.contains("wpman processMsg ") && log.endsWith(":application/vnd.wap.emn+wbxml")) {
                 MyLog.i(this, EmailNotify.TAG, "Detected processMsg:application/vnd.wap.emn+wbxml");
                 mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu();
+            }
+
+            // F-05D
+            // ex) startService[WiFi=Enable] : intent=Intent { cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }
+            // ex) startService[WiFi=Disable] : intent=Intent { cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }
+            if (tag.startsWith("D/WAP PUSH") &&
+                    log.startsWith("startService[WiFi=") && log.endsWith("] : intent=Intent { cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }")) {
+                MyLog.i(this, EmailNotify.TAG, "Detected startService jp.co.nttdocomo.carriermail/.SMSService");
+                mLastCheck = ccal.getTimeInMillis();
+                return new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "spmode");
             }
 
             // Xperia arc(SO-01C)対応

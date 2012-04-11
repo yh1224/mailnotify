@@ -63,7 +63,7 @@ public class EmailNotificationService extends Service {
                             MyLog.w(EmailNotificationService.this, EmailNotify.TAG, "Pending notification dropped.");
                         }
                     }
-                }, 1000);
+                }, 4000);
             } else {
                 doNotify(logdate, pdu);
             }
