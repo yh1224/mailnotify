@@ -1,38 +1,55 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Information">
-        <Preference android:key="show_preferences"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Information" >
+        <Preference
+            android:key="show_preferences"
             android:title="Show Preferences" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Rx mail">
-        <Preference android:key="test_mopera"
+    <PreferenceCategory android:title="Rx mail" >
+        <Preference
+            android:key="test_mopera"
             android:title="Rx: mopera U" />
-        <Preference android:key="test_spmode"
+        <Preference
+            android:key="test_spmode"
             android:title="Rx: sp-mode" />
-        <Preference android:key="test_imode"
+        <Preference
+            android:key="test_imode"
             android:title="Rx: i-mode" />
-        <Preference android:key="test_spmode_xperiaarc"
+        <Preference
+            android:key="test_spmode_xperiaarc"
             android:title="Rx: sp-mode (Xperia arc)" />
-        <Preference android:key="test_processmsg"
+        <Preference
+            android:key="test_processmsg"
             android:title="Rx: processMsg" />
-        <Preference android:key="test_lynx"
+        <Preference
+            android:key="test_lynx"
             android:title="Rx: LYNX" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Rx mail (intent)">
-        <Preference android:key="test_mopera_intent"
+    <PreferenceCategory android:title="Rx mail (intent)" >
+        <Preference
+            android:key="test_mopera_intent"
             android:title="Intent: mopera U" />
-        <Preference android:key="test_imode_intent"
+        <Preference
+            android:key="test_imode_intent"
             android:title="Intent: i-mode" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Invalid">
-        <Preference android:key="numberformatexception"
+    <PreferenceCategory android:title="Invalid" >
+        <Preference
+            android:key="numberformatexception"
             android:title="NumberFormatException" />
-        <Preference android:key="stringindexoutofboundsexception"
+        <Preference
+            android:key="stringindexoutofboundsexception"
             android:title="IndexOutOfBoundsException" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Workaround">
-        <CheckBoxPreference android:key="workaround_lynx"
-            android:title="WA: LYNX mode" android:defaultValue="false" />
-        <CheckBoxPreference android:key="workaround_xperiaarc"
-            android:title="WA: Xperiaarc mode" android:defaultValue="false" />
+    <PreferenceCategory android:title="Workaround" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="workaround_lynx"
+            android:title="WA: LYNX mode" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="workaround_xperiaarc"
+            android:title="WA: Xperiaarc mode" />
     </PreferenceCategory>
+
 </PreferenceScreen>

@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.assemble.mailnotify" android:versionCode="385"
-    android:versionName="3.17.1">
-    <application android:icon="@drawable/icon"
-        android:label="@string/app_name">
-        <activity android:name=".EmailNotifyActivity"
-            android:label="@string/app_name" android:launchMode="singleTask">
+    package="net.assemble.mailnotify"
+    android:versionCode="385"
+    android:versionName="3.17.1" >
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <activity
+            android:name=".EmailNotifyActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="net.assemble.emailnotify.core.EmailNotifyHelpActivity" />
-        <activity
-            android:name="net.assemble.emailnotify.core.EmailNotifyPreferencesActivity" />
+        <activity android:name="net.assemble.emailnotify.core.EmailNotifyHelpActivity" />
+        <activity android:name="net.assemble.emailnotify.core.EmailNotifyPreferencesActivity" />
         <activity
             android:name="net.assemble.emailnotify.core.EmailNotifySelectAppActivity"
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".EmailNotifyLaunchActivity"
-            android:theme="@android:style/Theme.Dialog"
-            android:launchMode="singleInstance" android:exported="true" />
+        <activity
+            android:name=".EmailNotifyLaunchActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name="net.assemble.emailnotify.core.EmailNotifyRestoreActivity"
             android:launchMode="singleInstance" />
-        <receiver android:name="net.assemble.emailnotify.core.EmailNotifyReceiver">
+
+        <receiver android:name="net.assemble.emailnotify.core.EmailNotifyReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.TIME_SET" />
@@ -32,33 +39,36 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="net.assemble.emailnotify.core.EmailNotifyWapPushReceiver">
+        <receiver android:name="net.assemble.emailnotify.core.EmailNotifyWapPushReceiver" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+
                 <data android:mimeType="application/vnd.wap.slc" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+
                 <data android:mimeType="application/vnd.wap.emn+wbxml" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="net.assemble.emailnotify.core.EmailNotificationReceiver" />
-        <activity
-            android:name="net.assemble.emailnotify.core.EmailNotificationHistoryActivity" />
+        <receiver android:name="net.assemble.emailnotify.core.EmailNotificationReceiver" />
+
+        <activity android:name="net.assemble.emailnotify.core.EmailNotificationHistoryActivity" />
+
         <service android:name="net.assemble.emailnotify.core.EmailNotifyService" />
-        <service
-            android:name="net.assemble.emailnotify.core.EmailNotificationService" />
-        <activity
-            android:name="net.assemble.emailnotify.core.EmailNotifyDebugActivity" />
+        <service android:name="net.assemble.emailnotify.core.EmailNotificationService" />
+
+        <activity android:name="net.assemble.emailnotify.core.EmailNotifyDebugActivity" />
         <activity android:name="net.orleaf.android.MyLogActivity" />
-        <activity android:name="net.orleaf.android.AboutActivity"
+        <activity
+            android:name="net.orleaf.android.AboutActivity"
             android:theme="@android:style/Theme.Dialog" />
     </application>
+
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -70,5 +80,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-sdk android:minSdkVersion="4" />
+
 </manifest>

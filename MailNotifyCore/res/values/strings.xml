@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Mail Notify</string>
     <string name="notify_text">メールが届いています。</string>
     <string name="mail_unit">通</string>
@@ -64,8 +65,7 @@
     <string name="pref_notify_sound_length_summary">短い通知音だけでなく、着信音/アラーム音も選択可能にします。</string>
     <string name="pref_notify_sound_length_unit">秒</string>
     <string name="pref_notify_sound_length_zero">選択した通知音の長さに従う</string>
-    <string name="pref_notify_sound_length_warning">再生時間の指定を有効にすると、通知音に加えて着信音やアラーム音の選択ができるようになります。ただしそれらを選択後に再生時間設定を無効(選択した通知音に従う)に戻した場合、停止するまで鳴り続けることになりますのでご注意ください。
-    </string>
+    <string name="pref_notify_sound_length_warning">再生時間の指定を有効にすると、通知音に加えて着信音やアラーム音の選択ができるようになります。ただしそれらを選択後に再生時間設定を無効(選択した通知音に従う)に戻した場合、停止するまで鳴り続けることになりますのでご注意ください。</string>
     <string name="pref_group_notify_vibration">バイブレーション設定</string>
     <string name="pref_notify_vibration_title">バイブレーション</string>
     <string name="pref_notify_vibration_summary">メール着信通知時にバイブレーションします。</string>
@@ -93,8 +93,7 @@
     <string name="pref_group_notify_bar">通知バー設定</string>
     <string name="pref_notify_view_title">通知バー</string>
     <string name="pref_notify_view_summary">通知バーにアイコンを表示します。</string>
-    <string name="pref_notify_view_warning">通知バーに表示しない場合でも、通知音・バイブレーション・LEDを停止するには通知バーを引き出す必要があります。\n\n非表示にしてよろしいですか?
-    </string>
+    <string name="pref_notify_view_warning">通知バーに表示しない場合でも、通知音・バイブレーション・LEDを停止するには通知バーを引き出す必要があります。\n\n非表示にしてよろしいですか?</string>
     <string name="pref_group_notify_launch">メールアプリ設定</string>
     <string name="pref_notify_launch_app_title">起動アプリ</string>
     <string name="pref_notify_launch_app_is">通知タップ時に起動するアプリ:</string>
@@ -145,8 +144,7 @@
     <string name="pref_group_debug">デバッグ</string>
     <string name="pref_debug_log_send_title">ログ送信</string>
     <string name="pref_debug_log_send_summary">動作状況を開発者に送信します。</string>
-    <string name="pref_debug_log_send_warning">アプリの動作精度向上を目的とし、定期的に動作ログの送信をおこないます。送信されるログにはメールアドレスの情報が含まれます。ログは暗号化されて送信され、開発用途以外には使用しません。\n\n動作ログの送信を許可しますか？
-    </string>
+    <string name="pref_debug_log_send_warning">アプリの動作精度向上を目的とし、定期的に動作ログの送信をおこないます。送信されるログにはメールアドレスの情報が含まれます。ログは暗号化されて送信され、開発用途以外には使用しません。\n\n動作ログの送信を許可しますか？</string>
     <string name="notification_muted_now">通知音が無音に設定されています。</string>
     <string name="vibration_disabled_now">通知バイブレーションが無効に設定されています。</string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
@@ -159,4 +157,5 @@
     <string name="notify_expired">使用期限を過ぎました。最新版をご利用ください。</string>
     <string name="notify_suspended">メール着信監視が停止しました。</string>
     <string name="application_not_found">アプリケーションを起動できませんでした。</string>
+
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="entries_vibration_pattern">
         <item>@string/vibration_pattern_1</item>
         <item>@string/vibration_pattern_2</item>
@@ -39,5 +40,6 @@
     <string-array name="entryvalues_auto_connect_type">
         <item>mobile</item>
         <item>wifi</item>
-        </string-array>
+    </string-array>
+
 </resources>
