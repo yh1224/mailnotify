@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.assemble.emailnotify.core.EmailNotify;
+
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
 import android.app.Service;
@@ -209,10 +211,12 @@ public class MyLogReportService extends Service {
                         e.printStackTrace();
                     }
                 }
+                MyLog.d(MyLogReportService.this, EmailNotify.TAG, "Sent log successfully.");
                 if (mProgress) {
                     Toast.makeText(MyLogReportService.this, "Sent log successfully.", Toast.LENGTH_SHORT).show();
                 }
             } else {
+                MyLog.e(MyLogReportService.this, EmailNotify.TAG, "Send log failed: " + result);
                 if (mProgress) {
                     Toast.makeText(MyLogReportService.this, "Send log failed: " + result, Toast.LENGTH_LONG).show();
                 }
