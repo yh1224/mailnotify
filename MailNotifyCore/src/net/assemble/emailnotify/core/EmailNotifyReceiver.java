@@ -34,6 +34,7 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                     intent.getData().equals(Uri.fromParts("package", ctx.getPackageName(), null))) {
                     // Restart service
                     Log.i(EmailNotify.TAG, "EmailNotify restarted. (package replaced)");
+                    MyLog.clearAll(ctx);
                     MyLog.i(ctx, EmailNotify.TAG, "Package replaced to " + EmailNotify.getAppVersion(ctx));
                     EmailNotifyService.startService(ctx);
                 }
