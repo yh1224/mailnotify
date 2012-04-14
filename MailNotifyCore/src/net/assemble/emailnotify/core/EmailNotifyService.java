@@ -199,7 +199,7 @@ public class EmailNotifyService extends Service {
             // ex) D/WAP PUSH(XXXXXX): Received EMN
             if (EmailNotifyPreferences.getLynxWorkaround(this) &&
                     tag.startsWith("D/WAP PUSH") && log.equals("Receive EMN")) {
-                MyLog.i(this, EmailNotify.TAG, "Received EMN");
+                MyLog.i(this, EmailNotify.TAG, "Detected EMN");
                 mLastCheck = ccal.getTimeInMillis();
                 return new WapPdu();
             }
@@ -263,11 +263,11 @@ public class EmailNotifyService extends Service {
                     MyLog.w(this, EmailNotify.TAG, "Unexpected PDU: " + data);
                     return null;
                 }
-                MyLog.d(this, EmailNotify.TAG, "Received PDU: " + data);
+                MyLog.d(this, EmailNotify.TAG, "Detected PDU: " + data);
                 if (pdu.getTimestampDate() != null) {
-                    MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
+                    MyLog.i(this, EmailNotify.TAG, "Detected: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
                 } else {
-                    MyLog.i(this, EmailNotify.TAG, "Received: " + pdu.getMailbox());
+                    MyLog.i(this, EmailNotify.TAG, "Detected: " + pdu.getMailbox());
                 }
                 mLastCheck = ccal.getTimeInMillis();
                 return pdu;
