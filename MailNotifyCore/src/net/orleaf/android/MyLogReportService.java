@@ -133,6 +133,7 @@ public class MyLogReportService extends Service {
             } catch (NameNotFoundException e) {}
             posts.put("reporter_id", mReporterId);
             posts.put("android_id", Secure.getString(getContentResolver(), Secure.ANDROID_ID));
+            posts.put("build_version_release", Build.VERSION.RELEASE);
             posts.put("build_brand", Build.BRAND);
             posts.put("build_model", Build.MODEL);
             posts.put("build_id", Build.ID);
