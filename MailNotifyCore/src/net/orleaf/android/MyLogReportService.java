@@ -60,6 +60,10 @@ public class MyLogReportService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+        if (intent == null) {
+            return;
+        }
+
         mCallbackIntent = (PendingIntent) intent.getParcelableExtra(EXTRA_INTENT);
         mProgress = intent.getBooleanExtra(EXTRA_PROGRESS, false);
         if (!mProgress) {
