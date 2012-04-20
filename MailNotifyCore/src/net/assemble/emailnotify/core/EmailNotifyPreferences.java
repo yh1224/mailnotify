@@ -153,7 +153,15 @@ public class EmailNotifyPreferences
     }
 
     /**
-     * 動作記録
+     * サービスサポート情報を取得
+     */
+    public static boolean getNotifySupport(Context ctx, String service) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                getServiceKey(PREF_NOTIFY_SUPPORT_KEY, service), false);
+    }
+
+    /**
+     * サービスサポート情報を保存
      */
     public static void setNotifySupport(Context ctx, String service) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);

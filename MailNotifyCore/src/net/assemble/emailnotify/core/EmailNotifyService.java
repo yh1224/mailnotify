@@ -204,9 +204,12 @@ public class EmailNotifyService extends Service {
                 return new WapPdu();
             }
 
-            // SH-01D/F-03D/SO-02D/SO-03Dなど
+            // T-01D/SH-01D/SO-02D/SO-03D/F-03D/P-02Dなど
             // ex) D/WAP PUSH(XXXXXX): wpman processMsg 36956:application/vnd.wap.emn+wbxml
-            if (tag.startsWith("D/WAP PUSH") &&
+            // サービス不明として通知
+            // 他の要因でspモード通知できる場合は無視する。(初回は回避できないこともある)
+            if (!EmailNotifyPreferences.getNotifySupport(this, EmailNotifyPreferences.SERVICE_SPMODE) &&
+                    tag.startsWith("D/WAP PUSH") &&
                     log.contains("wpman processMsg ") && log.endsWith(":application/vnd.wap.emn+wbxml")) {
                 MyLog.i(this, EmailNotify.TAG, "Detected processMsg:application/vnd.wap.emn+wbxml");
                 mLastCheck = ccal.getTimeInMillis();
@@ -220,7 +223,7 @@ public class EmailNotifyService extends Service {
                     log.startsWith("startService[WiFi=") && log.endsWith("] : intent=Intent { cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }")) {
                 MyLog.i(this, EmailNotify.TAG, "Detected startService jp.co.nttdocomo.carriermail/.SMSService");
                 mLastCheck = ccal.getTimeInMillis();
-                return new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "spmode");
+                return new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "docomo.ne.jp");
             }
 
             // Xperia arc(SO-01C)対応
@@ -230,7 +233,7 @@ public class EmailNotifyService extends Service {
                 if (tag.startsWith("D/WAP PUSH") && log.equals("call startService : Intent { act=android.provider.Telephony.WAP_PUSH_RECEIVED typ=application/vnd.wap.emn+wbxml cmp=jp.co.nttdocomo.carriermail/.SMSService (has extras) }")) {
                     MyLog.i(this, EmailNotify.TAG, "Detected broadcast WAP_PUSH_RECEIVED for sp-mode");
                     mLastCheck = ccal.getTimeInMillis();
-                    return new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "spmode");
+                    return new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "docomo.ne.jp");
                 }
                 // mopera Uメール
                 if (tag.startsWith("D/EmailPushNotification") && log.startsWith("Wap data : ")) {
