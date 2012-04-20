@@ -253,7 +253,7 @@ public class EmailNotifyPreferences
     /**
      * サービス毎のkeyを取得
      */
-    private static String getServiceKey(String key, String service) {
+    public static String getServiceKey(String key, String service) {
         return key + "_" + service;
     }
 

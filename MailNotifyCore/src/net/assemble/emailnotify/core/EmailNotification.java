@@ -247,7 +247,7 @@ public class EmailNotification {
         Notification notification = new Notification(R.drawable.icon,
                 mCtx.getResources().getString(R.string.notify_text), mNotifyTime);
         String message = "(" + mMailCount + mCtx.getResources().getString(R.string.mail_unit) + ")";
-        if (mService.equals(EmailNotifyPreferences.SERVICE_IMODE)) {
+        if (mMailbox.startsWith("imap://docomo.ne.jp")) {
             // iモードの場合は表示を変更 (imap://docomo.ne.jp?PI=06 とか意味不明なので)
             message += " docomo.ne.jp";
         } else if (mMailbox != null) {

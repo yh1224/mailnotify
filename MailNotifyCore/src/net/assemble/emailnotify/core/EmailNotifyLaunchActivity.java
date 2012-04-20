@@ -51,7 +51,7 @@ public class EmailNotifyLaunchActivity extends Activity {
         Intent intent = getIntent();
         mService = intent.getStringExtra("service");
         mMailbox = intent.getStringExtra("mailbox");
-        if (mService == null || mMailbox == null) {
+        if (mMailbox == null) {
             finish();
             return;
         }
