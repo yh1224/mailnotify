@@ -20,7 +20,7 @@ public class WapPdu implements Parcelable {
     private int binaryContentType;
     private String applicationId;
     private int binaryApplicationId;
-    private String mailBox = "unknown";
+    private String mailBox = "";
     private byte[] timestamp = null;
     private String serviceName = null;
 
@@ -54,16 +54,16 @@ public class WapPdu implements Parcelable {
         return 0;
     }
 
-    public static final Parcelable.Creator<WapPdu> CREATOR = new Parcelable.Creator<WapPdu>() {  
-        public WapPdu createFromParcel(Parcel in) {  
-            return new WapPdu(in);  
-        }  
-    
-        public WapPdu[] newArray(int size) {  
-            return new WapPdu[size];  
-        }  
-    };  
-    
+    public static final Parcelable.Creator<WapPdu> CREATOR = new Parcelable.Creator<WapPdu>() {
+        public WapPdu createFromParcel(Parcel in) {
+            return new WapPdu(in);
+        }
+
+        public WapPdu[] newArray(int size) {
+            return new WapPdu[size];
+        }
+    };
+
     /**
      * Constructor
      */
@@ -101,7 +101,7 @@ public class WapPdu implements Parcelable {
 
     /**
      * Constructor
-     * 
+     *
      * WAPの生データがないがサービスだけ特定できた場合
      */
     public WapPdu(String service, String mailbox) {
@@ -292,8 +292,6 @@ public class WapPdu implements Parcelable {
                     mailBox = "imap://" + new String(m, 0);
                     index += strLen;
                 }
-            } else {
-                mailBox = "unknown (" + getContentType() + ")";
             }
         } catch (IndexOutOfBoundsException e) {
             Log.w(EmailNotify.TAG, "WapPdu: PDU analyze error.");
@@ -492,12 +490,12 @@ public class WapPdu implements Parcelable {
 
     /**
      * サービス名を取得
-     * 
+     *
      * @return サービス名
      */
     public String getServiceName() {
         if (serviceName == null) {
-            serviceName = getServiceName(contentType, mailBox); 
+            serviceName = getServiceName(contentType, mailBox);
         }
         return serviceName;
     }
@@ -505,7 +503,7 @@ public class WapPdu implements Parcelable {
 
     /**
      * サービス名を取得
-     * 
+     *
      * @return サービス名
      */
     public static String getServiceName(String cype, String mailbox) {
