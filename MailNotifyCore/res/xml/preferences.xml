@@ -190,6 +190,7 @@
 
             <!-- mopera U -->
             <PreferenceScreen
+                android:key="notify_custom_screen_mopera"
                 android:dependency="service_mopera"
                 android:title="@string/pref_notify_custom_mopera_screen_title" >
                 <CheckBoxPreference
@@ -357,6 +358,7 @@
 
             <!-- sp-mode -->
             <PreferenceScreen
+                android:key="notify_custom_screen_spmode"
                 android:dependency="service_spmode"
                 android:title="@string/pref_notify_custom_spmode_screen_title" >
                 <CheckBoxPreference
@@ -524,6 +526,7 @@
 
             <!-- i-mode -->
             <PreferenceScreen
+                android:key="notify_custom_screen_imode"
                 android:dependency="service_imode"
                 android:title="@string/pref_notify_custom_imode_screen_title" >
                 <CheckBoxPreference

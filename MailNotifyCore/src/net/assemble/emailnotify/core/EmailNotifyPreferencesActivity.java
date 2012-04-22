@@ -37,6 +37,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     private class PrefNotify {
          String serviceName;
          CheckBoxPreference enable;
+         PreferenceScreen customScreen;
          RingtonePreference sound;
          ListPreference vibrationPattern;
          NumberSeekbarPreference vibrationLength;
@@ -82,6 +83,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotify[i] = new PrefNotify();
             mPrefNotify[i].serviceName = SERVICES[i];
             mPrefNotify[i].enable = (CheckBoxPreference) getServicePreference("service", SERVICES[i]);
+            mPrefNotify[i].customScreen = (PreferenceScreen) getServicePreference("notify_custom_screen", SERVICES[i]);
             mPrefNotify[i].sound = (RingtonePreference) getServicePreference("notify_sound", SERVICES[i]);
             mPrefNotify[i].vibrationPattern = (ListPreference) getServicePreference("notify_vibration_pattern", SERVICES[i]);
             mPrefNotify[i].vibrationLength = (NumberSeekbarPreference) getServicePreference("notify_vibration_length", SERVICES[i]);
@@ -302,6 +304,11 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 
         // 通知設定
         for (int i = 0; i < SERVICES.length; i++) {
+            if (mPrefNotify[i].customScreen != null) {
+                if (!EmailNotifyPreferences.getNotifySupport(this, mPrefNotify[i].serviceName)) {
+                    mPrefNotify[i].customScreen.setEnabled(false);
+                }
+            }
             if (mPrefNotify[i].vibrationPattern != null) {
                 mPrefNotify[i].vibrationPattern.setSummary(
                     getEntryString(mPrefNotify[i].vibrationPattern.getValue(),
