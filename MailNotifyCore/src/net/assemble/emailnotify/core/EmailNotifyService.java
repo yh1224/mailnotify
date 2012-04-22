@@ -407,9 +407,11 @@ public class EmailNotifyService extends Service {
             }
 
             if (!mStopLogCheckThread) {
+                MyLog.e(mCtx, EmailNotify.TAG, "Log check thread suspended unexpectedly!");
                 EmailNotificationManager.showSuspendedNotification(mCtx);
+            } else {
+                MyLog.d(mCtx, EmailNotify.TAG, "Exiting log check thread.");
             }
-            MyLog.d(mCtx, EmailNotify.TAG, "Exiting log check thread.");
             mLogCheckThread = null;
             stopSelf();
         }
