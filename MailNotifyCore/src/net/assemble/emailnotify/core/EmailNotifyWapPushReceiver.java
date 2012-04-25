@@ -8,16 +8,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        if (EmailNotify.DEBUG) logIntent(intent);
 
         if (!EmailNotifyPreferences.getEnable(ctx)) {
             return;
         }
+
+        logIntent(ctx, intent);
 
         String contentType = intent.getType();
         int wapAppId = intent.getIntExtra("wapAppID", 0);
@@ -39,8 +39,8 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
         EmailNotifyService.startService(ctx);
     }
 
-    private static void logIntent(Intent intent) {
-        Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
+    private static void logIntent(Context ctx, Intent intent) {
+        MyLog.d(ctx, EmailNotify.TAG, "received intent: " + intent.getAction());
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -55,7 +55,7 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
                     } else {
                         val = o.toString();
                     }
-                    Log.d(EmailNotify.TAG, " " + (String)keys[i] + " = (" + o.getClass().getName() + ") " + val);
+                    MyLog.d(ctx, EmailNotify.TAG, " " + (String)keys[i] + " = (" + o.getClass().getName() + ") " + val);
                 }
             }
         }
