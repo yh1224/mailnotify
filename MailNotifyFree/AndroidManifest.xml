@@ -63,6 +63,7 @@
         <service android:name="net.assemble.emailnotify.core.EmailNotificationService" />
 
         <activity android:name="net.assemble.emailnotify.core.EmailNotifyDebugActivity" />
+        <activity android:name="net.assemble.emailnotify.core.MyLogReportActivity" />
         <activity android:name="net.orleaf.android.MyLogActivity" />
 
         <service android:name="net.orleaf.android.MyLogReportService" />

@@ -88,12 +88,28 @@
             android:summary="@string/pref_exclude_hours_summary"
             android:title="@string/pref_exclude_hours_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_group_debug" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="log_send"
-            android:summary="@string/pref_debug_log_send_summary"
-            android:title="@string/pref_debug_log_send_title" />
+    <PreferenceCategory android:title="@string/pref_group_other" >
+        <PreferenceScreen android:title="@string/pref_group_debug" >
+            <PreferenceCategory android:title="@string/pref_group_debug_log" >
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="log_send"
+                    android:summary="@string/pref_debug_log_send_summary"
+                    android:title="@string/pref_debug_log_send_title" />
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:dependency="log_send"
+                    android:key="log_send_wifionly"
+                    android:summary="@string/pref_debug_log_send_wifionly_summary"
+                    android:title="@string/pref_debug_log_send_wifionly_title" />
+
+                <Preference
+                    android:defaultValue="false"
+                    android:key="debug_feedback"
+                    android:summary="@string/pref_debug_feedback_summary"
+                    android:title="@string/pref_debug_feedback_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
 
 </PreferenceScreen>

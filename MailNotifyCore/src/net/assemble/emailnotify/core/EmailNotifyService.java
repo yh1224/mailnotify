@@ -108,12 +108,19 @@ public class EmailNotifyService extends Service {
             long current = Calendar.getInstance().getTimeInMillis();
             if (prev == 0 || current - prev > LOG_SEND_INTERVAL) {
                 Random random = new Random();
+                String reporter_id = EmailNotifyPreferences.getPreferenceId(this);
                 int delay = random.nextInt(LOG_SEND_DISPERSION);
+                int waitconn;
+                if (EmailNotifyPreferences.getSendLogWifionly(this)) {
+                    waitconn = MyLogReportService.WAIT_CONNECT_WIFIONLY;
+                } else {
+                    waitconn = MyLogReportService.WAIT_CONNECT_ENABLE;
+                }
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Start sending report. (delay=" + delay + ")");
                 Intent intent = new Intent(this, EmailNotifyReceiver.class);
                 intent.setAction(EmailNotify.ACTION_LOG_SENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-                MyLogReportService.startService(this, EmailNotifyPreferences.getPreferenceId(this), pendingIntent, delay);
+                MyLogReportService.startService(this, reporter_id, pendingIntent, delay, waitconn);
             }
         }
 

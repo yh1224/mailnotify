@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.assemble.emailnotify.core.EmailNotify;
-
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
 import android.app.Service;
@@ -30,6 +28,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.widget.Toast;
@@ -39,6 +39,10 @@ public class MyLogReportService extends Service {
     public static final String EXTRA_REPORTER_ID = "reporter_id";
     public static final String EXTRA_INTENT = "intent";
     public static final String EXTRA_DELAY = "delay";
+    public static final String EXTRA_WAIT_CONNECT = "wait_connect";
+    public static final int WAIT_CONNECT_DISABLE = 0;
+    public static final int WAIT_CONNECT_ENABLE = 1;
+    public static final int WAIT_CONNECT_WIFIONLY = 2;
 
     private static final String REPORT_URL = "https://orleaf.net/mailnotify/index.php/report/submit";
 
@@ -48,11 +52,22 @@ public class MyLogReportService extends Service {
     private String mReporterId;
     private boolean mProgress;
     private int mDelay;
+    private int mWaitConnect;
 
     private Handler handler = new Handler();
     private BroadcastReceiver mConnectivityReceiver;
     private boolean mStarted = false;
 
+    private RemoteCallbackList<IMyLogReportListener> listeners = new RemoteCallbackList<IMyLogReportListener>();
+    private final IMyLogReportService.Stub binder = new IMyLogReportService.Stub() {
+        public void addListener(IMyLogReportListener listener) {
+            listeners.register(listener);
+        }
+        public void removeListener(IMyLogReportListener listener) {
+            listeners.unregister(listener);
+        }
+    };
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -60,6 +75,19 @@ public class MyLogReportService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+        onStart(intent);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        onStart(intent);
+        return binder;
+    }
+
+    /**
+     * ログ送信
+     */
+    public void onStart(Intent intent) {
         if (intent == null) {
             return;
         }
@@ -72,6 +100,7 @@ public class MyLogReportService extends Service {
             mDelay = 0;
         }
         mReporterId = intent.getStringExtra(EXTRA_REPORTER_ID);
+        mWaitConnect = intent.getIntExtra(EXTRA_WAIT_CONNECT, WAIT_CONNECT_DISABLE);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -84,14 +113,21 @@ public class MyLogReportService extends Service {
      * ログ送信
      */
     private void start() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()) {
-            if (mProgress) {
-                Toast.makeText(MyLogReportService.this, "Pending log send...", Toast.LENGTH_SHORT).show();
+        if (mWaitConnect != WAIT_CONNECT_DISABLE) {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isConnected()) {
+                if (mProgress) {
+                    Toast.makeText(MyLogReportService.this, "Pending log send...", Toast.LENGTH_SHORT).show();
+                }
+                registerConnectivityReceiver();
+                return;
             }
-            registerConnectivityReceiver();
-            return;
+            if (mWaitConnect == WAIT_CONNECT_WIFIONLY &&
+                    networkInfo.getType() != ConnectivityManager.TYPE_WIFI) {
+                registerConnectivityReceiver();
+                return;
+            }
         }
         startSendReport();
     }
@@ -111,6 +147,8 @@ public class MyLogReportService extends Service {
      * ログ送信タスク
      */
     private class ReportTask extends AsyncTask<Object, Integer, String> {
+
+        private String mResult = null;
 
         /**
          * 前処理
@@ -175,10 +213,12 @@ public class MyLogReportService extends Service {
                     resultBuf.append(s);
                 }
                 reader.close();
+                mResult = resultBuf.toString();
 
                 urlconn.disconnect();
                 return null;
             } catch (Exception e) {
+                e.printStackTrace();
                 return e.toString();
             }
         }
@@ -216,16 +256,24 @@ public class MyLogReportService extends Service {
                         e.printStackTrace();
                     }
                 }
-                MyLog.d(MyLogReportService.this, EmailNotify.TAG, "Sent log successfully.");
                 if (mProgress) {
                     Toast.makeText(MyLogReportService.this, "Sent log successfully.", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                MyLog.e(MyLogReportService.this, EmailNotify.TAG, "Send log failed: " + result);
                 if (mProgress) {
                     Toast.makeText(MyLogReportService.this, "Send log failed: " + result, Toast.LENGTH_LONG).show();
                 }
             }
+
+            int numListeners = listeners.beginBroadcast();
+            for (int i = 0; i < numListeners; i++) {
+                try {
+                    listeners.getBroadcastItem(i).onComplete(mResult);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+            listeners.finishBroadcast();
             stopSelf();
         }
     }
@@ -276,11 +324,6 @@ public class MyLogReportService extends Service {
         unregisterConnectivityReceiver();
     }
 
-    @Override
-    public IBinder onBind(Intent arg0) {
-        return null;
-    }
-
 
     /**
      * サービス開始 (送信中を表示)
@@ -305,11 +348,12 @@ public class MyLogReportService extends Service {
      * @param callbackIntent 送信完了時に通知するインテント
      * @return サービス起動成否
      */
-    public static boolean startService(Context ctx, String reporterId, PendingIntent callbackIntent, int delay) {
+    public static boolean startService(Context ctx, String reporterId, PendingIntent callbackIntent, int delay, int waitconn) {
         Intent intent = new Intent(ctx, MyLogReportService.class);
         intent.putExtra(EXTRA_REPORTER_ID, reporterId);
         intent.putExtra(EXTRA_INTENT, callbackIntent);
         intent.putExtra(EXTRA_DELAY, delay);
+        intent.putExtra(EXTRA_WAIT_CONNECT, waitconn);
         mService = ctx.startService(intent);
         return (mService != null);
     }

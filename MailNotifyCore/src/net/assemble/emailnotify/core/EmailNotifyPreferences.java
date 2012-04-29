@@ -131,6 +131,9 @@ public class EmailNotifyPreferences
     public static final String PREF_SEND_LOG_KEY = "log_send";
     public static final boolean PREF_SEND_LOG_DEFAULT = false;
 
+    public static final String PREF_SEND_LOG_WIFIONLY_KEY = "log_send_wifionly";
+    public static final boolean PREF_SEND_LOG_WIFIONLY_DEFAULT = false;
+
     public static final String PREF_WORKAROUND_LYNX_KEY = "workaround_lynx";
     public static final String PREF_WORKAROUND_XPERIAARC_KEY = "workaround_xperiaarc";
 
@@ -650,6 +653,15 @@ public class EmailNotifyPreferences
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
                 PREF_SEND_LOG_KEY,
                 PREF_SEND_LOG_DEFAULT);
+    }
+
+    /**
+     * ログ送信Wi-Fi時のみフラグを保存
+     */
+    public static boolean getSendLogWifionly(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+                PREF_SEND_LOG_WIFIONLY_KEY,
+                PREF_SEND_LOG_WIFIONLY_DEFAULT);
     }
 
     /**

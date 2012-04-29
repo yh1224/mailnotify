@@ -194,6 +194,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     }
                 });
             }
+        } else if (preference == findPreference("debug_feedback")) {
+            Intent intent = new Intent(this, MyLogReportActivity.class);
+            startActivity(intent);
         }
         return true;
     }
