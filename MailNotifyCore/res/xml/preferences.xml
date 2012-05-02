@@ -190,8 +190,8 @@
 
             <!-- mopera U -->
             <PreferenceScreen
-                android:key="notify_custom_screen_mopera"
                 android:dependency="service_mopera"
+                android:key="notify_custom_screen_mopera"
                 android:title="@string/pref_notify_custom_mopera_screen_title" >
                 <CheckBoxPreference
                     android:defaultValue="false"
@@ -358,8 +358,8 @@
 
             <!-- sp-mode -->
             <PreferenceScreen
-                android:key="notify_custom_screen_spmode"
                 android:dependency="service_spmode"
+                android:key="notify_custom_screen_spmode"
                 android:title="@string/pref_notify_custom_spmode_screen_title" >
                 <CheckBoxPreference
                     android:defaultValue="false"
@@ -526,8 +526,8 @@
 
             <!-- i-mode -->
             <PreferenceScreen
-                android:key="notify_custom_screen_imode"
                 android:dependency="service_imode"
+                android:key="notify_custom_screen_imode"
                 android:title="@string/pref_notify_custom_imode_screen_title" >
                 <CheckBoxPreference
                     android:defaultValue="false"
@@ -715,6 +715,12 @@
                     android:title="@string/pref_notify_stop_renotify_on_screen_title" />
             </PreferenceCategory>
         </PreferenceScreen>
+
+        <EditTextPreference
+            android:inputType="textVisiblePassword"
+            android:key="exclude_hours"
+            android:summary="@string/pref_exclude_hours_summary"
+            android:title="@string/pref_exclude_hours_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_experimental" >
         <net.assemble.emailnotify.core.NumberSeekbarPreference
@@ -725,12 +731,6 @@
             android:defaultValue="0"
             android:key="notify_sound_length"
             android:title="@string/pref_notify_sound_length_title" />
-
-        <EditTextPreference
-            android:inputType="textVisiblePassword"
-            android:key="exclude_hours"
-            android:summary="@string/pref_exclude_hours_summary"
-            android:title="@string/pref_exclude_hours_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -80,8 +80,7 @@
                     android:title="@string/test_notify" />
             </PreferenceCategory>
         </PreferenceScreen>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_group_experimental" >
+
         <EditTextPreference
             android:inputType="textVisiblePassword"
             android:key="exclude_hours"
