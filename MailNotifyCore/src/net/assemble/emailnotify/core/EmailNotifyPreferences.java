@@ -584,8 +584,8 @@ public class EmailNotifyPreferences
             return pref.getBoolean(getServiceKey(PREF_NOTIFY_AUTO_CONNECT_FORCE_KEY, service),
                 PREF_NOTIFY_AUTO_CONNECT_FORCE_DEFAULT);
         } else {
-            return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_KEY,
-                PREF_NOTIFY_AUTO_CONNECT_DEFAULT);
+            return pref.getBoolean(PREF_NOTIFY_AUTO_CONNECT_FORCE_KEY,
+                PREF_NOTIFY_AUTO_CONNECT_FORCE_DEFAULT);
         }
     }
 
