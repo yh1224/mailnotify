@@ -161,8 +161,9 @@
     <string name="pref_debug_feedback_summary">今すぐ動作ログを開発者に送信し、メールを送ります。</string>
     <string name="sending_log">ログを送信しています。</string>
     <string name="send_log_failed">ログの送信に失敗しました。</string>
-    <string name="notification_muted_now">通知音が無音に設定されています。</string>
-    <string name="vibration_disabled_now">通知バイブレーションが無効に設定されています。</string>
+    <string name="notification_muted_now">- 通知音が無音に設定されています。\n</string>
+    <string name="vibration_disabled_now">- 通知バイブレーションが無効に設定されています。\n</string>
+    <string name="check_system_settings">携帯電話の設定を確認してください。</string>
     <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
     <string name="enable">有効化</string>
     <string name="enabled">監視中</string>

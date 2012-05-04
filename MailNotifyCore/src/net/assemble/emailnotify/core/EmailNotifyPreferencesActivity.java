@@ -21,7 +21,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
-import android.widget.Toast;
 
 /**
  * 設定画面
@@ -134,7 +133,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             } else if (preference == mPrefNotify[i].notifyView) {
                 final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
                 if (!checkbox.isChecked()) {
-                    alertMessage(R.string.pref_notify_view_warning, new DialogInterface.OnCancelListener() {
+                    alertMessage(R.string.pref_notify_view_warning, null, new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             checkbox.setChecked(true);
@@ -144,7 +143,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             } else if (preference == mPrefNotify[i].autoConnect) {
                 final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
                 if (checkbox.isChecked()) {
-                    alertMessage(R.string.pref_notify_auto_connect_warning, new DialogInterface.OnCancelListener() {
+                    alertMessage(R.string.pref_notify_auto_connect_warning, null, new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             checkbox.setChecked(false);
@@ -154,7 +153,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             } else if (preference == mPrefNotify[i].sms) {
                 final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
                 if (checkbox.isChecked()) {
-                    alertMessage(R.string.pref_notify_sms_warning, new DialogInterface.OnCancelListener() {
+                    alertMessage(R.string.pref_notify_sms_warning, null, new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             checkbox.setChecked(false);
@@ -162,18 +161,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                     });
                 }
             } else if (preference == mPrefNotify[i].test) {
-                checkNotificatioinSettings();
-                String title = "Test";
-                if (mPrefNotify[i].serviceName != null) {
-                    title += " for " + mPrefNotify[i].serviceName;
-                }
-                EmailNotificationManager.testNotification(this, mPrefNotify[i].serviceName, title);
+                testNotificatioin(mPrefNotify[i].serviceName);
             }
         }
         if (preference == findPreference("service_imode")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
-                alertMessage(R.string.pref_service_imode_warning, new DialogInterface.OnCancelListener() {
+                alertMessage(R.string.pref_service_imode_warning, null, new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         checkbox.setChecked(false);
@@ -181,13 +175,13 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
                 });
             }
         } else if (preference == findPreference("notify_sound_length")) {
-            alertMessage(R.string.pref_notify_sound_length_warning, null);
+            alertMessage(R.string.pref_notify_sound_length_warning, null, null);
         } else if (preference == findPreference("exclude_hours")) {
-            alertMessage(R.string.pref_exclude_hours_warning, null);
+            alertMessage(R.string.pref_exclude_hours_warning, null, null);
         } else if (preference == findPreference("log_send")) {
             final CheckBoxPreference checkbox = (CheckBoxPreference) preference;
             if (checkbox.isChecked()) {
-                alertMessage(R.string.pref_debug_log_send_warning, new DialogInterface.OnCancelListener() {
+                alertMessage(R.string.pref_debug_log_send_warning, null, new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         checkbox.setChecked(false);
@@ -202,34 +196,59 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     }
 
     /**
+     * テスト通知
+     *
      * 通知音/通知バイブレーションのシステム設定を確認し、
      * 無効であればメッセージを表示する。
      */
-    private void checkNotificatioinSettings() {
+    private void testNotificatioin(final String serviceName) {
+        final String title;
+        if (serviceName != null) {
+            title = "Test for " + serviceName;
+        } else {
+            title = "Test";
+        }
         String message = "";
         AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (am.getStreamVolume(AudioManager.STREAM_NOTIFICATION) == 0) {
             message += getString(R.string.notification_muted_now);
         }
-        if (!am.shouldVibrate(AudioManager.VIBRATE_TYPE_NOTIFICATION)) {
+        if (EmailNotifyPreferences.getNotifyVibration(this, serviceName) &&
+                !am.shouldVibrate(AudioManager.VIBRATE_TYPE_NOTIFICATION)) {
             message += getString(R.string.vibration_disabled_now);
         }
         if (message.length() > 0) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            alertMessage(message + "\n" + getString(R.string.check_system_settings),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EmailNotificationManager.testNotification(EmailNotifyPreferencesActivity.this, serviceName, title);
+                    }
+                },
+                new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                    }
+                });
+        } else {
+            EmailNotificationManager.testNotification(EmailNotifyPreferencesActivity.this, serviceName, title);
         }
     }
 
     /**
      * 警告をダイアログ表示
      *
-     * @param message 表示するメッセージのリソースID
+     * @param message 表示するメッセージ
      * @param negativeListener キャンセルされた場合のリスナ
      */
-    private void alertMessage(int msgResId, DialogInterface.OnCancelListener negativeListener) {
+    private void alertMessage(String message, DialogInterface.OnClickListener clickListener, DialogInterface.OnCancelListener negativeListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.warning);
-        builder.setMessage(getResources().getString(msgResId));
+        builder.setMessage(message);
         builder.setPositiveButton(R.string.ok, null);
+        if (clickListener != null) {
+            builder.setPositiveButton(R.string.ok, clickListener);
+        }
         if (negativeListener != null) {
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
@@ -242,6 +261,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void alertMessage(int msgResId, DialogInterface.OnClickListener clickListener, DialogInterface.OnCancelListener negativeListener) {
+        alertMessage(getResources().getString(msgResId), clickListener, negativeListener);
     }
 
     @Override
