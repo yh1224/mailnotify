@@ -330,9 +330,16 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 
         // 通知設定
         for (int i = 0; i < SERVICES.length; i++) {
-            if (mPrefNotify[i].customScreen != null) {
+            if (mPrefNotify[i].enable != null) {
                 if (!EmailNotifyPreferences.getNotifySupport(this, mPrefNotify[i].serviceName)) {
-                    mPrefNotify[i].customScreen.setEnabled(false);
+                    // サービス未サポート
+                    mPrefNotify[i].enable.setSummary(R.string.service_not_supported);
+                    if (mPrefNotify[i].customScreen != null) {
+                        mPrefNotify[i].customScreen.setEnabled(false);
+                        mPrefNotify[i].customScreen.setSummary(R.string.service_not_supported);
+                    }
+                } else {
+                    mPrefNotify[i].enable.setSummary(null);
                 }
             }
             if (mPrefNotify[i].vibrationPattern != null) {

@@ -38,10 +38,11 @@
         3G接続中には通知が届かないようです。\n-
         iモード.netへのログイン通知メールも通知されます。\n\niモードメールの通知を有効にしますか?</string>
     <string name="pref_service_other_title">その他</string>
-    <string name="pref_service_other_summary">サービスが特定できない機種ではこちらをチェックしてください。</string>
+    <string name="pref_service_other_summary">サービスを特定できない機種ではこちらをチェックしてください。</string>
     <string name="pref_notify_mopera_title">mopera Uメール通知設定</string>
     <string name="pref_notify_spmode_title">spモードメール通知設定</string>
     <string name="pref_notify_imode_title">iモードメール通知設定</string>
+    <string name="service_not_supported">メールを一度も受信していないか、お使いの機種では特定できません。</string>
     <string name="pref_group_notify">通知設定</string>
     <string name="pref_notify_title">通知設定</string>
     <string name="pref_notify_summary">通知音等の設定</string>
