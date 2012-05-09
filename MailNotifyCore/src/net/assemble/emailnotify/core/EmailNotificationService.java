@@ -75,6 +75,7 @@ public class EmailNotificationService extends Service {
      */
     private void doNotify(Date logdate, WapPdu pdu) {
         mPending = false;
+        String mbox = pdu.getMailbox() + " (" + pdu.getTimestampString() + ")";
 
         // 履歴に記録
         long historyId = EmailNotificationHistoryDao.add(this, logdate,
@@ -82,25 +83,26 @@ public class EmailNotificationService extends Service {
                 pdu.getMailbox(), pdu.getTimestampDate(),
                 pdu.getServiceName(), pdu.getHexString());
         if (historyId < 0) {
-            MyLog.w(this, EmailNotify.TAG, "Duplicated: "
-                    + "mailbox=" + pdu.getMailbox() + ", timestamp=" + pdu.getTimestampString());
+            MyLog.w(this, EmailNotify.TAG, "Duplicated: " + mbox);
             return;
         }
 
         if (!EmailNotifyPreferences.getService(this, pdu.getServiceName())) {
             // 非通知サービス
-            MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude service.");
+            MyLog.d(this, EmailNotify.TAG, "<" + historyId + "> Ignored(service): " + mbox);
             EmailNotificationHistoryDao.ignored(this, historyId);
             return;
         }
 
         if (EmailNotifyPreferences.inExcludeHours(this, pdu.getServiceName())) {
             // 非通知時間帯
-            MyLog.d(this, EmailNotify.TAG, "Ignored: This is exclude hours now.");
+            MyLog.d(this, EmailNotify.TAG, "<" + historyId + "> Ignored(hours): " + mbox);
             // PENDING: あとで通知する?
             EmailNotificationHistoryDao.ignored(this, historyId);
             return;
         }
+
+        MyLog.d(this, EmailNotify.TAG, "<" + historyId + "> " + mbox);
 
         // 通知
         EmailNotificationManager.showNotification(this,
@@ -126,7 +128,6 @@ public class EmailNotificationService extends Service {
         if (cur.moveToFirst()) {
             do {
                 long id = cur.getLong(cur.getColumnIndex(BaseColumns._ID));
-                MyLog.d(ctx, EmailNotify.TAG, "Restoring notification: " + id);
                 String mailbox = cur.getString(cur.getColumnIndex("mailbox"));
                 Date timestampDate = null;
                 long timestamp = cur.getLong(cur.getColumnIndex("timestamp"));
@@ -134,6 +135,7 @@ public class EmailNotificationService extends Service {
                 if (timestamp > 0) {
                     timestampDate = new Date(timestamp * 1000);
                 }
+                MyLog.d(ctx, EmailNotify.TAG, "<" + id + "> Restore: " + mailbox);
                 if ((cur.getLong(cur.getColumnIndex("notified_at"))) == 0) {
                     // 未通知なら改めて通知
                     EmailNotificationManager.showNotification(ctx, serviceName, mailbox, timestampDate, false);

@@ -37,7 +37,7 @@ public class EmailNotificationManager {
             mNotifications.add(emn);
         }
         if (restore) {
-            emn.startIcon();
+            emn.restore();
         } else {
             emn.start(false);
         }

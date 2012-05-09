@@ -223,7 +223,7 @@ public class EmailNotification {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
                         "] Started notify delay timer for " + mMailbox + " (" + delay + " sec.)");
                 MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId +
-                        "] Delayed notify for " + mMailbox + " (" + delay + " sec.)");
+                        "] Delayed: " + mMailbox + " (" + delay + " sec.)");
                 return;
             }
         }
@@ -232,9 +232,18 @@ public class EmailNotification {
     }
 
     /**
+     * 通知を復元
+     */
+    public void restore() {
+        startIcon();
+        MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Restored: " + mMailbox +
+                " (service=" + mService + ", mail=" + mMailCount + ")");
+    }
+
+    /**
      * 通知アイコン表示
      */
-    public void startIcon() {
+    private void startIcon() {
         if (!EmailNotifyPreferences.getNotifyView(mCtx, mService)) {
             // 消すタイミングがないので消去済みとみなす
             EmailNotificationHistoryDao.cleared(mCtx, mMailbox);
@@ -264,7 +273,8 @@ public class EmailNotification {
         notification.defaults = 0;
         notification.flags = 0;
         notificationManager.notify(mNotificationId + NOTIFICATIONID_ICON, notification);
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started icon for " + mMailbox + ", active=" + mActiveNotify);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_ICON) +
+                "] Started icon for " + mMailbox + ", active=" + mActiveNotify);
     }
 
     /**
@@ -290,7 +300,8 @@ public class EmailNotification {
         }
         notificationManager.notify(mNotificationId + NOTIFICATIONID_SOUND, notification);
         mActiveNotify |= NOTIFY_SOUND;
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started sound for " + mMailbox + ", active=" + mActiveNotify);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_SOUND) +
+                "] Started sound for " + mMailbox + ", active=" + mActiveNotify);
 
         // 通知音停止タイマ
         int soundLen = EmailNotifyPreferences.getNotifySoundLength(mCtx, mService);
@@ -299,7 +310,8 @@ public class EmailNotification {
             mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP_SOUND);
             AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started stop timer for " + mMailbox);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_SOUND) +
+                    "] Started stop timer for " + mMailbox);
         }
     }
 
@@ -312,7 +324,8 @@ public class EmailNotification {
                 (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(mNotificationId + NOTIFICATIONID_SOUND);
             mActiveNotify &= ~NOTIFY_SOUND;
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Stopped sound for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_SOUND) +
+                    "] Stopped sound for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -331,7 +344,8 @@ public class EmailNotification {
             notification.ledOffMS = 2000;
             notificationManager.notify(mNotificationId + NOTIFICATIONID_LED, notification);
             mActiveNotify |= NOTIFY_LED;
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started led for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_LED) +
+                    "] Started led for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -344,7 +358,8 @@ public class EmailNotification {
                 (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(mNotificationId + NOTIFICATIONID_LED);
             mActiveNotify &= ~NOTIFY_LED;
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Stopped led for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_LED) +
+                    "] Stopped led for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -357,7 +372,8 @@ public class EmailNotification {
             alarmManager.cancel(mRenotifyIntent);
             mRenotifyIntent = null;
             mActiveNotify &= ~NOTIFY_RENOTIFY;
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Stopped renotify timer for " + mMailbox + ", active=" + mActiveNotify);
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
+                    "] Stopped renotify timer for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
@@ -393,7 +409,10 @@ public class EmailNotification {
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId + NOTIFICATIONID_ICON);
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Cleared notification for " + mMailbox);
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_ICON) + 
+                "] Stopped icon for " + mMailbox);
+
+        MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Cleared: " + mMailbox);
 
         // 消去の記録
         EmailNotificationHistoryDao.cleared(mCtx, mMailbox);

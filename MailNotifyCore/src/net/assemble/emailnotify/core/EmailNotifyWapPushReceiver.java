@@ -25,7 +25,7 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
         if (contentType != null && data != null) {
             WapPdu pdu = new WapPdu(contentType, wapAppId, data);
             if (pdu.decode()) {
-                MyLog.d(ctx, EmailNotify.TAG, "Received WAP data: " + HexUtils.bytes2hex(data) + " (wapAppId=" + wapAppId + ")");
+                MyLog.d(ctx, EmailNotify.TAG, "Received WAP data: " + HexUtils.bytes2hex(data) + " (contentType=" + contentType + ", wapAppId=" + wapAppId + ")");
                 if (pdu.getTimestampDate() != null) {
                     MyLog.i(ctx, EmailNotify.TAG, "Received: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
                 } else {
