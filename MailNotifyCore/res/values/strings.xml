@@ -37,8 +37,9 @@
     <string name="pref_service_imode_warning">iモードメールには、サービス側の仕様のため以下の制限があります。\n\n-
         3G接続中には通知が届かないようです。\n-
         iモード.netへのログイン通知メールも通知されます。\n\niモードメールの通知を有効にしますか?</string>
-    <string name="pref_service_other_title">その他</string>
-    <string name="pref_service_other_summary">サービスを特定できない機種ではこちらをチェックしてください。</string>
+    <string name="pref_service_unspec_title">mopera U/spモードメール</string>
+    <string name="pref_service_unspec_summary">サービスを特定できない機種ではこちらをチェックしてください。</string>
+    <string name="pref_service_unknown_title">その他</string>
     <string name="pref_notify_mopera_title">mopera Uメール通知設定</string>
     <string name="pref_notify_spmode_title">spモードメール通知設定</string>
     <string name="pref_notify_imode_title">iモードメール通知設定</string>

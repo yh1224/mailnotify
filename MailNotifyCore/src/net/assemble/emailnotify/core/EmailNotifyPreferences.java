@@ -19,7 +19,7 @@ import android.preference.PreferenceManager;
 public class EmailNotifyPreferences
 {
     private static final String PREF_PREFERENCE_VERSION_KEY = "preference_version";
-    private static final int CURRENT_PREFERENCE_VERSION = 6;
+    private static final int CURRENT_PREFERENCE_VERSION = 7;
 
     private static final String PREF_PREFERENCE_ID_KEY = "preference_id";
 
@@ -29,7 +29,8 @@ public class EmailNotifyPreferences
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
     public static final String SERVICE_IMODE = "imode";
-    public static final String SERVICE_OTHER = "other";
+    public static final String SERVICE_UNSPEC = "unspec";
+    public static final String SERVICE_UNKNOWN = "unknown";
     public static final String[] SERVICES = { SERVICE_MOPERA, SERVICE_SPMODE, SERVICE_IMODE };
 
     public static final String PREF_LICENSED_KEY = "licensed";
@@ -246,7 +247,8 @@ public class EmailNotifyPreferences
      */
     public static boolean getService(Context ctx, String service) {
         boolean def = PREF_SERVICE_DEFAULT;
-        if (service.equals(SERVICE_IMODE)) {    // iモードのみ初期値変更
+        if (service.equals(SERVICE_IMODE) || service.equals(SERVICE_UNKNOWN)) {
+            // iモード、UNKNOWNは初期値OFF
             def = PREF_SERVICE_IMODE_DEFAULT;
         }
         return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
@@ -906,9 +908,20 @@ public class EmailNotifyPreferences
             e.remove("notify_to_imoni");
             e.remove("notify_to_imoni_imode");
         }
+
         if (0 < ver && ver < CURRENT_PREFERENCE_VERSION) {
-                //
+            // バージョンアップ
+            if (ver < 7) {
+                // other -> unspec に引き継ぐ
+                if (pref.contains("service_other")) {
+                    e.putBoolean(getServiceKey(PREF_SERVICE_KEY, SERVICE_UNSPEC),
+                            pref.getBoolean("service_other", true));
+                    e.remove("service_other");
+                    changed = true;
+                }
+            }
         }
+
         if (ver != CURRENT_PREFERENCE_VERSION) {
             // 設定バージョン更新
             e.putInt(PREF_PREFERENCE_VERSION_KEY, CURRENT_PREFERENCE_VERSION);

@@ -24,9 +24,13 @@
                 android:title="@string/pref_service_imode_title" />
             <CheckBoxPreference
                 android:defaultValue="true"
-                android:key="service_other"
-                android:summary="@string/pref_service_other_summary"
-                android:title="@string/pref_service_other_title" />
+                android:key="service_unspec"
+                android:summary="@string/pref_service_unspec_summary"
+                android:title="@string/pref_service_unspec_title" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="service_unknown"
+                android:title="@string/pref_service_unknown_title" />
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_notify" >

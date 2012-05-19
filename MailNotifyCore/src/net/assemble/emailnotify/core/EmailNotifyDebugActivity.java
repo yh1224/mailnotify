@@ -66,6 +66,15 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             intent.putExtra("contentTypeParameters", new HashMap<Void, Void>());
             intent.putExtra("transactionId", 0);
             sendBroadcast(intent);
+        } else if (preference == findPreference("test_unknown_intent")) {
+            Intent intent = new Intent("android.provider.Telephony.WAP_PUSH_RECEIVED");
+            intent.setType("application/vnd.wap.emn+wbxml");
+            intent.putExtra("data", HexUtils.hex2bytes("01"));
+            intent.putExtra("transactionId", 0);
+            intent.putExtra("pduType", 6);
+            intent.putExtra("header", HexUtils.hex2bytes("b0af029061"));
+            intent.putExtra("contentTypeParameters", new HashMap<Void, Void>());
+            sendBroadcast(intent);
         } else if (preference == findPreference("numberformatexception")) {
             Log.d("WAP PUSH", "Rx: 0g");
         } else if (preference == findPreference("stringindexoutofboundsexception")) {

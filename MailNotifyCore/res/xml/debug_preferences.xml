@@ -24,7 +24,7 @@
         <Preference
             android:key="test_lynx"
             android:title="Rx: LYNX" />
-    </PreferenceCategory>
+        </PreferenceCategory>
     <PreferenceCategory android:title="Rx mail (intent)" >
         <Preference
             android:key="test_mopera_intent"
@@ -32,7 +32,10 @@
         <Preference
             android:key="test_imode_intent"
             android:title="Intent: i-mode" />
-    </PreferenceCategory>
+        <Preference
+            android:key="test_unknown_intent"
+            android:title="Intent: unknown" />
+        </PreferenceCategory>
     <PreferenceCategory android:title="Invalid" >
         <Preference
             android:key="numberformatexception"

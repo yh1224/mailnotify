@@ -208,7 +208,7 @@ public class EmailNotifyService extends Service {
                     tag.startsWith("D/WAP PUSH") && log.equals("Receive EMN")) {
                 MyLog.i(this, EmailNotify.TAG, "Detected EMN");
                 mLastCheck = ccal.getTimeInMillis();
-                return new WapPdu();
+                return new WapPdu(EmailNotifyPreferences.SERVICE_UNSPEC, "");
             }
 
             // T-01D/SH-01D/SO-02D/SO-03D/F-03D/P-02Dなど
@@ -220,7 +220,7 @@ public class EmailNotifyService extends Service {
                     log.contains("wpman processMsg ") && log.endsWith(":application/vnd.wap.emn+wbxml")) {
                 MyLog.i(this, EmailNotify.TAG, "Detected processMsg:application/vnd.wap.emn+wbxml");
                 mLastCheck = ccal.getTimeInMillis();
-                return new WapPdu();
+                return new WapPdu(EmailNotifyPreferences.SERVICE_UNSPEC, "");
             }
 
             // F-05D

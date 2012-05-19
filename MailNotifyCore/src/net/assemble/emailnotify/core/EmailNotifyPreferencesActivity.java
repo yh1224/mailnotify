@@ -444,7 +444,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             }
         }
         if (mPrefExcludeHours.getText() != null && mPrefExcludeHours.getText().length() > 0) {
-            int[] hours = EmailNotifyPreferences.getExcludeHours(this, EmailNotifyPreferences.SERVICE_OTHER);
+            int[] hours = EmailNotifyPreferences.getExcludeHours(this, null);
             if (hours != null) {
                 mPrefExcludeHours.setSummary(hours[0] +
                         getResources().getString(R.string.pref_exclude_hours_from) +

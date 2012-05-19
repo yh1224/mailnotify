@@ -20,7 +20,7 @@ public class WapPdu implements Parcelable {
     private int binaryContentType;
     private String applicationId;
     private int binaryApplicationId;
-    private String mailBox = "";
+    private String mailBox = "unknown";
     private byte[] timestamp = null;
     private String serviceName = null;
 
@@ -524,7 +524,7 @@ public class WapPdu implements Parcelable {
             service = EmailNotifyPreferences.SERVICE_IMODE;
         } else {
             // その他
-            service = EmailNotifyPreferences.SERVICE_OTHER;
+            service = EmailNotifyPreferences.SERVICE_UNKNOWN;
         }
         return service;
     }
