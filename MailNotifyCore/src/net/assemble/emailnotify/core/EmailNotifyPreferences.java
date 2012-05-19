@@ -676,6 +676,15 @@ public class EmailNotifyPreferences
     }
 
     /**
+     * ログ送信フラグをリセット (再度確認する)
+     */
+    public static void resetSendLog(Context ctx) {
+        Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        e.remove(PREF_SEND_LOG_KEY);
+        e.commit();
+    }
+
+    /**
      * ログ送信フラグの設定有無確認
      */
     @SuppressWarnings("rawtypes")

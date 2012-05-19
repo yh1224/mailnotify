@@ -37,6 +37,7 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                     MyLog.clearAll(ctx);
                     MyLog.i(ctx, EmailNotify.TAG, "Package replaced to " + EmailNotify.getAppVersion(ctx));
                     EmailNotifyService.startService(ctx);
+                    EmailNotifyPreferences.resetSendLog(ctx);
                 }
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)
                     || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
