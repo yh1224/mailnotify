@@ -14,6 +14,7 @@ import net.orleaf.android.MyLog;
 import net.orleaf.android.MyLogReportService;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
@@ -67,6 +68,10 @@ public class EmailNotifyService extends Service {
         if (mLastCheck != 0) {
             Date d = new Date(mLastCheck);
             MyLog.w(this, EmailNotify.TAG, "Service restarted unexpectedly. Last checked at " + d.toLocaleString());
+            // すべての通知を一旦消去する
+            NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancelAll();
             // 未消去の通知を復元する
             EmailNotificationService.restoreNotifications(this);
             // ネットワーク復元情報を消去
