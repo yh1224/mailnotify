@@ -206,79 +206,85 @@ public class WapPdu implements Parcelable {
     /**
      * ボディ部のデコード処理
      *
-     * mailbox属性を取得する。
+     * mailbox/timestamp属性を取得する。
      */
     public void decodeBody() {
         int index = dataIndex;
         try {
-            // TODO: 超決めうちデコード
-            if (binaryContentType == 0x030a) {  // application/vnd.wap.emn+wbxml
+            if (binaryContentType == 0x030a || // application/vnd.wap.emn+wbxml
+                    binaryContentType == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL) {
                 index += 5;
-                // mailbox取得
-                if (wapData[index] == 0x07) {  // mailbox attribute
-                    index += 2;
-                    // mailat:
-                    int strLen = 0;
-                    for (int i = index; wapData[i] != 0; i++) {
-                        strLen++;
-                    }
-                    byte[] m = new byte[strLen];
-                    for (int i = 0; i < strLen; i++) {
-                        m[i] = wapData[index + i];
-                    }
-                    mailBox = "mailat:" + new String(m, 0);
-                    index += strLen + 1;
-                    int tld = wapData[index];
-                    if (tld < 0) {
-                        tld += 0x100;
-                        switch (tld) {
-                        case 0x85:
-                            mailBox += ".com";
+                while (true) {
+                    if (wapData[index] == 0x05) {  // timestamp attribute
+                        if (wapData[index + 1] + 0x100 == 0xc3) {
+                            index += 2;
+                            int tsLen = wapData[index];
+                            timestamp = new byte[tsLen];
+                            index++;
+                            for (int i = 0; i < tsLen; i++) {
+                                timestamp[i] = wapData[index + i];
+                            }
+                            index += tsLen;
+                        }
+                    } else if (0x06 <= wapData[index] && wapData[index] <= 0x0d) {  // mailbox attribute
+                        String prefix = "";
+                        switch (wapData[index]) {
+                        case 0x07:
+                            prefix = "mailat:";
                             break;
-                        case 0x86:
-                            mailBox += ".edu";
+                        case 0x08:
+                            prefix = "pop://";
                             break;
-                        case 0x87:
-                            mailBox += ".net";
+                        case 0x09:
+                            prefix = "imap://";
                             break;
-                        case 0x88:
-                            mailBox += ".org";
+                        case 0x0a:
+                            prefix = "http://";
+                            break;
+                        case 0x0b:
+                            prefix = "http://www.";
+                            break;
+                        case 0x0c:
+                            prefix = "https://";
+                            break;
+                        case 0x0d:
+                            prefix = "https://www.";
                             break;
                         }
-                        index++;
-                    }
-                    //Log.d(TAG, "mailbox=" + mailBox);
-                }
-                // timestamp取得
-                if (wapData[index] == 0x05) {  // timestamp attribute
-                    if (wapData[index + 1] + 0x100 == 0xc3) {
                         index += 2;
-                        int tsLen = wapData[index];
-                        timestamp = new byte[tsLen];
-                        index++;
-                        for (int i = 0; i < tsLen; i++) {
-                            timestamp[i] = wapData[index + i];
+                        // mailat:
+                        int strLen = 0;
+                        for (int i = index; wapData[i] != 0; i++) {
+                            strLen++;
                         }
-                        index += tsLen;
+                        byte[] m = new byte[strLen];
+                        for (int i = 0; i < strLen; i++) {
+                            m[i] = wapData[index + i];
+                        }
+                        mailBox = prefix + new String(m, 0);
+                        index += strLen + 1;
+                        int tld = wapData[index];
+                        if (tld < 0) {
+                            tld += 0x100;
+                            switch (tld) {
+                            case 0x85:
+                                mailBox += ".com";
+                                break;
+                            case 0x86:
+                                mailBox += ".edu";
+                                break;
+                            case 0x87:
+                                mailBox += ".net";
+                                break;
+                            case 0x88:
+                                mailBox += ".org";
+                                break;
+                            }
+                            index++;
+                        }
+                    } else {
+                        break;
                     }
-                    //Log.d(TAG, "timestampe=" + byte2hex(timestamp));
-                }
-            } else if (binaryContentType == WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL) {
-                index += 5;
-                // mailbox取得
-                if (wapData[index] == 0x09) {  // mailbox attribute
-                    index += 2;
-                    // imap://
-                    int strLen = 0;
-                    for (int i = index; wapData[i] != 0; i++) {
-                        strLen++;
-                    }
-                    byte[] m = new byte[strLen];
-                    for (int i = 0; i < strLen; i++) {
-                        m[i] = wapData[index + i];
-                    }
-                    mailBox = "imap://" + new String(m, 0);
-                    index += strLen;
                 }
             }
         } catch (IndexOutOfBoundsException e) {
@@ -494,7 +500,7 @@ public class WapPdu implements Parcelable {
      *
      * @return サービス名
      */
-    public static String getServiceName(String cype, String mailbox) {
+    private static String getServiceName(String cype, String mailbox) {
         String service;
 
         // メールサービス別通知

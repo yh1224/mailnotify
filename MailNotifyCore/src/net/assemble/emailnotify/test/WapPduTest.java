@@ -157,4 +157,27 @@ public class WapPduTest extends TestCase {
         assertNull(wapPdu.getTimestampString());
     }
 
+
+    /**
+     * ?
+     */
+    public void testSpmodeBody() {
+        String ctype = "application/vnd.wap.slc";
+        int appId = 0;
+        byte[] body = HexUtils.hex2bytes(
+                "02066a0085" + 
+                    "0b03" + "6261636b75702e73706d6f64652e6e652e6a703f53493d3831323000" +
+                "01");
+
+        WapPdu wapPdu = new WapPdu(ctype, appId, body);
+        assertTrue(wapPdu.decode());
+        assertEquals(48, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
+        assertEquals(0, wapPdu.getBinaryApplicationId());
+//        assertNull(wapPdu.getApplicationId());
+//        assertEquals(EmailNotifyPreferences.SERVICE_SPMODE, wapPdu.getServiceName());
+        assertEquals("http://www.backup.spmode.ne.jp?SI=8120", wapPdu.getMailbox());
+        assertNull(wapPdu.getTimestampString());
+    }
+
 }
