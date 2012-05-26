@@ -8,7 +8,6 @@ import net.orleaf.android.HexUtils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.android.internal.telephony.WspTypeDecoder;
 
@@ -23,6 +22,7 @@ public class WapPdu implements Parcelable {
     private String mailBox = "unknown";
     private byte[] timestamp = null;
     private String serviceName = null;
+    private String errorMessage = null;
 
     public WapPdu(Parcel in) {
         wapData = in.createByteArray();
@@ -63,13 +63,6 @@ public class WapPdu implements Parcelable {
             return new WapPdu[size];
         }
     };
-
-    /**
-     * Constructor
-     */
-    public WapPdu() {
-        wapData = null;
-    }
 
     /**
      * Constructor
@@ -130,7 +123,7 @@ public class WapPdu implements Parcelable {
             try {
                 if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
                         (pduType != WspTypeDecoder.PDU_TYPE_CONFIRMED_PUSH)) {
-                    Log.w(EmailNotify.TAG, "WapPdu: non-PUSH WAP PDU. Type = " + pduType);
+                    errorMessage = "WapPdu: non-PUSH WAP PDU. Type = " + pduType;
                     return false;
                 }
 
@@ -143,7 +136,7 @@ public class WapPdu implements Parcelable {
                  * So it will be encoded in no more than 5 octets.
                  */
                 if (pduDecoder.decodeUintvarInteger(index) == false) {
-                    Log.w(EmailNotify.TAG, "WapPdu: Header Length error.");
+                    errorMessage = "WapPdu: Header Length error.";
                     return false;
                 }
                 headerLength = (int)pduDecoder.getValue32();
@@ -164,7 +157,7 @@ public class WapPdu implements Parcelable {
                  * Length = Uintvar-integer
                  */
                 if (pduDecoder.decodeContentType(index) == false) {
-                    Log.w(EmailNotify.TAG, "WapPdu: Header Content-Type error.");
+                    errorMessage = "WapPdu: Header Content-Type error.";
                     return false;
                 }
                 contentType = pduDecoder.getValueString();
@@ -186,7 +179,7 @@ public class WapPdu implements Parcelable {
                  */
                 if (wapData[index] == 0xaf - 0x100) {
                     if (pduDecoder.decodeXWapApplicationId(index + 1) == false) {
-                        Log.w(EmailNotify.TAG, "WapPdu: Header X-Wap-Application-Id error.");
+                        errorMessage = "WapPdu: Header X-Wap-Application-Id error.";
                         return false;
                     }
                     applicationId = pduDecoder.getValueString();
@@ -198,16 +191,11 @@ public class WapPdu implements Parcelable {
                     }
                     index += pduDecoder.getDecodedDataLength() + 1;
                 } else {
-                    Log.w(EmailNotify.TAG, "WapPdu: Header X-Wap-Application-Id not present." + wapData[index]);
+                    errorMessage = "WapPdu: Header X-Wap-Application-Id not present." + wapData[index];
                     return false;
                 }
-
-                Log.d(EmailNotify.TAG ,"WapPdu: WAP PDU. transactionId=" + transactionId + ", pduType=" + pduType +
-                        ", Content-Type=" + contentType + "(" + binaryContentType + ")" +
-                        ", X-Wap-Application-Id=" + applicationId + "(" + binaryApplicationId + ")" +
-                        ", dataIndex=" + dataIndex);
             } catch (IndexOutOfBoundsException e) {
-                Log.w(EmailNotify.TAG, "WapPdu: PDU decode error.");
+                errorMessage = "WapPdu: PDU decode error.";
                 return false;
             }
         }
@@ -294,7 +282,7 @@ public class WapPdu implements Parcelable {
                 }
             }
         } catch (IndexOutOfBoundsException e) {
-            Log.w(EmailNotify.TAG, "WapPdu: PDU analyze error.");
+            errorMessage = "WapPdu: PDU analyze error.";
         }
     }
 
@@ -325,7 +313,7 @@ public class WapPdu implements Parcelable {
         case 0x0311:
             return "application/vnd.docomo.ub";
         default:
-            Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
+            //Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
             return "unknown";
         }
     }
@@ -356,7 +344,7 @@ public class WapPdu implements Parcelable {
         } else if (type.equals("application/vnd.docomo.ub")) {
             return 0x0311;
         } else {
-            Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
+            //Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
             return 0;
         }
     }
@@ -376,7 +364,7 @@ public class WapPdu implements Parcelable {
         case 0x905c:    // spモードメール
             return "x-oma-docomo:xmd.mail.ua";
         default:
-            Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
+            //Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
             return "unknown";
         }
     }
@@ -395,7 +383,7 @@ public class WapPdu implements Parcelable {
         } else if (id.equals("x-oma-docomo:xmd.mail.ua")) {
             return 0x905c;
         } else {
-            Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
+            //Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
             return 0;
         }
     }
@@ -470,7 +458,7 @@ public class WapPdu implements Parcelable {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z");
                 date = sdf.parse(HexUtils.bytes2hex(timestamp) + " GMT");
             } catch (ParseException e) {
-                Log.w(EmailNotify.TAG, "WapPdu: Unexpected timestamp: " + HexUtils.bytes2hex(timestamp));
+                //Log.w(EmailNotify.TAG, "WapPdu: Unexpected timestamp: " + HexUtils.bytes2hex(timestamp));
             }
         }
         return date;
@@ -527,6 +515,13 @@ public class WapPdu implements Parcelable {
             service = EmailNotifyPreferences.SERVICE_UNKNOWN;
         }
         return service;
+    }
+
+    /**
+     * エラーメッセージを取得
+     */
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
 }
