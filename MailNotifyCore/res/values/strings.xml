@@ -22,7 +22,8 @@
     <string name="history">履歴</string>
     <string name="help">使い方</string>
     <string name="about">バージョン情報</string>
-    <string name="feedback">報告</string>
+    <string name="support">サポート</string>
+    <string name="support_url">http://orleaf.net</string>
     <string name="feedback_to">yh1224%2Borange@gmail.com</string>
     <string name="buy">購入</string>
     <string name="launch_app">アプリ起動</string>

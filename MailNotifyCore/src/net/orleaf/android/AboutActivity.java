@@ -69,13 +69,12 @@ public class AboutActivity extends Activity
         });
 
         // Feedback
-        Button btn_feedback = (Button) findViewById(R.id.feedback);
+        Button btn_feedback = (Button) findViewById(R.id.support);
         btn_feedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(
-                        "mailto:" + getResources().getString(R.string.feedback_to)));
-                intent.putExtra(Intent.EXTRA_SUBJECT, mTitle);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        getString(R.string.support_url)));
                 startActivity(intent);
             }
         });
