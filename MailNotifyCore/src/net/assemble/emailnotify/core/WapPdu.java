@@ -3,6 +3,9 @@ package net.assemble.emailnotify.core;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import net.orleaf.android.HexUtils;
 
@@ -23,6 +26,47 @@ public class WapPdu implements Parcelable {
     private byte[] timestamp = null;
     private String serviceName = null;
     private String errorMessage = null;
+
+    // Content-Type
+    private static final HashMap<Integer, String> CONTENTTYPES;
+    static {
+        CONTENTTYPES = new HashMap<Integer, String>();
+        CONTENTTYPES.put(WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML,
+                WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML);
+        CONTENTTYPES.put(WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML,
+                WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML);
+        CONTENTTYPES.put(WspTypeDecoder.CONTENT_TYPE_B_PUSH_SI,
+                WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI);
+        CONTENTTYPES.put(WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL,
+                WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL);
+        CONTENTTYPES.put(WspTypeDecoder.CONTENT_TYPE_B_PUSH_CO,
+                WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO);
+        CONTENTTYPES.put(WspTypeDecoder.CONTENT_TYPE_B_MMS,
+                WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS);
+        CONTENTTYPES.put(0x030a, "application/vnd.wap.emn+wbxml");
+        CONTENTTYPES.put(0x0310, "application/vnd.docomo.pf");
+        CONTENTTYPES.put(0x0311, "application/vnd.docomo.ub");
+    }
+
+    // X-Wap-Application-Id
+    private static final HashMap<Integer, String> APPIDS; 
+    static {
+        APPIDS = new HashMap<Integer, String>();
+        APPIDS.put(0x09, "x-wap-application:emn.ua");
+        APPIDS.put(0x8002, "x-wap-docomo:imode.mail.ua");
+        APPIDS.put(0x8003, "x-wap-docomo:imode.mr.ua");
+        APPIDS.put(0x8004, "x-wap-docomo:imode.mf.ua");
+        APPIDS.put(0x9000, "x-wap-docomo:imode.mail2.ua");
+        APPIDS.put(0x905c, "x-oma-docomo:xmd.mail.ua");
+        APPIDS.put(0x905e, "x-oma-docomo:imode.relation.ua");
+        APPIDS.put(0x905f, "x-oma-docomo:xmd.storage.ua");
+        APPIDS.put(0x9060, "x-oma-docomo:xmd.lcsapp.ua");
+        APPIDS.put(0x9061, "x-oma-docomo:xmd.info.ua");
+        APPIDS.put(0x9062, "x-oma-docomo:xmd.agent.ua");
+        APPIDS.put(0x9063, "x-oma-docomo:xmd.sab.ua");
+        APPIDS.put(0x9064, "x-oma-docomo:xmd.am.ua");
+        APPIDS.put(0x906b, "x-oma-docomo:xmd.emdm.ua");
+    }
 
     public WapPdu(Parcel in) {
         wapData = in.createByteArray();
@@ -75,9 +119,9 @@ public class WapPdu implements Parcelable {
      */
     public WapPdu(String ctype, int appid, byte[] body) {
         contentType = ctype;
-        binaryContentType = convertContentType(contentType);
+        binaryContentType = convertMap(CONTENTTYPES, contentType);
         binaryApplicationId = appid;
-        applicationId = convertApplicationId(binaryApplicationId);
+        applicationId = convertMap(APPIDS, binaryApplicationId);
         // wapDataはボディ以降を示すため、dataIndexには0を設定
         wapData = body;
         dataIndex = 0;
@@ -182,9 +226,9 @@ public class WapPdu implements Parcelable {
                 contentType = pduDecoder.getValueString();
                 if (contentType == null) {
                     binaryContentType = (int)pduDecoder.getValue32();
-                    contentType = convertContentType(binaryContentType);
+                    contentType = convertMap(CONTENTTYPES, binaryContentType);
                 } else {
-                    binaryContentType = convertContentType(contentType);
+                    binaryContentType = convertMap(CONTENTTYPES, contentType);
                 }
                 index += pduDecoder.getDecodedDataLength();
                 dataIndex = headerStartIndex + headerLength;
@@ -204,9 +248,9 @@ public class WapPdu implements Parcelable {
                     applicationId = pduDecoder.getValueString();
                     if (applicationId == null) {
                         binaryApplicationId = (int)pduDecoder.getValue32();
-                        applicationId = convertApplicationId(binaryApplicationId);
+                        applicationId = convertMap(APPIDS, binaryApplicationId);
                     } else {
-                        binaryApplicationId = convertApplicationId(applicationId);
+                        binaryApplicationId = convertMap(APPIDS, applicationId);
                     }
                     index += pduDecoder.getDecodedDataLength() + 1;
                 } else {
@@ -312,147 +356,33 @@ public class WapPdu implements Parcelable {
     }
 
     /**
-     * Content-Type変換 (バイナリ値→文字列)
-     *
-     * @param type バイナリ値
-     * @return 文字列
+     * key -> val  (バイナリ値→文字列)
      */
-    private String convertContentType(int type) {
-        switch (type) {
-        case WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML:
-            return WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML;
-        case WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML:
-            return WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML;
-        case WspTypeDecoder.CONTENT_TYPE_B_PUSH_SI:
-            return WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI;
-        case WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL:
-            return WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL;
-        case WspTypeDecoder.CONTENT_TYPE_B_PUSH_CO:
-            return WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO;
-        case WspTypeDecoder.CONTENT_TYPE_B_MMS:
-            return WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS;
-        case 0x030a:
-            return "application/vnd.wap.emn+wbxml";
-        case 0x0310:
-            return "application/vnd.docomo.pf";
-        case 0x0311:
-            return "application/vnd.docomo.ub";
-        default:
-            //Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
-            return "unknown";
+    private String convertMap(HashMap<Integer, String> map, int key) {
+        if (map.containsKey(key)) {
+            return map.get(key);
         }
+        // unknown
+        return "unknown(" + String.format("0x%x", key) + ")";
+    
     }
 
     /**
-     * Content-Type変換 (文字列→バイナリ値)
-     *
-     * @param type 文字列
-     * @return バイナリ値
+     * val -> key (文字列→バイナリ値)
      */
-    private int convertContentType(String type) {
-        if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_XML)) {
-            return WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_XML;
-        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_DRM_RIGHTS_WBXML)) {
-            return WspTypeDecoder.CONTENT_TYPE_B_DRM_RIGHTS_WBXML;
-        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SI)) {
-            return WspTypeDecoder.CONTENT_TYPE_B_PUSH_SI;
-        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_SL)) {
-            return WspTypeDecoder.CONTENT_TYPE_B_PUSH_SL;
-        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_PUSH_CO)) {
-            return WspTypeDecoder.CONTENT_TYPE_B_PUSH_CO;
-        } else if (type.equals(WspTypeDecoder.CONTENT_MIME_TYPE_B_MMS)) {
-            return WspTypeDecoder.CONTENT_TYPE_B_MMS;
-        } else if (type.equals("application/vnd.wap.emn+wbxml")) {
-            return 0x030a;
-        } else if (type.equals("application/vnd.docomo.pf")) {
-            return 0x0310;
-        } else if (type.equals("application/vnd.docomo.ub")) {
-            return 0x0311;
-        } else {
-            //Log.w(EmailNotify.TAG, "WapPdu: Unknown Content-Type = " + type);
-            return 0;
+    private int convertMap(HashMap<Integer, String> map, String val) {
+        if (CONTENTTYPES.containsValue(val)) {
+            for (Iterator<Entry<Integer, String>> it = CONTENTTYPES.entrySet().iterator(); it.hasNext();) {
+                Entry<Integer, String> entry = (Entry<Integer, String>)it.next();
+                Integer key = entry.getKey();
+                String value = entry.getValue();
+                if (value.equals(val)) {
+                    return key;
+                }
+            }
         }
-    }
-
-    /**
-     * X-Wap-Application-id変換 (バイナリ値→文字列)
-     *
-     * @param id バイナリ値
-     * @return 文字列
-     */
-    private String convertApplicationId(int id) {
-        switch (id) {
-        case 0x09:      // mopera Uメール
-            return "x-wap-application:emn.ua";
-        case 0x8002:    // iモードメール
-            return "x-wap-docomo:imode.mail.ua";
-        case 0x8003:
-            return "x-wap-docomo:imode.mr.ua";
-        case 0x8004:
-            return "x-wap-docomo:imode.mf.ua";
-        case 0x9000:
-            return "x-wap-docomo:imode.mail2.ua";
-        case 0x905c:    // spモードメール
-            return "x-oma-docomo:xmd.mail.ua";
-        case 0x905e:
-            return "x-oma-docomo:imode.relation.ua";
-        case 0x905f:
-            return "x-oma-docomo:xmd.storage.ua";
-        case 0x9060:
-            return "x-oma-docomo:xmd.lcsapp.ua";
-        case 0x9061:
-            return "x-oma-docomo:xmd.info.ua";
-        case 0x9062:
-            return "x-oma-docomo:xmd.agent.ua";
-        case 0x9063:
-            return "x-oma-docomo:xmd.sab.ua";
-        case 0x9064:
-            return "x-oma-docomo:xmd.am.ua";
-        case 0x906b:
-            return "x-oma-docomo:xmd.emdm.ua";
-        default:
-            return "unknown";
-        }
-    }
-
-    /**
-     * X-Wap-Application-id変換 (文字列→バイナリ値)
-     *
-     * @param id 文字列
-     * @return バイナリ値
-     */
-    private int convertApplicationId(String id) {
-        if (id.equals("x-wap-application:emn.ua")) {
-            return 0x09;
-        } else if (id.equals("x-wap-docomo:imode.mail.ua")) {
-            return 0x8002;
-        } else if (id.equals("x-wap-docomo:imode.mr.ua")) {
-            return 0x8003;
-        } else if (id.equals("x-wap-docomo:imode.mf.ua")) {
-            return 0x8004;
-        } else if (id.equals("x-wap-docomo:imode.mail2.ua")) {
-            return 0x9000;
-        } else if (id.equals("x-oma-docomo:xmd.mail.ua")) {
-            return 0x905c;
-        } else if (id.equals("x-oma-docomo:imode.relation.ua")) {
-            return 0x905e;
-        } else if (id.equals("x-oma-docomo:xmd.storage.ua")) {
-            return 0x905f;
-        } else if (id.equals("x-oma-docomo:xmd.lcsapp.ua")) {
-            return 0x9060;
-        } else if (id.equals("x-oma-docomo:xmd.info.ua")) {
-            return 0x9061;
-        } else if (id.equals("x-oma-docomo:xmd.agent.ua")) {
-            return 0x9062;
-        } else if (id.equals("x-oma-docomo:xmd.sab.ua")) {
-            return 0x9063;
-        } else if (id.equals("x-oma-docomo:xmd.am.ua")) {
-            return 0x9064;
-        } else if (id.equals("x-oma-docomo:xmd.emdm.ua")) {
-            return 0x906b;
-        } else {
-            return 0;
-        }
+        // unknown
+        return 0;
     }
 
     /**

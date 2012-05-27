@@ -219,4 +219,160 @@ public class WapPduTest extends TestCase {
         assertNull(wapPdu.getTimestampString());
     }
 
+
+    /**
+     * Content-Type
+     */
+    public void testContentType1() {
+        WapPdu wapPdu;
+
+        // application/vnd.wap.emn+wbxml (0x030a)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030aaf8901"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x030a, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.wap.emn+wbxml", wapPdu.getContentType());
+
+        // application/vnd.docomo.pf (0x0310)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("00060603020310af8901"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x0310, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.docomo.pf", wapPdu.getContentType());
+
+        // application/vnd.docomo.ub (0x0311)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("00060603020311af8901"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x0311, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.docomo.ub", wapPdu.getContentType());
+
+        // application/vnd.wap.slc (0x30)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("000605b0af02800201"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x030, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
+
+        // unknown
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030baf8901"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x030b, wapPdu.getBinaryContentType());
+        assertEquals("unknown(0x30b)", wapPdu.getContentType());
+    }
+
+    /**
+     * Content-Type
+     */
+    public void testContentType2() {
+        WapPdu wapPdu;
+
+        // application/vnd.wap.emn+wbxml (0x030a)
+        wapPdu = new WapPdu("application/vnd.wap.emn+wbxml", 9, HexUtils.hex2bytes("01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x030a, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.wap.emn+wbxml", wapPdu.getContentType());
+
+        // application/vnd.wap.slc (0x30)
+        wapPdu = new WapPdu("application/vnd.wap.slc", 9, HexUtils.hex2bytes("01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x30, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
+
+        // unknown
+        wapPdu = new WapPdu("hoge", 9, HexUtils.hex2bytes("01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0, wapPdu.getBinaryContentType());
+        assertEquals("hoge", wapPdu.getContentType());
+    }
+
+
+    /**
+     * X-Wap-Application-Id
+     */
+    public void testApplicationId() {
+        WapPdu wapPdu;
+
+        // x-wap-application:emn.ua (0x09)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030aaf8901"));
+        assertTrue(wapPdu.decode());
+        assertEquals(9, wapPdu.getBinaryApplicationId());
+        assertEquals("x-wap-application:emn.ua", wapPdu.getApplicationId());
+
+        // x-oma-docomo:xmd.mail.ua (0x905c)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006080302030aaf02905c01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x905c, wapPdu.getBinaryApplicationId());
+        assertEquals("x-oma-docomo:xmd.mail.ua", wapPdu.getApplicationId());
+
+        // unknown
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030aaf8a01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x0a, wapPdu.getBinaryApplicationId());
+        assertEquals("unknown(0xa)", wapPdu.getApplicationId());
+
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006080302030aaf02905d01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(0x905d, wapPdu.getBinaryApplicationId());
+        assertEquals("unknown(0x905d)", wapPdu.getApplicationId());
+    }
+
+    /**
+     * X-Wap-Application-Id
+     */
+    public void testApplicationId2() {
+        WapPdu wapPdu;
+
+        // x-wap-application:emn.ua (0x09)
+        wapPdu = new WapPdu("application/vnd.wap.emn+wbxml", 9, HexUtils.hex2bytes("01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(9, wapPdu.getBinaryApplicationId());
+        assertEquals("x-wap-application:emn.ua", wapPdu.getApplicationId());
+
+        // unknown
+        wapPdu = new WapPdu("application/vnd.wap.emn+wbxml", 8, HexUtils.hex2bytes("01"));
+        assertTrue(wapPdu.decode());
+        assertEquals(8, wapPdu.getBinaryApplicationId());
+        assertEquals("unknown(0x8)", wapPdu.getApplicationId());
+    }
+
+
+    /**
+     * Invalid length
+     */
+    public void testLength() {
+        WapPdu wapPdu;
+
+        // no length
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006"));
+        assertFalse(wapPdu.decode());
+
+        // length unmatch
+        wapPdu = new WapPdu(HexUtils.hex2bytes("00067f"));
+        assertFalse(wapPdu.decode());
+
+        // no X-Wap-Application-Id
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030aae89"));
+        assertFalse(wapPdu.decode());
+
+        // no body (OK)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030aaf89"));
+        assertTrue(wapPdu.decode());
+    }
+
+    /**
+     * PDU TYPE
+     */
+    public void testPduType() {
+        WapPdu wapPdu;
+
+        // PDU_TYPE_PUSH (0x06)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0006060302030aaf8901"));
+        assertTrue(wapPdu.decode());
+
+        // PDU_TYPE_CONFIRMED_PUSH (0x07)
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0007060302030aaf8901"));
+        assertTrue(wapPdu.decode());
+
+        // Invalid
+        wapPdu = new WapPdu(HexUtils.hex2bytes("0005060302030aaf8901"));
+        assertFalse(wapPdu.decode());
+    }
+
 }
