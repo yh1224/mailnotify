@@ -95,6 +95,25 @@ public class WapPdu implements Parcelable {
     /**
      * Constructor
      *
+     * @param header WAP header
+     * @param body WAP body
+     */
+    public WapPdu(byte[] header, byte[] body) {
+        wapData = new byte[3 + header.length + body.length];
+        wapData[0] = 0x00;
+        wapData[1] = 0x06;
+        wapData[2] = (byte) header.length;
+        for (int i = 0; i < header.length; i++) {
+            wapData[3 + i] = header[i];
+        }
+        for (int i = 0; i < body.length; i++) {
+            wapData[3 + header.length + i] = body[i];
+        }
+    }
+
+    /**
+     * Constructor
+     *
      * WAPの生データがないがサービスだけ特定できた場合
      */
     public WapPdu(String service, String mailbox) {
@@ -367,10 +386,31 @@ public class WapPdu implements Parcelable {
             return "x-wap-application:emn.ua";
         case 0x8002:    // iモードメール
             return "x-wap-docomo:imode.mail.ua";
+        case 0x8003:
+            return "x-wap-docomo:imode.mr.ua";
+        case 0x8004:
+            return "x-wap-docomo:imode.mf.ua";
+        case 0x9000:
+            return "x-wap-docomo:imode.mail2.ua";
         case 0x905c:    // spモードメール
             return "x-oma-docomo:xmd.mail.ua";
+        case 0x905e:
+            return "x-oma-docomo:imode.relation.ua";
+        case 0x905f:
+            return "x-oma-docomo:xmd.storage.ua";
+        case 0x9060:
+            return "x-oma-docomo:xmd.lcsapp.ua";
+        case 0x9061:
+            return "x-oma-docomo:xmd.info.ua";
+        case 0x9062:
+            return "x-oma-docomo:xmd.agent.ua";
+        case 0x9063:
+            return "x-oma-docomo:xmd.sab.ua";
+        case 0x9064:
+            return "x-oma-docomo:xmd.am.ua";
+        case 0x906b:
+            return "x-oma-docomo:xmd.emdm.ua";
         default:
-            //Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
             return "unknown";
         }
     }
@@ -386,10 +426,31 @@ public class WapPdu implements Parcelable {
             return 0x09;
         } else if (id.equals("x-wap-docomo:imode.mail.ua")) {
             return 0x8002;
+        } else if (id.equals("x-wap-docomo:imode.mr.ua")) {
+            return 0x8003;
+        } else if (id.equals("x-wap-docomo:imode.mf.ua")) {
+            return 0x8004;
+        } else if (id.equals("x-wap-docomo:imode.mail2.ua")) {
+            return 0x9000;
         } else if (id.equals("x-oma-docomo:xmd.mail.ua")) {
             return 0x905c;
+        } else if (id.equals("x-oma-docomo:imode.relation.ua")) {
+            return 0x905e;
+        } else if (id.equals("x-oma-docomo:xmd.storage.ua")) {
+            return 0x905f;
+        } else if (id.equals("x-oma-docomo:xmd.lcsapp.ua")) {
+            return 0x9060;
+        } else if (id.equals("x-oma-docomo:xmd.info.ua")) {
+            return 0x9061;
+        } else if (id.equals("x-oma-docomo:xmd.agent.ua")) {
+            return 0x9062;
+        } else if (id.equals("x-oma-docomo:xmd.sab.ua")) {
+            return 0x9063;
+        } else if (id.equals("x-oma-docomo:xmd.am.ua")) {
+            return 0x9064;
+        } else if (id.equals("x-oma-docomo:xmd.emdm.ua")) {
+            return 0x906b;
         } else {
-            //Log.w(EmailNotify.TAG, "WapPdu: Unknown X-Wap-Application-id = " + id);
             return 0;
         }
     }

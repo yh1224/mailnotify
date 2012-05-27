@@ -58,6 +58,15 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             intent.putExtra("ppg", "NTT DoCoMo");
             intent.putExtra("wapAppId", 9);
             sendBroadcast(intent);
+        } else if (preference == findPreference("test_spmode_intent")) {
+            Intent intent = new Intent("android.provider.Telephony.WAP_PUSH_RECEIVED");
+            intent.setType("application/vnd.wap.emn+wbxml");
+            intent.putExtra("header", HexUtils.hex2bytes("b0af029062"));
+            intent.putExtra("data", HexUtils.hex2bytes("02066a00850b0373706d6f64652e6e652e6a703f44493d30370001"));
+            intent.putExtra("pduType", 6);
+            intent.putExtra("contentTypeParameters", new HashMap<Void, Void>());
+            intent.putExtra("transactionId", 0);
+            sendBroadcast(intent);
         } else if (preference == findPreference("test_imode_intent")) {
             Intent intent = new Intent("android.provider.Telephony.WAP_PUSH_RECEIVED");
             intent.setType("application/vnd.wap.slc");

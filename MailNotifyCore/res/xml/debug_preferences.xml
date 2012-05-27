@@ -30,6 +30,9 @@
             android:key="test_mopera_intent"
             android:title="Intent: mopera U" />
         <Preference
+            android:key="test_spmode_intent"
+            android:title="Intent: sp-mode" />
+        <Preference
             android:key="test_imode_intent"
             android:title="Intent: i-mode" />
         <Preference

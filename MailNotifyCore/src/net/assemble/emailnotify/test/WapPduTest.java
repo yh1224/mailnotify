@@ -23,7 +23,7 @@ public class WapPduTest extends TestCase {
 
         WapPdu wapPdu = new WapPdu(pdu);
         assertTrue(wapPdu.decode());
-        assertEquals(778, wapPdu.getBinaryContentType());
+        assertEquals(0x030a, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.emn+wbxml", wapPdu.getContentType());
         assertEquals(9, wapPdu.getBinaryApplicationId());
         assertEquals("x-wap-application:emn.ua", wapPdu.getApplicationId());
@@ -39,7 +39,6 @@ public class WapPduTest extends TestCase {
         String ctype = "application/vnd.wap.emn+wbxml";
         int appId = 9;
         byte[] body = HexUtils.hex2bytes(
-                // body
                 "030d6a0085" +
                     "0703" + "796831323234406d6f7065726100" + "87" +
                     "05c307" + "20110123012345" +
@@ -47,7 +46,7 @@ public class WapPduTest extends TestCase {
 
         WapPdu wapPdu = new WapPdu(ctype, appId, body);
         assertTrue(wapPdu.decode());
-        assertEquals(778, wapPdu.getBinaryContentType());
+        assertEquals(0x030a, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.emn+wbxml", wapPdu.getContentType());
         assertEquals(9, wapPdu.getBinaryApplicationId());
         assertEquals("x-wap-application:emn.ua", wapPdu.getApplicationId());
@@ -55,6 +54,7 @@ public class WapPduTest extends TestCase {
         assertEquals("mailat:yh1224@mopera.net", wapPdu.getMailbox());
         assertEquals("20110123012345", wapPdu.getTimestampString());
     }
+
 
     /**
      * spモードメール (WAP PDU)
@@ -72,14 +72,29 @@ public class WapPduTest extends TestCase {
 
         WapPdu wapPdu = new WapPdu(pdu);
         assertTrue(wapPdu.decode());
-        assertEquals(778, wapPdu.getBinaryContentType());
+        assertEquals(0x030a, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.emn+wbxml", wapPdu.getContentType());
-        assertEquals(36956, wapPdu.getBinaryApplicationId());
+        assertEquals(0x905c, wapPdu.getBinaryApplicationId());
         assertEquals("x-oma-docomo:xmd.mail.ua", wapPdu.getApplicationId());
         assertEquals(EmailNotifyPreferences.SERVICE_SPMODE, wapPdu.getServiceName());
         assertEquals("mailat:hirose-y1224-sp@docomo.ne.jp", wapPdu.getMailbox());
         assertEquals("20110123012345", wapPdu.getTimestampString());
     }
+
+    /**
+     * spモードメール
+     */
+    public void testSpmodeNull() {
+        WapPdu wapPdu = new WapPdu(EmailNotifyPreferences.SERVICE_SPMODE, "docomo.ne.jp");
+        assertEquals(0, wapPdu.getBinaryContentType());
+        assertNull(wapPdu.getContentType());
+        assertEquals(0, wapPdu.getBinaryApplicationId());
+        assertNull(wapPdu.getApplicationId());
+        assertEquals(EmailNotifyPreferences.SERVICE_SPMODE, wapPdu.getServiceName());
+        assertEquals("docomo.ne.jp", wapPdu.getMailbox());
+        assertNull(wapPdu.getTimestampString());
+    }
+
 
     /**
      * iモードメール (WAP PDU)
@@ -96,7 +111,7 @@ public class WapPduTest extends TestCase {
 
         WapPdu wapPdu = new WapPdu(pdu);
         assertTrue(wapPdu.decode());
-        assertEquals(48, wapPdu.getBinaryContentType());
+        assertEquals(0x30, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
         assertEquals(32770, wapPdu.getBinaryApplicationId());
         assertEquals("x-wap-docomo:imode.mail.ua", wapPdu.getApplicationId());
@@ -112,19 +127,19 @@ public class WapPduTest extends TestCase {
         String ctype = "application/vnd.wap.slc";
         int appId = 0;
         byte[] body = HexUtils.hex2bytes(
-                // body
                 "02066a0085" +
                     "0903" + "646f636f6d6f2e6e652e6a703f50493d303600" +
                 "01");
 
         WapPdu wapPdu = new WapPdu(ctype, appId, body);
         assertTrue(wapPdu.decode());
-        assertEquals(48, wapPdu.getBinaryContentType());
+        assertEquals(0x30, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
         assertEquals(EmailNotifyPreferences.SERVICE_IMODE, wapPdu.getServiceName());
         assertEquals("imap://docomo.ne.jp?PI=06", wapPdu.getMailbox());
         assertNull(wapPdu.getTimestampString());
     }
+
 
     /**
      * 不明 (WAP BODY)
@@ -136,12 +151,13 @@ public class WapPduTest extends TestCase {
 
         WapPdu wapPdu = new WapPdu(ctype, appId, body);
         assertTrue(wapPdu.decode());
-        assertEquals(778, wapPdu.getBinaryContentType());
+        assertEquals(0x030a, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.emn+wbxml", wapPdu.getContentType());
         assertEquals(EmailNotifyPreferences.SERVICE_UNKNOWN, wapPdu.getServiceName());
         assertEquals("unknown", wapPdu.getMailbox());
         assertNull(wapPdu.getTimestampString());
     }
+
 
     /**
      * 不特定
@@ -159,23 +175,46 @@ public class WapPduTest extends TestCase {
 
 
     /**
-     * ?
+     * spモード?
      */
-    public void testSpmodeBody() {
-        String ctype = "application/vnd.wap.slc";
-        int appId = 0;
+    public void testXXX1() {
+        byte[] pdu = HexUtils.hex2bytes(
+                // header
+                "000605" +
+                    "b0af029062" +
+                // body
+                "02066a0085" +
+                    "0b03" + "73706d6f64652e6e652e6a703f44493d303700" +
+                "01");
+        
+        WapPdu wapPdu = new WapPdu(pdu);
+        assertTrue(wapPdu.decode());
+        assertEquals(0x30, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
+        assertEquals(0x9062, wapPdu.getBinaryApplicationId());
+        assertEquals("x-oma-docomo:xmd.agent.ua", wapPdu.getApplicationId());
+        assertEquals(EmailNotifyPreferences.SERVICE_UNKNOWN, wapPdu.getServiceName());
+        assertEquals("http://www.spmode.ne.jp?DI=07", wapPdu.getMailbox());
+        assertNull(wapPdu.getTimestampString());
+    }
+
+    /**
+     * spモード?
+     */
+    public void testXXX2() {
+        byte[] header = HexUtils.hex2bytes("b0af02905f");
         byte[] body = HexUtils.hex2bytes(
                 "02066a0085" + 
                     "0b03" + "6261636b75702e73706d6f64652e6e652e6a703f53493d3831323000" +
                 "01");
 
-        WapPdu wapPdu = new WapPdu(ctype, appId, body);
+        WapPdu wapPdu = new WapPdu(header, body);
         assertTrue(wapPdu.decode());
-        assertEquals(48, wapPdu.getBinaryContentType());
+        assertEquals(0x30, wapPdu.getBinaryContentType());
         assertEquals("application/vnd.wap.slc", wapPdu.getContentType());
-        assertEquals(0, wapPdu.getBinaryApplicationId());
-//        assertNull(wapPdu.getApplicationId());
-//        assertEquals(EmailNotifyPreferences.SERVICE_SPMODE, wapPdu.getServiceName());
+        assertEquals(0x905f, wapPdu.getBinaryApplicationId());
+        assertEquals("x-oma-docomo:xmd.storage.ua", wapPdu.getApplicationId());
+        assertEquals(EmailNotifyPreferences.SERVICE_UNKNOWN, wapPdu.getServiceName());
         assertEquals("http://www.backup.spmode.ne.jp?SI=8120", wapPdu.getMailbox());
         assertNull(wapPdu.getTimestampString());
     }
