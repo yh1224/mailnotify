@@ -57,6 +57,7 @@ public class WapPdu implements Parcelable {
         APPIDS.put(0x8003, "x-wap-docomo:imode.mr.ua");
         APPIDS.put(0x8004, "x-wap-docomo:imode.mf.ua");
         APPIDS.put(0x9000, "x-wap-docomo:imode.mail2.ua");
+        APPIDS.put(0x9056, "x-oma-docomo:sp.mail.ua");
         APPIDS.put(0x905c, "x-oma-docomo:xmd.mail.ua");
         APPIDS.put(0x905e, "x-oma-docomo:imode.relation.ua");
         APPIDS.put(0x905f, "x-oma-docomo:xmd.storage.ua");

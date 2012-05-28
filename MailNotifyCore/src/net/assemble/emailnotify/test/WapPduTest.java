@@ -221,6 +221,26 @@ public class WapPduTest extends TestCase {
 
 
     /**
+     * モバイルアプリ?
+     */
+    public void testXXX3() {
+        byte[] pdu = HexUtils.hex2bytes(
+                "00060803020310af029056" + 
+                "2f2f535641674943645445415141446b6e507879766b535170416b4f4b644a6342664845593769314b754a484368712b347a6f6570585667765966436a456d514f684f5a4e644b6651642f346e71776c615878464b6a42714e5752744954314957566c332f2f5653");
+
+        WapPdu wapPdu = new WapPdu(pdu);
+        assertTrue(wapPdu.decode());
+        assertEquals(0x310, wapPdu.getBinaryContentType());
+        assertEquals("application/vnd.docomo.pf", wapPdu.getContentType());
+        assertEquals(0x9056, wapPdu.getBinaryApplicationId());
+        assertEquals("x-oma-docomo:sp.mail.ua", wapPdu.getApplicationId());
+        assertEquals(EmailNotifyPreferences.SERVICE_UNKNOWN, wapPdu.getServiceName());
+        assertEquals("unknown", wapPdu.getMailbox());
+        assertNull(wapPdu.getTimestampString());
+    }
+
+
+    /**
      * Content-Type
      */
     public void testContentType1() {
