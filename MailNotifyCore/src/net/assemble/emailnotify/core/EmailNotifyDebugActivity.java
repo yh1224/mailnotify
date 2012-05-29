@@ -56,7 +56,7 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             intent.putExtra("contentTypeParameters", new HashMap<Void, Void>());
             intent.putExtra("mps", "+8190542143014");
             intent.putExtra("ppg", "NTT DoCoMo");
-            intent.putExtra("wapAppId", 9);
+            intent.putExtra("wapAppID", 9);
             sendBroadcast(intent);
         } else if (preference == findPreference("test_spmode_intent")) {
             Intent intent = new Intent("android.provider.Telephony.WAP_PUSH_RECEIVED");

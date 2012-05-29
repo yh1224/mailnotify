@@ -279,6 +279,7 @@ public class EmailNotifyService extends Service {
                     return null;
                 }
                 MyLog.d(this, EmailNotify.TAG, "Detected PDU: " + data);
+                MyLog.d(this, EmailNotify.TAG, "  contentType=" + pdu.getContentType() + ", wapAppID=" + pdu.getApplicationId());
                 if (pdu.getTimestampDate() != null) {
                     MyLog.i(this, EmailNotify.TAG, "Detected: " + pdu.getMailbox() + " (" + pdu.getTimestampDate().toLocaleString() + ")");
                 } else {
