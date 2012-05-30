@@ -67,7 +67,7 @@ public class MyLogReportService extends Service {
             listeners.unregister(listener);
         }
     };
-    
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -110,7 +110,7 @@ public class MyLogReportService extends Service {
     }
 
     /**
-     * ログ送信
+     * レポート送信
      */
     private void start() {
         if (mWaitConnect != WAIT_CONNECT_DISABLE) {
@@ -118,7 +118,7 @@ public class MyLogReportService extends Service {
             NetworkInfo networkInfo = cm.getActiveNetworkInfo();
             if (networkInfo == null || !networkInfo.isConnected()) {
                 if (mProgress) {
-                    Toast.makeText(MyLogReportService.this, "Pending log send...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyLogReportService.this, "Pending report send...", Toast.LENGTH_SHORT).show();
                 }
                 registerConnectivityReceiver();
                 return;
@@ -156,7 +156,7 @@ public class MyLogReportService extends Service {
         @Override
         protected void onPreExecute() {
             if (mProgress) {
-                Toast.makeText(MyLogReportService.this, "Now sending log...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyLogReportService.this, "Now sending report...", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -248,23 +248,29 @@ public class MyLogReportService extends Service {
 
         @Override
         protected void onPostExecute(String result) {
-            if (result == null) {
-                if (mCallbackIntent != null) {
-                    try {
-                        mCallbackIntent.send();
-                    } catch (CanceledException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (mProgress) {
-                    Toast.makeText(MyLogReportService.this, "Sent log successfully.", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                if (mProgress) {
-                    Toast.makeText(MyLogReportService.this, "Send log failed: " + result, Toast.LENGTH_LONG).show();
+            // インテントで結果通知
+            if (mCallbackIntent != null) {
+                try {
+                    Intent intent = new Intent();
+                    intent.putExtra("result", result);
+                    mCallbackIntent.send(getApplicationContext(), 0, intent);
+                } catch (CanceledException e) {
+                    e.printStackTrace();
                 }
             }
 
+            // 結果表示
+            if (result == null) {
+                if (mProgress) {
+                    Toast.makeText(MyLogReportService.this, "Sent report successfully.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                if (mProgress) {
+                    Toast.makeText(MyLogReportService.this, "Failed to send report: " + result, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            // コールバック onComplete()
             int numListeners = listeners.beginBroadcast();
             for (int i = 0; i < numListeners; i++) {
                 try {
@@ -274,6 +280,7 @@ public class MyLogReportService extends Service {
                 }
             }
             listeners.finishBroadcast();
+
             stopSelf();
         }
     }

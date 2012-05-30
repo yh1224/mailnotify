@@ -43,8 +43,13 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                     || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
                 EmailNotifyService.startService(ctx);
             } else if (intent.getAction().equals(EmailNotify.ACTION_LOG_SENT)) {
-                MyLog.i(ctx, EmailNotify.TAG, "Log sent.");
-                EmailNotifyPreferences.setLogSent(ctx, Calendar.getInstance().getTimeInMillis());
+                String result = intent.getStringExtra("result");
+                if (result == null) {
+                    MyLog.d(ctx, EmailNotify.TAG, "Sent report successfully.");
+                    EmailNotifyPreferences.setLogSent(ctx, Calendar.getInstance().getTimeInMillis());
+                } else {
+                    MyLog.d(ctx, EmailNotify.TAG, "Failed to send report: " + result);
+                }
             }
             return;
         }
