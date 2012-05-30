@@ -25,6 +25,7 @@ public class EmailNotifyPreferences
 
     private static final String PREF_MODEL_FINGERPRINT_KEY = "model_fingerprint";
     private static final String PREF_NOTIFY_SUPPORT_KEY = "notify_support";
+    private static final String PREF_NOTIFY_COUNT_KEY = "notify_count";
 
     public static final String SERVICE_MOPERA = "mopera";
     public static final String SERVICE_SPMODE = "spmode";
@@ -187,6 +188,24 @@ public class EmailNotifyPreferences
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
         Editor editor = pref.edit();
         editor.putBoolean(getServiceKey(PREF_NOTIFY_SUPPORT_KEY, service), true);
+        editor.commit();
+    }
+
+    /**
+     * サービス通知回数を取得
+     */
+    public static int getNotifyCount(Context ctx, String service) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getInt(
+                getServiceKey(PREF_NOTIFY_COUNT_KEY, service), 0);
+    }
+
+    /**
+     * サービス通知回数を保存
+     */
+    public static void incrementNotifyCount(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor editor = pref.edit();
+        editor.putInt(getServiceKey(PREF_NOTIFY_COUNT_KEY, service), getNotifyCount(ctx, service) + 1);
         editor.commit();
     }
 

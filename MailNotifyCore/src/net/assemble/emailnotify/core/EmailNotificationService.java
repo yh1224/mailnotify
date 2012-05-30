@@ -49,6 +49,7 @@ public class EmailNotificationService extends Service {
         if (pdu != null) {
             // サポートフラグ記録
             EmailNotifyPreferences.setNotifySupport(this, pdu.getServiceName());
+            EmailNotifyPreferences.incrementNotifyCount(this, pdu.getServiceName());
 
             if (pdu.getServiceName().equals(EmailNotifyPreferences.SERVICE_UNSPEC)) {
                 // サービス不明の場合、ちょっと待ってから通知

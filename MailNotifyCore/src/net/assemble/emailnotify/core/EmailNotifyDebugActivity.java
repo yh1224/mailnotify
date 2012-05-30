@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -15,7 +16,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
-import android.widget.Toast;
 import net.orleaf.android.HexUtils;
 /**
  * デバッグメニュー
@@ -35,7 +35,7 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             Preference preference) {
 
         if (preference == findPreference("show_preferences")) {
-            Toast.makeText(this, getPreferencesString(), Toast.LENGTH_LONG).show();
+            showDialogMessage("Preferences", getPreferencesString());
         } else
         if (preference == findPreference("test_mopera")) {
             Log.d("WAP PUSH", "Rx: 0006060302030aaf89030d6a00850703796831323234406d6f70657261008705c307"
@@ -118,6 +118,21 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
             }
         }
         return strBuf.toString();
+    }
+
+    /**
+     * ダイアログでメッセージを表示
+     * 
+     * @param title タイトル
+     * @param message メッセージ
+     */
+    private void showDialogMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message.toString());
+        builder.setPositiveButton(R.string.ok, null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }
