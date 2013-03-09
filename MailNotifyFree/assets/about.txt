@@ -13,4 +13,4 @@
 - Ads free、その他もネットワーク通信は一切おこないません。
 - その他
 
-Copyright 2010-2012 Orange leaf
+Copyright 2010-2013 Orange leaf
