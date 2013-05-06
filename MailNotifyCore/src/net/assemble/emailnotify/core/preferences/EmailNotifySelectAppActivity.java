@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.preferences;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -33,6 +33,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.R;
 
 /**
  * Displays a list of all activities which can be performed

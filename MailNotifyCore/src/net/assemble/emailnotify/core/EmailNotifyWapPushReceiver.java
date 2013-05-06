@@ -2,13 +2,19 @@ package net.assemble.emailnotify.core;
 
 import java.util.Set;
 
-import net.orleaf.android.HexUtils;
-import net.orleaf.android.MyLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import net.assemble.emailnotify.core.notification.EmailNotificationService;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.HexUtils;
+import net.orleaf.android.MyLog;
+
+/**
+ * WAP PUSH 受信
+ */
 public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context ctx, Intent intent) {
@@ -43,7 +49,7 @@ public class EmailNotifyWapPushReceiver extends BroadcastReceiver {
             }
         }
 
-        EmailNotifyService.startService(ctx);
+        EmailNotifyObserveService.startService(ctx);
     }
 
     private static void logIntent(Context ctx, Intent intent) {

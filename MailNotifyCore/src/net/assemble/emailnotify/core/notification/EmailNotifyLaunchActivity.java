@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.util.Set;
 
@@ -24,13 +24,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.R;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+
+/**
+ * メーラーアプリ起動 Activity
+ *
+ * ネットワーク未接続の場合は接続してから起動する。
+ */
 public class EmailNotifyLaunchActivity extends Activity {
-    private ConnectivityManager mConnManager;
-    private WifiManager mWifiManager;
-    private TelephonyManager mTelManager;
     private BroadcastReceiver mConnectivityReceiver = null;
     private PhoneStateListener mStateListener = null;
 
+    // Views
     private TextView mMessageText;
     private ProgressBar mProgressBar;
     private Button mLaunchButton;
@@ -43,10 +50,6 @@ public class EmailNotifyLaunchActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_LEFT_ICON);
-
-        mConnManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        mTelManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
         Intent intent = getIntent();
         mService = intent.getStringExtra("service");
@@ -133,7 +136,8 @@ public class EmailNotifyLaunchActivity extends Activity {
                 checkAndLaunch();
             }
         };
-        mTelManager.listen(mStateListener, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        tm.listen(mStateListener, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
 
         // ネットワーク接続監視
         mConnectivityReceiver = new BroadcastReceiver() {
@@ -155,9 +159,11 @@ public class EmailNotifyLaunchActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
         // 3G状態リスナ登録解除
         if (mStateListener != null) {
-            mTelManager.listen(mStateListener, PhoneStateListener.LISTEN_NONE);
+            tm.listen(mStateListener, PhoneStateListener.LISTEN_NONE);
             mStateListener = null;
         }
 
@@ -175,18 +181,20 @@ public class EmailNotifyLaunchActivity extends Activity {
      *
      */
     private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
         NetworkInfo networkInfo;
         if (EmailNotifyPreferences.getNotifyAutoConnect(this, mService) &&
                 EmailNotifyPreferences.getNotifyAutoConnectForce(this, mService)) {
             // 強制接続時は指定されたネットワーク種別のみチェック
             String networkType = EmailNotifyPreferences.getNotifyAutoConnectType(this, mService);
             if (networkType.equals(EmailNotifyPreferences.NETWORK_TYPE_MOBILE)) {
-                networkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                networkInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             } else {
-                networkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                networkInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             }
         } else {
-            networkInfo = mConnManager.getActiveNetworkInfo();
+            networkInfo = cm.getActiveNetworkInfo();
         }
         if (networkInfo != null && networkInfo.isConnected()) {
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connected to " + networkInfo.getTypeName());
@@ -201,6 +209,9 @@ public class EmailNotifyLaunchActivity extends Activity {
      * ネットワーク接続完了時にアプリ起動して終了
      */
     private boolean checkAndLaunch() {
+        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
         if (isNetworkAvailable()) {
             // ネットワーク接続完了時はアプリを起動して終了
             EmailNotificationManager.clearNotification(mMailbox);
@@ -209,8 +220,8 @@ public class EmailNotifyLaunchActivity extends Activity {
             return true;
         }
 
-        if (mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED ||
-                mTelManager.getDataState() != TelephonyManager.DATA_DISCONNECTED) {
+        if (wm.getWifiState() != WifiManager.WIFI_STATE_DISABLED ||
+                tm.getDataState() != TelephonyManager.DATA_DISCONNECTED) {
             // 接続処理中
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connecting to network");
             mProgressBar.setVisibility(View.VISIBLE);

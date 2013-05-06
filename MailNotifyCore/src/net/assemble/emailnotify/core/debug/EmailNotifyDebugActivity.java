@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.debug;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,7 +16,10 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+
+import net.assemble.emailnotify.core.R;
 import net.orleaf.android.HexUtils;
+
 /**
  * デバッグメニュー
  */
@@ -122,7 +125,7 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
 
     /**
      * ダイアログでメッセージを表示
-     * 
+     *
      * @param title タイトル
      * @param message メッセージ
      */

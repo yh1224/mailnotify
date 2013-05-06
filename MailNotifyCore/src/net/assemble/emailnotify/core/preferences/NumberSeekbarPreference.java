@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.preferences;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+
+import net.assemble.emailnotify.core.R;
 
 /**
  * シークバーと選択中の値を表示するプリファレンス

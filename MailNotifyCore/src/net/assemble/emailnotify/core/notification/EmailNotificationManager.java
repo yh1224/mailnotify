@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +9,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import net.assemble.emailnotify.core.R;
+
+/**
+ * メール着信通知管理
+ */
 public class EmailNotificationManager {
     public static final int NOTIFICATIONID_ICON = 1;
     public static final int NOTIFICATIONID_EXPIRED = 2;

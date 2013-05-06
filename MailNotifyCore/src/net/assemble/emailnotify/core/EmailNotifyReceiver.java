@@ -2,12 +2,14 @@ package net.assemble.emailnotify.core;
 
 import java.util.Calendar;
 
-import net.orleaf.android.MyLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.MyLog;
 
 public class EmailNotifyReceiver extends BroadcastReceiver {
     @Override
@@ -28,7 +30,7 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
             // Restart
             if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.i(EmailNotify.TAG, "EmailNotify restarted. (at boot)");
-                EmailNotifyService.startService(ctx);
+                EmailNotifyObserveService.startService(ctx);
             } else if (intent.getAction().equals("android.intent.action.PACKAGE_REPLACED"/*Intent.ACTION_PACKAGE_REPLACED*/)) {
                 if (intent.getData() != null &&
                     intent.getData().equals(Uri.fromParts("package", ctx.getPackageName(), null))) {
@@ -36,12 +38,12 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
                     Log.i(EmailNotify.TAG, "EmailNotify restarted. (package replaced)");
                     MyLog.clearAll(ctx);
                     MyLog.i(ctx, EmailNotify.TAG, "Package replaced to " + EmailNotify.getAppVersion(ctx));
-                    EmailNotifyService.startService(ctx);
+                    EmailNotifyObserveService.startService(ctx);
                     EmailNotifyPreferences.resetSendLog(ctx);
                 }
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)
                     || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
-                EmailNotifyService.startService(ctx);
+                EmailNotifyObserveService.startService(ctx);
             } else if (intent.getAction().equals(EmailNotify.ACTION_LOG_SENT)) {
                 String result = intent.getStringExtra("result");
                 if (result == null) {
@@ -54,7 +56,7 @@ public class EmailNotifyReceiver extends BroadcastReceiver {
             return;
         }
 
-        EmailNotifyService.startService(ctx);
+        EmailNotifyObserveService.startService(ctx);
     }
 
 }

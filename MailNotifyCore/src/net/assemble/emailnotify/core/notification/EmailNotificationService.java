@@ -1,8 +1,7 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.util.Date;
 
-import net.orleaf.android.MyLog;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,8 +12,13 @@ import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.WapPdu;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.MyLog;
+
 /**
- * メール通知サービス
+ * メール着信通知サービス
  */
 public class EmailNotificationService extends Service {
 

@@ -62,7 +62,7 @@
                     android:key="notify_vibration_pattern"
                     android:title="@string/pref_notify_vibration_pattern_title" />
 
-                <net.assemble.emailnotify.core.NumberSeekbarPreference
+                <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                     maxValue="60"
                     minValue="1"
                     unit="@string/pref_notify_vibration_length_unit"
@@ -114,7 +114,7 @@
                     android:summary="@string/pref_notify_renotify_summary"
                     android:title="@string/pref_notify_renotify_title" />
 
-                <net.assemble.emailnotify.core.NumberSeekbarPreference
+                <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                     maxValue="30"
                     minValue="1"
                     unit="@string/pref_notify_renotify_interval_unit"
@@ -122,7 +122,7 @@
                     android:dependency="notify_renotify"
                     android:key="notify_renotify_interval"
                     android:title="@string/pref_notify_renotify_interval_title" />
-                <net.assemble.emailnotify.core.NumberSeekbarPreference
+                <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                     maxValue="30"
                     minValue="0"
                     unit="@string/pref_notify_renotify_count_unit"
@@ -174,7 +174,7 @@
             </PreferenceCategory>
             -->
             <PreferenceCategory android:title="@string/pref_group_other" >
-                <net.assemble.emailnotify.core.NumberSeekbarPreference
+                <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                     maxValue="60"
                     minValue="0"
                     unit="@string/pref_notify_delay_unit"
@@ -230,7 +230,7 @@
                         android:key="notify_vibration_pattern_mopera"
                         android:title="@string/pref_notify_vibration_pattern_title" />
 
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="60"
                         minValue="1"
                         unit="@string/pref_notify_vibration_length_unit"
@@ -284,7 +284,7 @@
                         android:summary="@string/pref_notify_renotify_summary"
                         android:title="@string/pref_notify_renotify_title" />
 
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="30"
                         minValue="1"
                         unit="@string/pref_notify_renotify_interval_unit"
@@ -292,7 +292,7 @@
                         android:dependency="notify_renotify_mopera"
                         android:key="notify_renotify_interval_mopera"
                         android:title="@string/pref_notify_renotify_interval_title" />
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="30"
                         minValue="0"
                         unit="@string/pref_notify_renotify_count_unit"
@@ -346,7 +346,7 @@
                 </PreferenceCategory>
                 -->
                 <PreferenceCategory android:title="@string/pref_group_other" >
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="60"
                         minValue="0"
                         unit="@string/pref_notify_delay_unit"
@@ -400,7 +400,7 @@
                         android:key="notify_vibration_pattern_spmode"
                         android:title="@string/pref_notify_vibration_pattern_title" />
 
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="60"
                         minValue="1"
                         unit="@string/pref_notify_vibration_length_unit"
@@ -454,7 +454,7 @@
                         android:summary="@string/pref_notify_renotify_summary"
                         android:title="@string/pref_notify_renotify_title" />
 
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="30"
                         minValue="1"
                         unit="@string/pref_notify_renotify_interval_unit"
@@ -462,7 +462,7 @@
                         android:dependency="notify_renotify_spmode"
                         android:key="notify_renotify_interval_spmode"
                         android:title="@string/pref_notify_renotify_interval_title" />
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="30"
                         minValue="0"
                         unit="@string/pref_notify_renotify_count_unit"
@@ -516,7 +516,7 @@
                 </PreferenceCategory>
                 -->
                 <PreferenceCategory android:title="@string/pref_group_other" >
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="60"
                         minValue="0"
                         unit="@string/pref_notify_delay_unit"
@@ -570,7 +570,7 @@
                         android:key="notify_vibration_pattern_imode"
                         android:title="@string/pref_notify_vibration_pattern_title" />
 
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="60"
                         minValue="1"
                         unit="@string/pref_notify_vibration_length_unit"
@@ -624,7 +624,7 @@
                         android:summary="@string/pref_notify_renotify_summary"
                         android:title="@string/pref_notify_renotify_title" />
 
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="30"
                         minValue="1"
                         unit="@string/pref_notify_renotify_interval_unit"
@@ -632,7 +632,7 @@
                         android:dependency="notify_renotify_imode"
                         android:key="notify_renotify_interval_imode"
                         android:title="@string/pref_notify_renotify_interval_title" />
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="30"
                         minValue="0"
                         unit="@string/pref_notify_renotify_count_unit"
@@ -686,7 +686,7 @@
                 </PreferenceCategory>
                 -->
                 <PreferenceCategory android:title="@string/pref_group_other" >
-                    <net.assemble.emailnotify.core.NumberSeekbarPreference
+                    <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
                         maxValue="60"
                         minValue="0"
                         unit="@string/pref_notify_delay_unit"
@@ -735,7 +735,7 @@
             android:title="@string/pref_exclude_hours_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_group_experimental" >
-        <net.assemble.emailnotify.core.NumberSeekbarPreference
+        <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
             maxValue="60"
             minValue="0"
             unit="@string/pref_notify_sound_length_unit"

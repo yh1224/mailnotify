@@ -35,9 +35,12 @@
             </intent-filter>
         </activity>
         <activity android:name="net.assemble.emailnotify.core.EmailNotifyHelpActivity" />
-        <activity android:name="net.assemble.emailnotify.core.EmailNotifyPreferencesActivity" />
         <activity
-            android:name="net.assemble.emailnotify.core.EmailNotifySelectAppActivity"
+            android:name="net.orleaf.android.AboutActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name="net.assemble.emailnotify.core.preferences.EmailNotifyPreferencesActivity" />
+        <activity
+            android:name="net.assemble.emailnotify.core.preferences.EmailNotifySelectAppActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".EmailNotifyLaunchActivity"
@@ -45,8 +48,15 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="net.assemble.emailnotify.core.EmailNotifyRestoreActivity"
+            android:name="net.assemble.emailnotify.core.notification.EmailNotifyRestoreActivity"
             android:launchMode="singleInstance" />
+        <activity android:name="net.assemble.emailnotify.core.notification.EmailNotificationHistoryActivity" />
+        <activity android:name="net.orleaf.android.MyLogActivity" />
+        <activity android:name="net.assemble.emailnotify.core.debug.EmailNotifyDebugActivity" />
+
+        <service android:name="net.assemble.emailnotify.core.EmailNotifyObserveService" />
+        <service android:name="net.assemble.emailnotify.core.notification.EmailNotificationService" />
+        <service android:name="net.orleaf.android.MyLogReportService" />
 
         <receiver android:name="net.assemble.emailnotify.core.EmailNotifyReceiver" >
             <intent-filter>
@@ -72,22 +82,7 @@
                 <data android:mimeType="application/vnd.wap.emn+wbxml" />
             </intent-filter>
         </receiver>
-        <receiver android:name="net.assemble.emailnotify.core.EmailNotificationReceiver" />
-
-        <activity android:name="net.assemble.emailnotify.core.EmailNotificationHistoryActivity" />
-
-        <service android:name="net.assemble.emailnotify.core.EmailNotifyService" />
-        <service android:name="net.assemble.emailnotify.core.EmailNotificationService" />
-
-        <activity android:name="net.assemble.emailnotify.core.EmailNotifyDebugActivity" />
-        <activity android:name="net.assemble.emailnotify.core.MyLogReportActivity" />
-        <activity android:name="net.orleaf.android.MyLogActivity" />
-
-        <service android:name="net.orleaf.android.MyLogReportService" />
-
-        <activity
-            android:name="net.orleaf.android.AboutActivity"
-            android:theme="@android:style/Theme.Dialog" />
+        <receiver android:name="net.assemble.emailnotify.core.notification.EmailNotificationReceiver" />
 
         <!-- Google AdMob Ads -->
         <activity

@@ -1,9 +1,12 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * メール着信通知履歴データベースヘルパー
+ */
 public class EmailNotificationHistoryOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "email_history";
 

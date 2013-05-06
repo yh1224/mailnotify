@@ -8,10 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
-
-import net.orleaf.android.MyLog;
-import net.orleaf.android.MyLogReportService;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -26,15 +24,22 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import net.assemble.emailnotify.core.notification.EmailNotificationManager;
+import net.assemble.emailnotify.core.notification.EmailNotificationService;
+import net.assemble.emailnotify.core.notification.EmailNotifyScreenReceiver;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.MyLog;
+import net.orleaf.android.MyLogReportService;
+
 /**
- * メール監視サービス
+ * メール着信監視サービス
+ * 
+ * ログを監視し、WAP PUSH 受信を検出する。
  */
-public class EmailNotifyService extends Service {
+public class EmailNotifyObserveService extends Service {
     private static final long RESTART_INTERVAL = 30 * 60 * 1000;
     private static final long LOG_SEND_INTERVAL = 24 * 60 * 60 * 1000;
     private static final int LOG_SEND_DISPERSION = 10 * 60; /* sec */
-
-    private AlarmManager mAlarmManager;
 
     private static ComponentName mService;
     private static boolean mActive = false;
@@ -50,8 +55,6 @@ public class EmailNotifyService extends Service {
     public void onCreate() {
         MyLog.v(this, EmailNotify.TAG, "+ " + Build.FINGERPRINT);
         super.onCreate();
-
-        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         // プリファレンスのバージョンアップ
         EmailNotifyPreferences.upgrade(this);
@@ -84,8 +87,9 @@ public class EmailNotifyService extends Service {
 
         // 定期的に再startを仕掛けておく
         mRestartIntent  = PendingIntent.getService(this, 0,
-                new Intent(this, EmailNotifyService.class), 0);
-        mAlarmManager.setRepeating(AlarmManager.RTC, 0, RESTART_INTERVAL, mRestartIntent);
+                new Intent(this, EmailNotifyObserveService.class), 0);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC, 0, RESTART_INTERVAL, mRestartIntent);
 
         startCheck();
     }
@@ -134,12 +138,14 @@ public class EmailNotifyService extends Service {
     }
 
     public void onDestroy() {
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
         MyLog.v(this, EmailNotify.TAG, "!");
         super.onDestroy();
         mActive = false;
 
         if (mRestartIntent != null) {
-            mAlarmManager.cancel(mRestartIntent);
+            am.cancel(mRestartIntent);
             mRestartIntent = null;
         }
 
@@ -168,7 +174,7 @@ public class EmailNotifyService extends Service {
         Calendar cal = Calendar.getInstance();
         Date date;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
             date = sdf.parse(cal.get(Calendar.YEAR) + "-" + logdate);
         } catch (ParseException e) {
             Log.w(EmailNotify.TAG, "Unexpected log date: " + logdate);
@@ -461,7 +467,7 @@ public class EmailNotifyService extends Service {
     public static boolean startService(Context ctx) {
         boolean result;
         boolean restart = mActive;
-        mService = ctx.startService(new Intent(ctx, EmailNotifyService.class));
+        mService = ctx.startService(new Intent(ctx, EmailNotifyObserveService.class));
         if (mService == null) {
             MyLog.e(ctx, EmailNotify.TAG, "Service start failed!");
             result = false;

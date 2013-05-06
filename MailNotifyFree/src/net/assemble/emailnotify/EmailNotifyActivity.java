@@ -7,6 +7,9 @@ import android.widget.LinearLayout;
 
 import com.google.ads.*;
 
+/**
+ * メイン画面 Activity
+ */
 public class EmailNotifyActivity extends
         net.assemble.emailnotify.core.EmailNotifyActivity {
     private static final String MY_AD_UNIT_ID = "a14d316803d0e29";

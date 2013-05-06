@@ -1,8 +1,5 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.debug;
 
-import net.orleaf.android.IMyLogReportListener;
-import net.orleaf.android.IMyLogReportService;
-import net.orleaf.android.MyLogReportService;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -15,6 +12,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.widget.Toast;
+
+import net.assemble.emailnotify.core.R;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.IMyLogReportListener;
+import net.orleaf.android.IMyLogReportService;
+import net.orleaf.android.MyLogReportService;
 
 public class MyLogReportActivity extends ListActivity {
     private IMyLogReportService mReportService;

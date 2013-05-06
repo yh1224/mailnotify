@@ -1,9 +1,10 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.preferences;
 
 import java.util.Calendar;
 import java.util.Map;
 import java.util.UUID;
 
+import net.assemble.emailnotify.core.EmailNotify;
 import net.orleaf.android.MyLog;
 
 import android.content.ComponentName;

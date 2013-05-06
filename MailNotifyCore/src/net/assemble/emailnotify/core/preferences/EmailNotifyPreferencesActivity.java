@@ -1,10 +1,9 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.preferences;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.assemble.emailnotify.core.MobileNetworkManager.ApnInfo;
 import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +20,14 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.EmailNotifyObserveService;
+import net.assemble.emailnotify.core.R;
+import net.assemble.emailnotify.core.debug.MyLogReportActivity;
+import net.assemble.emailnotify.core.notification.EmailNotificationManager;
+import net.assemble.emailnotify.core.notification.MobileNetworkManager;
+import net.assemble.emailnotify.core.notification.MobileNetworkManager.ApnInfo;
 
 /**
  * 設定画面
@@ -535,9 +542,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
      */
     private void updateService() {
         if (EmailNotifyPreferences.getEnable(this)) {
-            EmailNotifyService.startService(this);
+            EmailNotifyObserveService.startService(this);
         } else {
-            EmailNotifyService.stopService(this);
+            EmailNotifyObserveService.stopService(this);
         }
     }
 

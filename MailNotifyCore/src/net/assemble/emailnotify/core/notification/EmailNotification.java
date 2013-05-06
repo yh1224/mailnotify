@@ -1,10 +1,8 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import net.orleaf.android.MyLog;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -24,6 +22,11 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.R;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.MyLog;
+
 /**
  * メール着信通知
  */
@@ -41,7 +44,7 @@ public class EmailNotification {
     private static final int NOTIFICATIONID_SOUND = 1;
     private static final int NOTIFICATIONID_LED = 2;
 
-    private Context mCtx;
+    private final Context mCtx;
     private ImoniNotifier mImoniNotifier = null;
 
     private String mMailbox;        // メールボックス名
@@ -116,11 +119,11 @@ public class EmailNotification {
      */
     private static long[] getVibrate(long[] pattern, long length) {
         ArrayList<Long> arr = new ArrayList<Long>();
-        arr.add(new Long(0));
+        arr.add(Long.valueOf(0));
         long rest = length * 1000;
         while (rest > 0) {
             for (int j = 0; j < pattern.length; j++) {
-                arr.add(new Long(pattern[j]));
+                arr.add(Long.valueOf(pattern[j]));
                 rest -= pattern[j];
             }
         }
@@ -409,7 +412,7 @@ public class EmailNotification {
         NotificationManager notificationManager =
             (NotificationManager) mCtx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(mNotificationId + NOTIFICATIONID_ICON);
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_ICON) + 
+        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_ICON) +
                 "] Stopped icon for " + mMailbox);
 
         MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Cleared: " + mMailbox);

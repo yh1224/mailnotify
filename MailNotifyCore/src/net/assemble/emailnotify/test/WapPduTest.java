@@ -1,9 +1,10 @@
 package net.assemble.emailnotify.test;
 
-import net.assemble.emailnotify.core.EmailNotifyPreferences;
-import net.assemble.emailnotify.core.WapPdu;
-import net.orleaf.android.HexUtils;
 import junit.framework.TestCase;
+
+import net.assemble.emailnotify.core.WapPdu;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.HexUtils;
 
 public class WapPduTest extends TestCase {
 

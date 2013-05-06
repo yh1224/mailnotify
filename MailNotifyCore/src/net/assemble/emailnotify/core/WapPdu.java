@@ -5,15 +5,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map.Entry;
-
-import net.orleaf.android.HexUtils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.internal.telephony.WspTypeDecoder;
 
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.HexUtils;
+
+/**
+ * WAP PDU 解析
+ */
 public class WapPdu implements Parcelable {
     private byte[] wapData;
     private int dataIndex = -1;
@@ -49,7 +54,7 @@ public class WapPdu implements Parcelable {
     }
 
     // X-Wap-Application-Id
-    private static final HashMap<Integer, String> APPIDS; 
+    private static final HashMap<Integer, String> APPIDS;
     static {
         APPIDS = new HashMap<Integer, String>();
         APPIDS.put(0x09, "x-wap-application:emn.ua");
@@ -180,6 +185,7 @@ public class WapPdu implements Parcelable {
             WspTypeDecoder pduDecoder = new WspTypeDecoder(wapData);
 
             int index = 0;
+            @SuppressWarnings("unused")
             int transactionId = wapData[index++] & 0xFF;
             int pduType = wapData[index++] & 0xFF;
             int headerLength = 0;
@@ -365,7 +371,6 @@ public class WapPdu implements Parcelable {
         }
         // unknown
         return "unknown(" + String.format("0x%x", key) + ")";
-    
     }
 
     /**
@@ -453,7 +458,7 @@ public class WapPdu implements Parcelable {
         Date date = null;
         if (timestamp != null) {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss z", Locale.US);
                 date = sdf.parse(HexUtils.bytes2hex(timestamp) + " GMT");
             } catch (ParseException e) {
                 //Log.w(EmailNotify.TAG, "WapPdu: Unexpected timestamp: " + HexUtils.bytes2hex(timestamp));

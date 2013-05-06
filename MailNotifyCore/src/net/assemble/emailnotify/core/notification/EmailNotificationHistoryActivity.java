@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.util.Date;
 
@@ -16,6 +16,12 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.R;
+
+/**
+ * メール着信通知履歴表示 Activity
+ */
 public class EmailNotificationHistoryActivity extends ListActivity {
 
     private MyAdapter mAdapter;
@@ -97,13 +103,13 @@ public class EmailNotificationHistoryActivity extends ListActivity {
                 if (cleared > 0) {
                     clearedDate = new Date(cleared * 1000);
                 }
-    
+
                 StringBuffer textBuf = new StringBuffer();
                 textBuf.append(wapData + "\n\n");
                 textBuf.append("Content-Type: " + contentType + "\n");
                 textBuf.append("X-Wap-Application-Id: " + applicationId + "\n");
                 textBuf.append("mailbox: " + mailbox + "\n");
-    
+
                 if (timestampDate != null) {
                     textBuf.append("\nR " + timestampDate.toLocaleString());
                 }
@@ -116,7 +122,7 @@ public class EmailNotificationHistoryActivity extends ListActivity {
                 if (clearedDate != null) {
                     textBuf.append("\nC " + clearedDate.toLocaleString());
                 }
-    
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Detail #" + id);
                 builder.setMessage(textBuf.toString());

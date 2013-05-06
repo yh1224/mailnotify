@@ -1,12 +1,10 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.orleaf.android.MyLog;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -20,6 +18,13 @@ import android.provider.BaseColumns;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import net.assemble.emailnotify.core.EmailNotify;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.orleaf.android.MyLog;
+
+/**
+ * モバイルネットワーク管理
+ */
 public class MobileNetworkManager {
 
     public class ApnInfo {
@@ -30,17 +35,9 @@ public class MobileNetworkManager {
     }
 
     private final Context mCtx;
-    private TelephonyManager mTelManager;
-    private final WifiManager mWifiManager;
-    private final ConnectivityManager mConnManager;
-    private final ContentResolver mResolver;
 
     public MobileNetworkManager(Context ctx) {
         mCtx = ctx;
-        mTelManager = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
-        mWifiManager = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
-        mConnManager = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        mResolver = mCtx.getContentResolver();
     }
 
     /**
@@ -83,13 +80,16 @@ public class MobileNetworkManager {
      * @return APNリスト (null:取得失敗)
      */
     public List<ApnInfo> getApnList() {
+        TelephonyManager tm = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+
         ArrayList<ApnInfo> apnList = new ArrayList<ApnInfo>();
-        String simOp = mTelManager.getSimOperator();
+        String simOp = tm.getSimOperator();
         if (simOp == null || simOp.length() == 0) {
             return null;
         }
 
-        Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
+        ContentResolver resolver = mCtx.getContentResolver();
+        Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type", "numeric" },
                 "numeric = ?", new String[] { simOp }, BaseColumns._ID);
 
@@ -122,10 +122,12 @@ public class MobileNetworkManager {
     private boolean getMobileDataEnabled()
             throws ClassNotFoundException, SecurityException, NoSuchFieldException, IllegalArgumentException,
             IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        final Class<?> conmanClass = Class.forName(mConnManager.getClass().getName());
+        ConnectivityManager cm = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        final Class<?> conmanClass = Class.forName(cm.getClass().getName());
         final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
         iConnectivityManagerField.setAccessible(true);
-        final Object iConnectivityManager = iConnectivityManagerField.get(mConnManager);
+        final Object iConnectivityManager = iConnectivityManagerField.get(cm);
         final Class<?> iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
         final Method getMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("getMobileDataEnabled");
         getMobileDataEnabledMethod.setAccessible(true);
@@ -139,12 +141,14 @@ public class MobileNetworkManager {
      * @return true:設定を変更した false:何もしなかった
      */
     private boolean setMobileDataEnabled(boolean enable) {
+        ConnectivityManager cm = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         try {
             if (getMobileDataEnabled() != enable) {
-                final Class<?> conmanClass = Class.forName(mConnManager.getClass().getName());
+                final Class<?> conmanClass = Class.forName(cm.getClass().getName());
                 final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
                 iConnectivityManagerField.setAccessible(true);
-                final Object iConnectivityManager = iConnectivityManagerField.get(mConnManager);
+                final Object iConnectivityManager = iConnectivityManagerField.get(cm);
                 final Class<?> iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
                 final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
                 setMobileDataEnabledMethod.setAccessible(true);
@@ -166,15 +170,17 @@ public class MobileNetworkManager {
      * @return true:設定を変更した false:何もしなかった
      */
     private boolean activateAPN(String target_apn) {
+        TelephonyManager tm = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+        ContentResolver resolver = mCtx.getContentResolver();
         boolean changed = false;
 
-        String simOp = mTelManager.getSimOperator();
+        String simOp = tm.getSimOperator();
         if (simOp == null || simOp.length() == 0) {
             MyLog.d(mCtx, EmailNotify.TAG, "simOp not set.");
             return false;
         }
         if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "simOp = " + simOp);
-        Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
+        Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type" },
                 "numeric = ?", new String[] { simOp }, null);
 
@@ -245,7 +251,7 @@ public class MobileNetworkManager {
                     values.put("type", new_type);
                     Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
                     try {
-                        mResolver.update(url, values, null, null);
+                        resolver.update(url, values, null, null);
                         changed = true;
                         MyLog.d(mCtx, EmailNotify.TAG, "APN enabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
                     } catch (SecurityException e) {
@@ -261,7 +267,7 @@ public class MobileNetworkManager {
             if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Activating APN...");
 
             // 現在の接続先を取得
-            cursor = mResolver.query(Uri.parse("content://telephony/carriers/preferapn"),
+            cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
                     new String[] {"_id"}, null, null, null);
             if (cursor.moveToFirst()) {
                 prevApnKey = cursor.getString(0);
@@ -274,7 +280,7 @@ public class MobileNetworkManager {
                 values = new ContentValues();
                 values.put("apn_id", apnKey);
                 try {
-                    mResolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
+                    resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
                     changed = true;
                     MyLog.d(mCtx, EmailNotify.TAG, "APN activated: " + prevApnKey + " -> " + apnKey);
                 } catch (SecurityException e) {
@@ -301,13 +307,14 @@ public class MobileNetworkManager {
      * @return true:設定を変更した false:何もしなかった
      */
     private boolean setWifiEnabled(boolean enable) {
+        WifiManager wm = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
         boolean changed = false;
 
-        if (mWifiManager.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
+        if (wm.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
             if (!enable) {
                 // 有効→無効化
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
-                mWifiManager.setWifiEnabled(false);
+                wm.setWifiEnabled(false);
                 changed = true;
             } else {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already enabled.");
@@ -316,7 +323,7 @@ public class MobileNetworkManager {
             if (enable) {
                 // 無効→有効化
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
-                mWifiManager.setWifiEnabled(true);
+                wm.setWifiEnabled(true);
                 changed = true;
             } else {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
@@ -330,6 +337,9 @@ public class MobileNetworkManager {
      * APNを復元する
      */
     private void restoreAPN() {
+        TelephonyManager tm = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+        ContentResolver resolver = mCtx.getContentResolver();
+
         String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(mCtx);
         String modifierStr = EmailNotifyPreferences.getNetworkSaveApnModifierString(mCtx);
         String modifierType = EmailNotifyPreferences.getNetworkSaveApnModifierType(mCtx);
@@ -339,9 +349,9 @@ public class MobileNetworkManager {
         ContentValues values;
 
         if (modifierStr != null) {
-            Cursor cursor = mResolver.query(Uri.parse("content://telephony/carriers"),
+            Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                     new String[] { BaseColumns._ID, "apn", "type" },
-                    "numeric = ?", new String[] { mTelManager.getSimOperator() }, null);
+                    "numeric = ?", new String[] { tm.getSimOperator() }, null);
 
             // APN設定を復元
             if (cursor.moveToFirst()) {
@@ -371,7 +381,7 @@ public class MobileNetworkManager {
                     values.put("type", new_type);
                     Uri url = ContentUris.withAppendedId(Uri.parse("content://telephony/carriers"), Integer.parseInt(key));
                     try {
-                        mResolver.update(url, values, null, null);
+                        resolver.update(url, values, null, null);
                         MyLog.d(mCtx, EmailNotify.TAG, "APN disabled: key=" + key + ", apn=" + new_apn + ", type=" + new_type);
                     } catch (SecurityException e) {
                         MyLog.e(mCtx, EmailNotify.TAG, "Unable to update APN settings for security reasons.");
@@ -386,7 +396,7 @@ public class MobileNetworkManager {
             values = new ContentValues();
             values.put("apn_id", apnKey);
             try {
-                mResolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
+                resolver.update(Uri.parse("content://telephony/carriers/preferapn"), values, null, null);
                 MyLog.d(mCtx, EmailNotify.TAG, "APN restored: -> " + apnKey);
             } catch (SecurityException e) {
                 MyLog.e(mCtx, EmailNotify.TAG, "Unable to update APN settings for security reasons.");
@@ -457,6 +467,8 @@ public class MobileNetworkManager {
      * ネットワーク設定を復元する
      */
     public void restoreNetwork() {
+        WifiManager wm = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
+
         if (EmailNotifyPreferences.hasNetworkSave(mCtx)) {
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network...");
 
@@ -480,11 +492,11 @@ public class MobileNetworkManager {
             if (EmailNotifyPreferences.hasNetworkSaveWifiEnable(mCtx)) {
                 if (EmailNotifyPreferences.getNetworkSaveWifiEnable(mCtx)) {
                     if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
-                    mWifiManager.setWifiEnabled(true);
+                    wm.setWifiEnabled(true);
                     MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi enabled.");
                 } else {
                     if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
-                    mWifiManager.setWifiEnabled(false);
+                    wm.setWifiEnabled(false);
                     MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi disabled.");
                 }
             }

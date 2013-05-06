@@ -13,10 +13,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
+import net.assemble.emailnotify.core.debug.EmailNotifyDebugActivity;
+import net.assemble.emailnotify.core.notification.EmailNotificationHistoryActivity;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
+import net.assemble.emailnotify.core.preferences.EmailNotifyPreferencesActivity;
 import net.orleaf.android.AboutActivity;
 import net.orleaf.android.MyLog;
 import net.orleaf.android.MyLogActivity;
 
+/**
+ * メイン画面 Activity
+ */
 public class EmailNotifyActivity extends Activity implements View.OnClickListener {
     private ToggleButton mEnableButton;
 
@@ -164,11 +171,11 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     private void updateService() {
         ImageView image = (ImageView) findViewById(R.id.main_image);
         if (EmailNotifyPreferences.getEnable(this)) {
-            EmailNotifyService.startService(this);
+            EmailNotifyObserveService.startService(this);
             mEnableButton.setChecked(true);
             image.setImageResource(R.drawable.main);
         } else {
-            EmailNotifyService.stopService(this);
+            EmailNotifyObserveService.stopService(this);
             mEnableButton.setChecked(false);
             image.setImageResource(R.drawable.disable);
         }

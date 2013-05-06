@@ -1,4 +1,4 @@
-package net.assemble.emailnotify.core;
+package net.assemble.emailnotify.core.notification;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -9,12 +9,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
+/**
+ * メール着信通知履歴データベース操作
+ */
 public class EmailNotificationHistoryDao {
     /**
      * ログ保持数
      */
     private static final long LOG_ROTATE_LIMIT = 100;
-    
+
     /**
      * 重複判定閾値(秒)
      * *timestampが存在しない場合*の重複チェックでは、
