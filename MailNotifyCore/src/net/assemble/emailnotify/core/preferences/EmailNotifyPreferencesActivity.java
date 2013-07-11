@@ -81,8 +81,10 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         }
 
         mApnWritable = getPackageManager().checkPermission(permission.WRITE_APN_SETTINGS, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-        mApnEntries = getApnEntries();
-        mApnEntryValues = getApnEntryValues();
+        if (mApnWritable) {
+            mApnEntries = getApnEntries();
+            mApnEntryValues = getApnEntryValues();
+        }
 
         mPrefNotify = new PrefNotify[SERVICES.length];
         for (int i = 0; i < SERVICES.length; i++) {
@@ -103,9 +105,11 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotify[i].autoConnectType = (ListPreference) getServicePreference("notify_auto_connect_type", SERVICES[i]);
             mPrefNotify[i].autoConnectApn = (ListPreference) getServicePreference("notify_auto_connect_apn", SERVICES[i]);
 
-            if (mPrefNotify[i].autoConnectApn != null && mApnEntries.length > 0) {
-                mPrefNotify[i].autoConnectApn.setEntries(mApnEntries);
-                mPrefNotify[i].autoConnectApn.setEntryValues(mApnEntryValues);
+            if (mApnWritable) {
+                if (mPrefNotify[i].autoConnectApn != null && mApnEntries.length > 0) {
+                    mPrefNotify[i].autoConnectApn.setEntries(mApnEntries);
+                    mPrefNotify[i].autoConnectApn.setEntryValues(mApnEntryValues);
+                }
             }
             mPrefNotify[i].sms = (CheckBoxPreference) getServicePreference("notify_sms", SERVICES[i]);
             mPrefNotify[i].smsTel = (EditTextPreference) getServicePreference("notify_sms_tel", SERVICES[i]);
