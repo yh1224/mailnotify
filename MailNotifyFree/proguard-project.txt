@@ -20,3 +20,4 @@
 #}
 
 -dontobfuscate
+-dontwarn com.google.ads.**
