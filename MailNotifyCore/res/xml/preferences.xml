@@ -726,6 +726,17 @@
                     android:summary="@string/pref_notify_stop_renotify_on_screen_summary"
                     android:title="@string/pref_notify_stop_renotify_on_screen_title" />
             </PreferenceCategory>
+            <PreferenceCategory android:title="@string/pref_group_notify_autoclear" >
+                <net.assemble.emailnotify.core.preferences.NumberSeekbarPreference
+                    maxValue="60"
+                    minValue="0"
+                    unit="@string/pref_notify_autoclear_interval_unit"
+                    zero="@string/pref_notify_autoclear_interval_zero"
+                    android:defaultValue="0"
+                    android:key="notify_autoclear_interval"
+                    android:summary="@string/pref_notify_autoclear_interval_summary"
+                    android:title="@string/pref_notify_autoclear_interval_title" />
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <EditTextPreference

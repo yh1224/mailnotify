@@ -110,6 +110,9 @@ public class EmailNotifyPreferences
     public static final String PREF_NOTIFY_DELAY_KEY = "notify_delay";
     public static final int PREF_NOTIFY_DELAY_DEFAULT = 0;
 
+    public static final String PREF_NOTIFY_AUTOCLEAR_INTERVAL_KEY = "notify_autoclear_interval";
+    public static final int PREF_NOTIFY_AUTOCLEAR_INTERVAL_DEFAULT = 0;
+
     public static final String PREF_NOTIFY_AUTO_CONNECT_KEY = "notify_auto_connect";
     public static final boolean PREF_NOTIFY_AUTO_CONNECT_DEFAULT = false;
 
@@ -552,6 +555,20 @@ public class EmailNotifyPreferences
         } else {
             return pref.getInt(PREF_NOTIFY_DELAY_KEY,
                 PREF_NOTIFY_DELAY_DEFAULT);
+        }
+    }
+
+    /**
+     * 通知自動消去時間設定を取得
+     */
+    public static int getNotifyAutoclearInterval(Context ctx, String service) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (service != null && isNotifyCustomized(ctx, service)) {
+            return pref.getInt(getServiceKey(PREF_NOTIFY_AUTOCLEAR_INTERVAL_KEY, service),
+                PREF_NOTIFY_AUTOCLEAR_INTERVAL_DEFAULT);
+        } else {
+            return pref.getInt(PREF_NOTIFY_AUTOCLEAR_INTERVAL_KEY,
+                PREF_NOTIFY_AUTOCLEAR_INTERVAL_DEFAULT);
         }
     }
 

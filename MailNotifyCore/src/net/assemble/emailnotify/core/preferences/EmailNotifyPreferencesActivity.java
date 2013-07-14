@@ -62,6 +62,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
     };
     private PrefNotify[] mPrefNotify;
 
+    private NumberSeekbarPreference mPrefNotifyAutoclearInterval;
     private NumberSeekbarPreference mPrefNotifySoundLength;
     private EditTextPreference mPrefExcludeHours;
 
@@ -116,6 +117,7 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
             mPrefNotify[i].test = (Preference) getServicePreference("test_notify", SERVICES[i]);
         }
 
+        mPrefNotifyAutoclearInterval = (NumberSeekbarPreference) findPreference("notify_autoclear_interval");
         mPrefNotifySoundLength = (NumberSeekbarPreference) findPreference("notify_sound_length");
         mPrefExcludeHours = (EditTextPreference) findPreference("exclude_hours");
 
@@ -435,6 +437,14 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
 
         // その他
         if (!EmailNotify.isFreeVersion(this)) {
+            if (mPrefNotifyAutoclearInterval.getValue() == 0) {
+                mPrefNotifyAutoclearInterval.setSummary(
+                        getResources().getString(R.string.pref_notify_autoclear_interval_summary));
+            } else {
+                mPrefNotifyAutoclearInterval.setSummary(
+                        mPrefNotifyAutoclearInterval.getValue() +
+                        getResources().getString(R.string.pref_notify_autoclear_interval_unit));
+            }
             if (mPrefNotifySoundLength.getValue() == 0) {
                 mPrefNotifySoundLength.setSummary(
                         getResources().getString(R.string.pref_notify_sound_length_summary));

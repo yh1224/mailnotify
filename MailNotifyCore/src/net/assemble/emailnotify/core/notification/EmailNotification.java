@@ -57,8 +57,9 @@ public class EmailNotification {
     private int mNotifyCount;       // 通知回数
     private int mActiveNotify;      // 現在アクティブな通知種別 (MAIN/SOUND/LED)
 
-    private PendingIntent mRenotifyIntent;
-    private PendingIntent mStopIntent;
+    private PendingIntent mRenotifyIntent;      // 最通知タイマ
+    private PendingIntent mStopIntent;          // 通知音停止タイマ
+    private PendingIntent mClearIntent;         // 通知自動消去タイマ
 
     /**
      * Constructor
@@ -148,6 +149,20 @@ public class EmailNotification {
         mNotifyCount++;
         MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId + "] Notified: " + mMailbox +
                 " (service=" + mService + ", mail=" + mMailCount + ", notify=" + mNotifyCount + ")");
+
+        // 自動消去タイマ(初回のみ)
+        if (mNotifyCount == 1) {
+            int autoclear = EmailNotifyPreferences.getNotifyAutoclearInterval(mCtx, mService);
+            if (autoclear > 0) {
+                long next = SystemClock.elapsedRealtime() + autoclear * 60 * 1000;
+                mClearIntent = getPendingIntent(EmailNotificationReceiver.ACTION_NOTIFY_CANCEL);
+                AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mClearIntent);
+                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
+                        "] Started auto clear timer for " + mMailbox + " (" + autoclear + " min.)");
+                return;
+            }
+        }
 
         // 再通知タイマ
         if (EmailNotifyPreferences.getNotifyView(mCtx, mService) &&
@@ -397,6 +412,15 @@ public class EmailNotification {
         }
         if ((flags & NOTIFY_RENOTIFY) != 0) {
             stopRenotify();
+        }
+
+        // 自動消去タイマ停止
+        if (mClearIntent != null) {
+            AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(mClearIntent);
+            mStopIntent = null;
+            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
+                    "] Stopped auto clear timer for " + mMailbox + ", active=" + mActiveNotify);
         }
     }
 
