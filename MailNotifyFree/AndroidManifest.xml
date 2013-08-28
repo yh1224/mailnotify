@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.assemble.emailnotify"
-    android:versionCode="421"
-    android:versionName="4.2.1" >
+    android:versionCode="422"
+    android:versionName="4.2.2" >
 
     <uses-sdk
         android:minSdkVersion="4"
@@ -47,6 +47,7 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Dialog" />
+        <activity android:name="net.assemble.emailnotify.core.debug.MyLogReportActivity" />
         <activity
             android:name="net.assemble.emailnotify.core.notification.EmailNotifyRestoreActivity"
             android:launchMode="singleInstance" />
