@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
 import android.app.Service;
@@ -73,21 +74,34 @@ public class MyLogReportService extends Service {
         super.onCreate();
     }
 
+    // This is the old onStart method that will be called on the pre-2.0
+    // platform.  On 2.0 or later we override onStartCommand() so this
+    // method will not be called.
+    @SuppressWarnings("deprecation")
     @Override
     public void onStart(Intent intent, int startId) {
-        onStart(intent);
+        handleCommand(intent);
+    }
+
+    @TargetApi(5)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleCommand(intent);
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        onStart(intent);
+        handleCommand(intent);
         return binder;
     }
 
     /**
      * ログ送信
      */
-    public void onStart(Intent intent) {
+    public void handleCommand(Intent intent) {
         if (intent == null) {
             return;
         }

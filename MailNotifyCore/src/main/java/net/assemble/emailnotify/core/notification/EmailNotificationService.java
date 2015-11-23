@@ -2,6 +2,7 @@ package net.assemble.emailnotify.core.notification;
 
 import java.util.Date;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,10 +34,25 @@ public class EmailNotificationService extends Service {
         mPending = false;
     }
 
+    // This is the old onStart method that will be called on the pre-2.0
+    // platform.  On 2.0 or later we override onStartCommand() so this
+    // method will not be called.
+    @SuppressWarnings("deprecation")
     @Override
     public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+        handleCommand(intent);
+    }
 
+    @TargetApi(5)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleCommand(intent);
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
+    }
+
+    private void handleCommand(Intent intent) {
         if (intent == null) {
             return;
         }

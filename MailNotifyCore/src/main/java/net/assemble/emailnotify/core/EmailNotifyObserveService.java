@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -94,10 +95,26 @@ public class EmailNotifyObserveService extends Service {
         startCheck();
     }
 
+    // This is the old onStart method that will be called on the pre-2.0
+    // platform.  On 2.0 or later we override onStartCommand() so this
+    // method will not be called.
+    @SuppressWarnings("deprecation")
     @Override
     public void onStart(Intent intent, int startId) {
+        handleCommand(intent);
+    }
+
+    @TargetApi(5)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleCommand(intent);
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
+    }
+
+    private void handleCommand(@SuppressWarnings("UnusedParameters") Intent intent) {
         MyLog.v(this, EmailNotify.TAG, "-");
-        super.onStart(intent, startId);
         startCheck();
     }
 
