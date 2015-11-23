@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
 
@@ -153,9 +152,7 @@ public class WapPdu implements Parcelable {
         wapData[0] = 0x00;
         wapData[1] = 0x06;
         wapData[2] = (byte) header.length;
-        for (int i = 0; i < header.length; i++) {
-            wapData[3 + i] = header[i];
-        }
+        System.arraycopy(header, 0, wapData, 3, header.length);
         for (int i = 0; i < body.length; i++) {
             wapData[3 + header.length + i] = body[i];
         }
@@ -182,13 +179,11 @@ public class WapPdu implements Parcelable {
      */
     public boolean decode() {
         if (dataIndex < 0) {
-            WspTypeDecoder pduDecoder = new WspTypeDecoder(wapData);
-
             int index = 0;
             @SuppressWarnings("unused")
             int transactionId = wapData[index++] & 0xFF;
             int pduType = wapData[index++] & 0xFF;
-            int headerLength = 0;
+            int headerLength;
 
             try {
                 if ((pduType != WspTypeDecoder.PDU_TYPE_PUSH) &&
@@ -197,7 +192,7 @@ public class WapPdu implements Parcelable {
                     return false;
                 }
 
-                pduDecoder = new WspTypeDecoder(wapData);
+                WspTypeDecoder pduDecoder = new WspTypeDecoder(wapData);
 
                 /**
                  * Parse HeaderLen(unsigned integer).
@@ -205,7 +200,7 @@ public class WapPdu implements Parcelable {
                  * The maximum size of a uintvar is 32 bits.
                  * So it will be encoded in no more than 5 octets.
                  */
-                if (pduDecoder.decodeUintvarInteger(index) == false) {
+                if (!pduDecoder.decodeUintvarInteger(index)) {
                     errorMessage = "WapPdu: Header Length error.";
                     return false;
                 }
@@ -226,7 +221,7 @@ public class WapPdu implements Parcelable {
                  * Length-quote = <Octet 31>         (WAP_PDU_LENGTH_QUOTE)
                  * Length = Uintvar-integer
                  */
-                if (pduDecoder.decodeContentType(index) == false) {
+                if (!pduDecoder.decodeContentType(index)) {
                     errorMessage = "WapPdu: Header Content-Type error.";
                     return false;
                 }
@@ -248,7 +243,7 @@ public class WapPdu implements Parcelable {
                  * App-assigned-code = Integer-value
                  */
                 if (wapData[index] == 0xaf - 0x100) {
-                    if (pduDecoder.decodeXWapApplicationId(index + 1) == false) {
+                    if (!pduDecoder.decodeXWapApplicationId(index + 1)) {
                         errorMessage = "WapPdu: Header X-Wap-Application-Id error.";
                         return false;
                     }
@@ -291,9 +286,7 @@ public class WapPdu implements Parcelable {
                             int tsLen = wapData[index];
                             timestamp = new byte[tsLen];
                             index++;
-                            for (int i = 0; i < tsLen; i++) {
-                                timestamp[i] = wapData[index + i];
-                            }
+                            System.arraycopy(wapData, index, timestamp, 0, tsLen);
                             index += tsLen;
                         }
                     } else if (0x06 <= wapData[index] && wapData[index] <= 0x0d) {  // mailbox attribute
@@ -328,9 +321,7 @@ public class WapPdu implements Parcelable {
                             strLen++;
                         }
                         byte[] m = new byte[strLen];
-                        for (int i = 0; i < strLen; i++) {
-                            m[i] = wapData[index + i];
-                        }
+                        System.arraycopy(wapData, index, m, 0, strLen);
                         mailBox = prefix + new String(m, 0);
                         index += strLen + 1;
                         int tld = wapData[index];
@@ -377,9 +368,8 @@ public class WapPdu implements Parcelable {
      * val -> key (文字列→バイナリ値)
      */
     private int convertMap(HashMap<Integer, String> map, String val) {
-        if (CONTENTTYPES.containsValue(val)) {
-            for (Iterator<Entry<Integer, String>> it = CONTENTTYPES.entrySet().iterator(); it.hasNext();) {
-                Entry<Integer, String> entry = (Entry<Integer, String>)it.next();
+        if (map.containsValue(val)) {
+            for (Entry<Integer, String> entry : map.entrySet()) {
                 Integer key = entry.getKey();
                 String value = entry.getValue();
                 if (value.equals(val)) {
@@ -523,6 +513,7 @@ public class WapPdu implements Parcelable {
     /**
      * エラーメッセージを取得
      */
+    @SuppressWarnings("unused")
     public String getErrorMessage() {
         return errorMessage;
     }

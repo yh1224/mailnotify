@@ -45,10 +45,9 @@ public class EmailNotificationHistoryDao {
      * @return Cursor
      */
     public static Cursor getHistories(Context ctx) {
-        Cursor c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+        return getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
                 null, null, null,
                 null, null, "created_at desc, _id desc", null);
-        return c;
     }
 
     /**
@@ -58,9 +57,8 @@ public class EmailNotificationHistoryDao {
      * @return Cursor
      */
     public static Cursor getActiveHistories(Context ctx) {
-        Cursor c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+        return getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
                 null, "cleared_at IS NULL", null, null, null, null);
-        return c;
     }
 
     /**
@@ -71,10 +69,9 @@ public class EmailNotificationHistoryDao {
      * @return Cursor
      */
     public static Cursor getHistory(Context ctx, long id) {
-        Cursor c = getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
+        return getDb(ctx).query(EmailNotificationHistoryOpenHelper.TABLE_NAME,
                 null, BaseColumns._ID + " = " + id, null,
                 null, null, null, null);
-        return c;
     }
 
     /**
@@ -145,7 +142,6 @@ public class EmailNotificationHistoryDao {
         values.put("notified_at", Calendar.getInstance().getTimeInMillis() / 1000);
         getDb(ctx).update(EmailNotificationHistoryOpenHelper.TABLE_NAME,
                 values, "mailbox = ? AND notified_at IS NULL", new String[] { mailbox });
-        return;
     }
 
     /**
@@ -161,7 +157,6 @@ public class EmailNotificationHistoryDao {
         getDb(ctx).update(EmailNotificationHistoryOpenHelper.TABLE_NAME,
                 values, "mailbox = ? AND notified_at IS NOT NULL AND cleared_at IS NULL",
                 new String[] { mailbox });
-        return;
     }
 
     /**
@@ -175,7 +170,6 @@ public class EmailNotificationHistoryDao {
         values.put("cleared_at", Calendar.getInstance().getTimeInMillis() / 1000);
         getDb(ctx).update(EmailNotificationHistoryOpenHelper.TABLE_NAME,
                 values, BaseColumns._ID + " = " + id, null);
-        return;
     }
 
     /**

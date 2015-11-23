@@ -24,8 +24,6 @@ import net.assemble.emailnotify.core.R;
  */
 public class EmailNotificationHistoryActivity extends ListActivity {
 
-    private MyAdapter mAdapter;
-
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,8 +63,8 @@ public class EmailNotificationHistoryActivity extends ListActivity {
         Cursor c = EmailNotificationHistoryDao.getHistories(this);
         if (c.moveToFirst()) {
             startManagingCursor(c);
-            mAdapter = new MyAdapter(this, c);
-            setListAdapter(mAdapter);
+            MyAdapter myAdapter = new MyAdapter(this, c);
+            setListAdapter(myAdapter);
         } else {
             setListAdapter(null);
         }
@@ -104,23 +102,23 @@ public class EmailNotificationHistoryActivity extends ListActivity {
                     clearedDate = new Date(cleared * 1000);
                 }
 
-                StringBuffer textBuf = new StringBuffer();
-                textBuf.append(wapData + "\n\n");
-                textBuf.append("Content-Type: " + contentType + "\n");
-                textBuf.append("X-Wap-Application-Id: " + applicationId + "\n");
-                textBuf.append("mailbox: " + mailbox + "\n");
+                StringBuilder textBuf = new StringBuilder();
+                textBuf.append(wapData).append("\n\n");
+                textBuf.append("Content-Type: ").append(contentType).append("\n");
+                textBuf.append("X-Wap-Application-Id: ").append(applicationId).append("\n");
+                textBuf.append("mailbox: ").append(mailbox).append("\n");
 
                 if (timestampDate != null) {
-                    textBuf.append("\nR " + timestampDate.toLocaleString());
+                    textBuf.append("\nR ").append(timestampDate.toLocaleString());
                 }
                 if (loggedDate != null) {
-                    textBuf.append("\nL " + loggedDate.toLocaleString());
+                    textBuf.append("\nL ").append(loggedDate.toLocaleString());
                 }
                 if (notifiedDate != null) {
-                    textBuf.append("\nN " + notifiedDate.toLocaleString());
+                    textBuf.append("\nN ").append(notifiedDate.toLocaleString());
                 }
                 if (clearedDate != null) {
-                    textBuf.append("\nC " + clearedDate.toLocaleString());
+                    textBuf.append("\nC ").append(clearedDate.toLocaleString());
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

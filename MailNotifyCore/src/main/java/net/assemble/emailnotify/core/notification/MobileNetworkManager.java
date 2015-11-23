@@ -48,6 +48,7 @@ public class MobileNetworkManager {
         ContentResolver resolver = mCtx.getContentResolver();
         Cursor cur = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
                 new String[] { BaseColumns._ID }, null, null, null);
+        assert cur != null;
         if (cur.moveToFirst()) {
             apnKey = cur.getString(0);
         }
@@ -58,6 +59,7 @@ public class MobileNetworkManager {
     /**
      * 現在の接続先APN名を取得
      */
+    @SuppressWarnings("unused")
     public String getPreferApnName() {
         String apnName = null;
         ContentResolver resolver = mCtx.getContentResolver();
@@ -65,6 +67,7 @@ public class MobileNetworkManager {
         if (apnKey != null) {
             Cursor cur = resolver.query(Uri.parse("content://telephony/carriers"),
                     new String[] { "apn" }, BaseColumns._ID + " = " + apnKey, null, null);
+            assert cur != null;
             if (cur.moveToFirst()) {
                 apnName = cur.getString(0);
             }
@@ -93,6 +96,7 @@ public class MobileNetworkManager {
                 new String[] { BaseColumns._ID, "apn", "type", "numeric" },
                 "numeric = ?", new String[] { simOp }, BaseColumns._ID);
 
+        assert cursor != null;
         if (cursor.moveToFirst()) {
             do {
                 if (EmailNotify.DEBUG) {
@@ -111,7 +115,8 @@ public class MobileNetworkManager {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "key=" + info.KEY + ", apn=" + info.APN_NAME + ", type=" + info.TYPE);
             } while (cursor.moveToNext());
         }
-        return (List<ApnInfo>) apnList;
+        cursor.close();
+        return apnList;
     }
 
     /**
@@ -183,6 +188,7 @@ public class MobileNetworkManager {
         Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type" },
                 "numeric = ?", new String[] { simOp }, null);
+        assert cursor != null;
 
         ContentValues values;
 
@@ -269,6 +275,7 @@ public class MobileNetworkManager {
             // 現在の接続先を取得
             cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
                     new String[] {"_id"}, null, null, null);
+            assert cursor != null;
             if (cursor.moveToFirst()) {
                 prevApnKey = cursor.getString(0);
                 if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Current APN ID: " + prevApnKey);
@@ -352,6 +359,7 @@ public class MobileNetworkManager {
             Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                     new String[] { BaseColumns._ID, "apn", "type" },
                     "numeric = ?", new String[] { tm.getSimOperator() }, null);
+            assert cursor != null;
 
             // APN設定を復元
             if (cursor.moveToFirst()) {
@@ -453,14 +461,12 @@ public class MobileNetworkManager {
             EmailNotifyPreferences.saveNetworkWifiInfo(mCtx, false);
         }
 
-        boolean changed = wifiChanged;
-        if (changed) {
+        if (wifiChanged) {
             // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
             EmailNotifyPreferences.saveNetworkInfo(mCtx);
             if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
         }
-
-        return changed;
+        return wifiChanged;
     }
 
     /**

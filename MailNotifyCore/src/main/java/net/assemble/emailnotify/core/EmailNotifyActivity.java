@@ -166,7 +166,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
     public void onClick(View v) {
         EmailNotifyPreferences.setEnable(this, mEnableButton.isChecked());
         updateService();
-    };
+    }
 
     private void updateService() {
         ImageView image = (ImageView) findViewById(R.id.main_image);

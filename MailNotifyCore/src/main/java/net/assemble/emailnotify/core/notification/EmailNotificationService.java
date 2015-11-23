@@ -156,9 +156,9 @@ public class EmailNotificationService extends Service {
     /**
      * サービス開始
      *
-     * @param ctx
+     * @param ctx Context
      * @param date 検出日時
-     * @param wapPdu
+     * @param wapPdu WAP PDU
      */
     public static boolean startService(Context ctx, Date date, WapPdu wapPdu) {
         boolean result;

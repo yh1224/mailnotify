@@ -120,12 +120,12 @@ public class EmailNotification {
      */
     private static long[] getVibrate(long[] pattern, long length) {
         ArrayList<Long> arr = new ArrayList<Long>();
-        arr.add(Long.valueOf(0));
+        arr.add(0L);
         long rest = length * 1000;
         while (rest > 0) {
-            for (int j = 0; j < pattern.length; j++) {
-                arr.add(Long.valueOf(pattern[j]));
-                rest -= pattern[j];
+            for (long ptn : pattern) {
+                arr.add(ptn);
+                rest -= ptn;
             }
         }
         long[] vibrate = new long[arr.size()];
@@ -277,7 +277,7 @@ public class EmailNotification {
         if (mMailbox.startsWith("imap://docomo.ne.jp")) {
             // iモードの場合は表示を変更 (imap://docomo.ne.jp?PI=06 とか意味不明なので)
             message += " docomo.ne.jp";
-        } else if (mMailbox != null) {
+        } else {
             message += " " + mMailbox;
         }
         notification.setLatestEventInfo(mCtx,

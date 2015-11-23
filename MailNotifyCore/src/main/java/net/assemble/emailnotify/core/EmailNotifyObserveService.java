@@ -350,9 +350,9 @@ public class EmailNotifyObserveService extends Service {
             String line;
             BufferedReader errReader = new BufferedReader(
                     new InputStreamReader(process.getErrorStream()), 1024);
-            StringBuffer errMsg = new StringBuffer();
+            StringBuilder errMsg = new StringBuilder();
             while ((line = errReader.readLine()) != null) {
-                errMsg.append(line + "\n");
+                errMsg.append(line).append("\n");
             }
             return errMsg.toString().trim();
         }
@@ -490,7 +490,7 @@ public class EmailNotifyObserveService extends Service {
             Intent i = new Intent();
             i.setComponent(mService);
             boolean res = ctx.stopService(i);
-            if (res == false) {
+            if (!res) {
                 Log.e(EmailNotify.TAG, "EmailNotifyService could not stop!");
             } else {
                 if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "EmailNotifyService stopped: " + mService);

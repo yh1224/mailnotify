@@ -19,8 +19,6 @@ package com.android.internal.telephony;
 
 /**
  *  Implement the WSP data type decoder.
- *
- *  @hide
  */
 public class WspTypeDecoder {
 
@@ -46,6 +44,7 @@ public class WspTypeDecoder {
     public static final String CONTENT_MIME_TYPE_B_PUSH_CO = "application/vnd.wap.coc";
     public static final String CONTENT_MIME_TYPE_B_MMS = "application/vnd.wap.mms-message";
 
+    @SuppressWarnings("unused")
     public static final int PARAMETER_ID_X_WAP_APPLICATION_ID = 0x2f;
 
 
@@ -132,10 +131,7 @@ public class WspTypeDecoder {
      *         length of data in pdu can be retrieved by getValue32() method
      */
     public boolean decodeIntegerValue(int startIndex) {
-        if (decodeShortInteger(startIndex) == true) {
-            return true;
-        }
-        return decodeLongInteger(startIndex);
+        return decodeShortInteger(startIndex) || decodeLongInteger(startIndex);
     }
 
     /**
@@ -223,7 +219,7 @@ public class WspTypeDecoder {
      *         length of data in pdu can be retrieved by getValue32() method
      */
     public boolean decodeConstrainedEncoding(int startIndex) {
-        if (decodeShortInteger(startIndex) == true) {
+        if (decodeShortInteger(startIndex)) {
             stringValue = null;
             return true;
         }
@@ -243,17 +239,17 @@ public class WspTypeDecoder {
         int mediaPrefixLength;
         //long mediaFieldLength;
 
-        if (decodeValueLength(startIndex) == false) {
+        if (!decodeValueLength(startIndex)) {
             return decodeConstrainedEncoding(startIndex);
         }
         mediaPrefixLength = getDecodedDataLength();
         //mediaFieldLength = getValue32();
-        if (decodeIntegerValue(startIndex + mediaPrefixLength) == true) {
+        if (decodeIntegerValue(startIndex + mediaPrefixLength)) {
             dataLength += mediaPrefixLength;
             stringValue = null;
             return true;
         }
-        if (decodeExtensionMedia(startIndex + mediaPrefixLength) == true) {
+        if (decodeExtensionMedia(startIndex + mediaPrefixLength)) {
             dataLength += mediaPrefixLength;
             return true;
         }
@@ -269,6 +265,7 @@ public class WspTypeDecoder {
      *         return value can be retrieved by getValue32() method
      *         length of data in pdu can be retrieved by getValue32() method
      */
+    @SuppressWarnings("unused")
     public boolean decodeContentLength(int startIndex) {
         return decodeIntegerValue(startIndex);
     }
@@ -282,6 +279,7 @@ public class WspTypeDecoder {
      *         return value can be retrieved by getValueString() method
      *         length of data in pdu can be retrieved by getValue32() method
      */
+    @SuppressWarnings("unused")
     public boolean decodeContentLocation(int startIndex) {
         return decodeTextString(startIndex);
     }
@@ -296,7 +294,7 @@ public class WspTypeDecoder {
      *         method length of data in pdu can be retrieved by getValue32() method
      */
     public boolean decodeXWapApplicationId(int startIndex) {
-        if (decodeIntegerValue(startIndex) == true) {
+        if (decodeIntegerValue(startIndex)) {
             stringValue = null;
             return true;
         }
@@ -312,6 +310,7 @@ public class WspTypeDecoder {
      *         return value can be retrieved by getValueString() method
      *         length of data in pdu can be retrieved by getValue32() method
      */
+    @SuppressWarnings("unused")
     public boolean decodeXWapContentURI(int startIndex) {
         return decodeTextString(startIndex);
     }
@@ -325,6 +324,7 @@ public class WspTypeDecoder {
      *         return value can be retrieved by getValueString() method
      *         length of data in pdu can be retrieved by getValue32() method
      */
+    @SuppressWarnings("unused")
     public boolean decodeXWapInitiatorURI(int startIndex) {
         return decodeTextString(startIndex);
     }

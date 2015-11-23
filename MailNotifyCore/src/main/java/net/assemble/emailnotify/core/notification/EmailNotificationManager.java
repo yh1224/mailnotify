@@ -31,7 +31,7 @@ public class EmailNotificationManager {
      * @param service メールサービス名
      * @param mailbox メールボックス名
      * @param timestamp タイムスタンプ
-     * @param boolean 復元
+     * @param restore 復元
      */
     public static void showNotification(Context ctx, String service, String mailbox, Date timestamp, boolean restore) {
         EmailNotification emn = getNotification(mailbox, false);
@@ -167,7 +167,7 @@ public class EmailNotificationManager {
      * 常駐アイコンを表示
      */
     public static void showNotificationIcon(Context ctx) {
-        if (mNotificationIcon != false) {
+        if (mNotificationIcon) {
             return;
         }
         NotificationManager notificationManager = (NotificationManager)
@@ -188,7 +188,7 @@ public class EmailNotificationManager {
      * 常駐アイコンを消去
      */
     public static void clearNotificationIcon(Context ctx) {
-        if (mNotificationIcon == false) {
+        if (!mNotificationIcon) {
             return;
         }
         NotificationManager notificationManager =

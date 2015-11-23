@@ -16,6 +16,7 @@ public class EmailNotify {
     public static final String MARKET_URL = "market://details?id=net.assemble.mailnotify";
 
     public static final String PACKAGE_NAME_FREE = "net.assemble.emailnotify";
+    @SuppressWarnings("unused")
     public static final String PACKAGE_NAME_PAID = "net.assemble.mailnotify";
 
     public static final String ACTION_MAIL_PUSH_RECEIVED = "net.assemble.emailnotify.MAIL_PUSH_RECEIVED";
@@ -49,7 +50,9 @@ public class EmailNotify {
         try {
             PackageInfo pi = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
             ver = pi.versionName;
-        } catch (NameNotFoundException e) {}
+        } catch (NameNotFoundException e) {
+            throw new AssertionError(e);
+        }
         if (DEBUG) {
             ver += "(DEBUG)";
         }
@@ -75,7 +78,9 @@ public class EmailNotify {
                 } else {
                     Log.d(TAG, "Expires on " + expire_date.toLocaleString());
                 }
-            } catch (ParseException e) {}
+            } catch (ParseException e) {
+                throw new AssertionError(e);
+            }
         }
         return true;
     }

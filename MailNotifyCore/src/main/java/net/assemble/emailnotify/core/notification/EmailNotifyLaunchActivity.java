@@ -261,9 +261,9 @@ public class EmailNotifyLaunchActivity extends Activity {
             Set<String> keySet = extras.keySet();
             if (keySet != null) {
                 Object[] keys = keySet.toArray();
-                for (int i = 0; i < keys.length; i++) {
-                    Object o = extras.get((String)keys[i]);
-                    Log.d(EmailNotify.TAG, "  " + (String)keys[i] + " = (" + o.getClass().getName() + ") " + o.toString());
+                for (Object key : keys) {
+                    Object o = extras.get((String) key);
+                    Log.d(EmailNotify.TAG, "  " + key + " = (" + o.getClass().getName() + ") " + o.toString());
                 }
             }
         }

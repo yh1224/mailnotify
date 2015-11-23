@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -109,15 +108,13 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
     }
 
     private String getPreferencesString() {
-        StringBuffer strBuf = new StringBuffer();
+        StringBuilder strBuf = new StringBuilder();
         Map<String, ?> prefs = PreferenceManager.getDefaultSharedPreferences(this).getAll();
-        for (Iterator<?> it = prefs.entrySet().iterator(); it.hasNext(); ) {
-            @SuppressWarnings("unchecked")
-            Map.Entry<String, ?> entry = (Entry<String, ?>) it.next();
+        for (Entry<String, ?> entry : prefs.entrySet()) {
             if (entry.getValue() == null) {
-                strBuf.append(entry.getKey() + "=(null)\n");
+                strBuf.append(entry.getKey()).append("=(null)\n");
             } else {
-                strBuf.append(entry.getKey() + "=" + entry.getValue().toString() + "\n");
+                strBuf.append(entry.getKey()).append("=").append(entry.getValue().toString()).append("\n");
             }
         }
         return strBuf.toString();
@@ -132,7 +129,7 @@ public class EmailNotifyDebugActivity extends PreferenceActivity
     private void showDialogMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);
-        builder.setMessage(message.toString());
+        builder.setMessage(message);
         builder.setPositiveButton(R.string.ok, null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
