@@ -153,12 +153,14 @@ public class EmailNotificationManager {
                 ctx.getResources().getString(R.string.app_name), System.currentTimeMillis());
         Intent restoreIntent = new Intent(ctx, EmailNotifyRestoreActivity.class);
         restoreIntent.setAction(EmailNotifyRestoreActivity.ACTION_RESTORE_NETWORK);
+        restoreIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         notification.setLatestEventInfo(ctx, ctx.getResources().getString(R.string.restore_network),
                 ctx.getResources().getString(R.string.restore_network_message),
-                PendingIntent.getActivity(ctx, 0, restoreIntent, Intent.FLAG_ACTIVITY_NEW_TASK));
+                PendingIntent.getActivity(ctx, 0, restoreIntent, 0));
         Intent deleteIntent = new Intent(ctx, EmailNotifyRestoreActivity.class);
         deleteIntent.setAction(EmailNotifyRestoreActivity.ACTION_KEEP_NETWORK);
-        notification.deleteIntent = PendingIntent.getActivity(ctx, 0, deleteIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
+        deleteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notification.deleteIntent = PendingIntent.getActivity(ctx, 0, deleteIntent, 0);
         notification.flags = Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(NOTIFICATIONID_RESTORE_NETWORK, notification);
     }
@@ -176,7 +178,8 @@ public class EmailNotificationManager {
                 ctx.getResources().getString(R.string.app_name), System.currentTimeMillis());
         Intent intent = new Intent();
         intent.setClassName(ctx.getPackageName(), ctx.getPackageName() + ".EmailNotifyActivity");
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
         notification.setLatestEventInfo(ctx, ctx.getResources().getString(R.string.app_name),
                 ctx.getResources().getString(R.string.notification_message), contentIntent);
         notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
@@ -207,7 +210,8 @@ public class EmailNotificationManager {
                       System.currentTimeMillis());
         Intent intent = new Intent();
         intent.setClassName(ctx.getPackageName(), ctx.getPackageName() + ".EmailNotifyActivity");
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
         String message = ctx.getResources().getString(R.string.notify_expired);
         notification.setLatestEventInfo(ctx,
                 ctx.getResources().getString(R.string.app_name),
@@ -227,7 +231,8 @@ public class EmailNotificationManager {
                       System.currentTimeMillis());
         Intent intent = new Intent();
         intent.setClassName(ctx.getPackageName(), ctx.getPackageName() + ".EmailNotifyActivity");
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
         String message = ctx.getResources().getString(R.string.notify_suspended);
         notification.setLatestEventInfo(ctx,
                 ctx.getResources().getString(R.string.app_name),
