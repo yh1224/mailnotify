@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -106,7 +105,7 @@ public class MyLogReportService extends Service {
             return;
         }
 
-        mCallbackIntent = (PendingIntent) intent.getParcelableExtra(EXTRA_INTENT);
+        mCallbackIntent = intent.getParcelableExtra(EXTRA_INTENT);
         mProgress = intent.getBooleanExtra(EXTRA_PROGRESS, false);
         if (!mProgress) {
             mDelay = intent.getIntExtra(EXTRA_DELAY, 0);
@@ -186,7 +185,7 @@ public class MyLogReportService extends Service {
                 PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
                 posts.put("app_name", getResources().getString(pi.applicationInfo.labelRes));
                 posts.put("app_version", pi.versionName);
-            } catch (NameNotFoundException e) {}
+            } catch (NameNotFoundException ignored) {}
             posts.put("reporter_id", mReporterId);
             posts.put("android_id", Secure.getString(getContentResolver(), Secure.ANDROID_ID));
             posts.put("build_version_release", Build.VERSION.RELEASE);
@@ -205,12 +204,12 @@ public class MyLogReportService extends Service {
         /**
          * POST
          *
-         * @param url 送信先URL
+         * @param urlStr 送信先URL
          * @param params POSTパラメタ
          * @return エラー文字列 (null:成功)
          */
         private String postTo(String urlStr, HashMap<String, String> params) {
-            StringBuffer resultBuf = new StringBuffer();
+            StringBuilder resultBuf = new StringBuilder();
             try {
                 URL url = new URL(urlStr);
                 HttpURLConnection urlconn = (HttpURLConnection)url.openConnection();
@@ -245,17 +244,16 @@ public class MyLogReportService extends Service {
          */
         @SuppressWarnings("rawtypes")
         private String getQueryString(HashMap<String, String> params) throws UnsupportedEncodingException {
-            StringBuffer postBuf = new StringBuffer();
-            for (Iterator<?> i = params.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
+            StringBuilder postBuf = new StringBuilder();
+            for (Entry<String, String> entry : params.entrySet()) {
                 if (postBuf.length() > 0) {
                     postBuf.append("&");
                 }
-                String val = (String) entry.getValue();
+                String val = entry.getValue();
                 if (val != null) {
                     val = URLEncoder.encode(val, "UTF-8");
                 }
-                postBuf.append((String) entry.getKey() + "=" + val);
+                postBuf.append(entry.getKey()).append("=").append(val);
             }
             return postBuf.toString();
         }
@@ -300,15 +298,13 @@ public class MyLogReportService extends Service {
     }
 
     private String getPreferencesString() {
-        StringBuffer strBuf = new StringBuffer();
+        StringBuilder strBuf = new StringBuilder();
         Map<String, ?> prefs = PreferenceManager.getDefaultSharedPreferences(this).getAll();
-        for (Iterator<?> it = prefs.entrySet().iterator(); it.hasNext(); ) {
-            @SuppressWarnings("unchecked")
-            Map.Entry<String, ?> entry = (Entry<String, ?>) it.next();
+        for (Entry<String, ?> entry : prefs.entrySet()) {
             if (entry.getValue() == null) {
-                strBuf.append(entry.getKey() + "=(null)\n");
+                strBuf.append(entry.getKey()).append("=(null)\n");
             } else {
-                strBuf.append(entry.getKey() + "=" + entry.getValue().toString() + "\n");
+                strBuf.append(entry.getKey()).append("=").append(entry.getValue().toString()).append("\n");
             }
         }
         return strBuf.toString();
@@ -349,8 +345,8 @@ public class MyLogReportService extends Service {
     /**
      * サービス開始 (送信中を表示)
      *
-     * @param ctx
-     * @param reporterId
+     * @param ctx Context
+     * @param reporterId Reporter ID
      * @return サービス起動成否
      */
     public static boolean startServiceWithProgress(Context ctx, String reporterId) {
@@ -364,8 +360,8 @@ public class MyLogReportService extends Service {
     /**
      * サービス開始 (送信完了時インテントを通知)
      *
-     * @param ctx
-     * @param reporterId
+     * @param ctx Context
+     * @param reporterId Reporter ID
      * @param callbackIntent 送信完了時に通知するインテント
      * @return サービス起動成否
      */

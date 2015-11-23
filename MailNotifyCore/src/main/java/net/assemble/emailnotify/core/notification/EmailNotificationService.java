@@ -142,7 +142,7 @@ public class EmailNotificationService extends Service {
     /**
      * 未消去の通知を復元する
      *
-     * @param pdu WAP PDU
+     * @param ctx Context
      */
     public static void restoreNotifications(Context ctx) {
         Cursor cur = EmailNotificationHistoryDao.getActiveHistories(ctx);

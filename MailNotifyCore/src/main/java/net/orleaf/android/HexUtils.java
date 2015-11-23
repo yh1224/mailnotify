@@ -9,9 +9,9 @@ public class HexUtils {
      * @return 16進数文字列
      */
     public static String bytes2hex(byte[] bytes) {
-        StringBuffer strbuf = new StringBuffer(bytes.length * 2);
-        for (int i = 0; i < bytes.length; i++) {
-            int bt = bytes[i] & 0xff;
+        StringBuilder strbuf = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) {
+            int bt = b & 0xff;
             if (bt < 0x10) {
                 strbuf.append("0");
             }

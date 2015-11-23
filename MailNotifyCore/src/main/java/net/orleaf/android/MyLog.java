@@ -55,7 +55,7 @@ public class MyLog {
      *
      * @param text ログ文字列
      */
-    private static void add(Context ctx, int level, String tag, String text) {
+    private static void add(Context ctx, int level, @SuppressWarnings("UnusedParameters") String tag, String text) {
         ContentValues values = new ContentValues();
         Calendar cal = Calendar.getInstance();
         values.put("created_at", cal.getTimeInMillis() / 1000);
@@ -92,11 +92,11 @@ public class MyLog {
      *
      * @return カーソル
      */
-    public static Cursor getLogCursor(Context ctx, int level) { 
-        Cursor c = getDb(ctx).query(MyLogOpenHelper.TABLE_LOG,
+    @SuppressWarnings("unused")
+    public static Cursor getLogCursor(Context ctx, int level) {
+        return getDb(ctx).query(MyLogOpenHelper.TABLE_LOG,
                 null, "level <= " + level, null,
                 null, null, "created_at", null);
-        return c;
     }
 
     /**
@@ -109,15 +109,16 @@ public class MyLog {
         Cursor c = getDb(ctx).query(MyLogOpenHelper.TABLE_LOG,
                 null, "level <= " + maxlevel, null,
                 null, null, "created_at", null);
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (c.moveToFirst()) {
             do {
                 int level = c.getInt(c.getColumnIndex("level"));
                 String date = c.getString(c.getColumnIndex("created_date"));
                 String log_text = c.getString(c.getColumnIndex("log_text"));
-                buf.append(date + " " + getLevelString(level) + " " + log_text + "\n");
+                buf.append(date).append(" ").append(getLevelString(level)).append(" ").append(log_text).append("\n");
             } while (c.moveToNext());
         }
+        c.close();
         return buf.toString();
     }
 
