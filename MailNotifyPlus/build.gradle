@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 13
+    compileSdkVersion 19
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "net.assemble.mailnotify"
         minSdkVersion 4
-        targetSdkVersion 14
+        targetSdkVersion 19
     }
 
     buildTypes {
