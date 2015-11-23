@@ -1,14 +1,9 @@
-dist/
-work/
-MailNotifyCore/bin/
-MailNotifyCore/gen/
-MailNotifyFree/bin/
-MailNotifyFree/gen/
-MailNotifyFree/proguard/
-MailNotifyPlus/bin/
-MailNotifyPlus/gen/
-MailNotifyPlus/proguard/
-MailNotifyLiveViewPlugin/bin/
-MailNotifyLiveViewPlugin/gen/
-MailNotifyLiveViewPlugin/proguard/
+/.gradle
+/local.properties
+
+# IntelliJ IDEA project files
+/.idea
+*.ipr
+*.iml
+
 *.bak

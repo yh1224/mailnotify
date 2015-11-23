@@ -1,0 +1,23 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 13
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "net.assemble.mailnotify"
+        minSdkVersion 4
+        targetSdkVersion 14
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+    }
+}
+
+dependencies {
+    compile project(':mailNotifyCore')
+}
