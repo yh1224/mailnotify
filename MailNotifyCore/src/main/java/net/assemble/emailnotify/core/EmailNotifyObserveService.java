@@ -142,7 +142,7 @@ public class EmailNotifyObserveService extends Service {
                 } else {
                     waitconn = MyLogReportService.WAIT_CONNECT_ENABLE;
                 }
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Start sending report. (delay=" + delay + ")");
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Start sending report. (delay=" + delay + ")");
                 Intent intent = new Intent(this, EmailNotifyReceiver.class);
                 intent.setAction(EmailNotify.ACTION_LOG_SENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
@@ -208,7 +208,7 @@ public class EmailNotifyObserveService extends Service {
      * @return WapPdu WAP PDU (null:メール通知ではない)
      */
     private WapPdu checkLogLine(String line) {
-        //if (EmailNotify.DEBUG) Log.v(EmailNotify.TAG, "> " + line);
+        //if (BuildConfig.DEBUG) Log.v(EmailNotify.TAG, "> " + line);
         if (line.length() >= 19 &&
                 (line.substring(19).startsWith("D/WAP PUSH") || line.substring(19).startsWith("D/EmailPushNotification"))) {
             String[] lines =line.split(": ", 2);
@@ -221,7 +221,7 @@ public class EmailNotifyObserveService extends Service {
             }
             if (ccal.getTimeInMillis() <= mLastCheck) {
                 // チェック済
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + ")");
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Already checked (" + ccal.getTimeInMillis() + " <= " + mLastCheck + ")");
                 return null;
             }
 
@@ -275,7 +275,7 @@ public class EmailNotifyObserveService extends Service {
                     if (mSaveApplicationId == 0x09) {
                         // Content-Type: application/vnd.wap.emn+wbxml と仮定する
                         data = log.split("Wap data : ")[1];
-                        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Found Wap data : " + data);
+                        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Found Wap data : " + data);
                         try {
                             pdu = new WapPdu("application/vnd.wap.emn+wbxml", 0x09, hex2bytes(data));
                         } catch (Exception e) {
@@ -458,7 +458,7 @@ public class EmailNotifyObserveService extends Service {
      */
     private void startLogCheckThread() {
         if (mLogCheckThread != null) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Log check thread already running.");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Log check thread already running.");
             return;
         }
         mStopLogCheckThread = false;
@@ -471,7 +471,7 @@ public class EmailNotifyObserveService extends Service {
      */
     private void stopLogCheckThread() {
         if (mLogCheckThread == null) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Log check thread not running.");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Log check thread not running.");
             return;
         }
         mStopLogCheckThread = true;
@@ -489,7 +489,7 @@ public class EmailNotifyObserveService extends Service {
             MyLog.e(ctx, EmailNotify.TAG, "Service start failed!");
             result = false;
         } else {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "EmailNotifyService started: " + mService);
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "EmailNotifyService started: " + mService);
             result = true;
         }
         if (!restart && result) {
@@ -510,7 +510,7 @@ public class EmailNotifyObserveService extends Service {
             if (!res) {
                 Log.e(EmailNotify.TAG, "EmailNotifyService could not stop!");
             } else {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "EmailNotifyService stopped: " + mService);
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "EmailNotifyService stopped: " + mService);
                 Toast.makeText(ctx, R.string.service_stopped, Toast.LENGTH_SHORT).show();
                 MyLog.i(ctx, EmailNotify.TAG, "Service stopped.");
                 mService = null;

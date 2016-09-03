@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import net.assemble.emailnotify.core.BuildConfig;
 import net.assemble.emailnotify.core.EmailNotify;
 import net.assemble.emailnotify.core.WapPdu;
 import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
@@ -61,7 +62,7 @@ public class EmailNotificationService extends Service {
         if (intent.hasExtra("time")) {
             long time = intent.getLongExtra("time", 0);
             logdate = new Date(time);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "time = " + logdate.toLocaleString());
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "time = " + logdate.toLocaleString());
         } else {
             logdate = null;
         }
@@ -188,7 +189,7 @@ public class EmailNotificationService extends Service {
             Log.e(EmailNotify.TAG, "EmailNotificationService start failed!");
             result = false;
         } else {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "EmailNotificationService started: " + mService);
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "EmailNotificationService started: " + mService);
             result = true;
         }
         return result;

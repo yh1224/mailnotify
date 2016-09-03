@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import net.assemble.emailnotify.core.BuildConfig;
 import net.assemble.emailnotify.core.EmailNotify;
 import net.assemble.emailnotify.core.R;
 
@@ -74,7 +75,7 @@ public class EmailNotificationHistoryActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        if (EmailNotify.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Cursor cur = EmailNotificationHistoryDao.getHistory(this, id);
             if (cur.moveToFirst()) {
                 String wapData = cur.getString(cur.getColumnIndex("wap_data"));

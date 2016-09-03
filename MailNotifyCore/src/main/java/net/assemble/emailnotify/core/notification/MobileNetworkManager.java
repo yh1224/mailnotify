@@ -18,6 +18,7 @@ import android.provider.BaseColumns;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import net.assemble.emailnotify.core.BuildConfig;
 import net.assemble.emailnotify.core.EmailNotify;
 import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
 import net.orleaf.android.MyLog;
@@ -73,7 +74,7 @@ public class MobileNetworkManager {
             }
             cur.close();
         }
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "preferapn key=" + apnKey + " name=" + apnName);
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "preferapn key=" + apnKey + " name=" + apnName);
         return apnName;
     }
 
@@ -99,7 +100,7 @@ public class MobileNetworkManager {
         assert cursor != null;
         if (cursor.moveToFirst()) {
             do {
-                if (EmailNotify.DEBUG) {
+                if (BuildConfig.DEBUG) {
                     String key = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
                     for (int i = 0; i < cursor.getColumnCount(); i++) {
                         Log.d(EmailNotify.TAG, " [" + key + "] " + cursor.getColumnName(i) + " = " + cursor.getString(i));
@@ -112,7 +113,7 @@ public class MobileNetworkManager {
                 info.APN_NAME = cursor.getString(cursor.getColumnIndex("apn"));
                 info.TYPE = cursor.getString(cursor.getColumnIndex("type"));
                 apnList.add(info);
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "key=" + info.KEY + ", apn=" + info.APN_NAME + ", type=" + info.TYPE);
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "key=" + info.KEY + ", apn=" + info.APN_NAME + ", type=" + info.TYPE);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -184,7 +185,7 @@ public class MobileNetworkManager {
             MyLog.d(mCtx, EmailNotify.TAG, "simOp not set.");
             return false;
         }
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "simOp = " + simOp);
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "simOp = " + simOp);
         Cursor cursor = resolver.query(Uri.parse("content://telephony/carriers"),
                 new String[] { BaseColumns._ID, "apn", "type" },
                 "numeric = ?", new String[] { simOp }, null);
@@ -193,7 +194,7 @@ public class MobileNetworkManager {
         ContentValues values;
 
         // APNのkeyと付加文字列検索 (ex:apndroid)
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Checking for enable APN...");
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Checking for enable APN...");
         String apnKey = null;
         String modifierStr = null;
         String modifierType = null;
@@ -202,10 +203,10 @@ public class MobileNetworkManager {
                 String key = cursor.getString(0);
                 String apn = cursor.getString(1);
                 String type = cursor.getString(2);
-                if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
+                if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "key=" + key + ", apn=" + apn + ", type=" + type);
 
                 if (apn.equals(target_apn)) {
-                    if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Found valid APN.");
+                    if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Found valid APN.");
                     apnKey = key;
                     break;
                 }
@@ -215,7 +216,7 @@ public class MobileNetworkManager {
                         apnKey = key;
                         modifierStr = ex;
                         modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_SUFFIX;
-                        if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
+                        if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
                     }
                 } else if (apn.endsWith(target_apn)) {
                     String ex = apn.substring(0, apn.length() - target_apn.length());
@@ -223,14 +224,14 @@ public class MobileNetworkManager {
                         apnKey = key;
                         modifierStr = ex;
                         modifierType = EmailNotifyPreferences.PREF_NETWORK_SAVE_APN_MODIFIER_TYPE_PREFIX;
-                        if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
+                        if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Found modifier " + modifierType + ": " + modifierStr);
                     }
                 }
             } while (cursor.moveToNext());
         }
 
         if (modifierStr != null) {
-            if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Enabling APNs...");
+            if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Enabling APNs...");
             // Activate APNs
             if (cursor.moveToFirst()) {
                 do {
@@ -247,7 +248,7 @@ public class MobileNetworkManager {
                         new_apn = apn.substring(0, apn.length() - modifierStr.length());
                         new_type = type.substring(0, type.length() - modifierStr.length());
                     } else {
-                        if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                        if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                         continue;
                     }
 
@@ -270,7 +271,7 @@ public class MobileNetworkManager {
 
         String prevApnKey = null;
         if (apnKey != null) {
-            if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Activating APN...");
+            if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Activating APN...");
 
             // 現在の接続先を取得
             cursor = resolver.query(Uri.parse("content://telephony/carriers/preferapn"),
@@ -278,7 +279,7 @@ public class MobileNetworkManager {
             assert cursor != null;
             if (cursor.moveToFirst()) {
                 prevApnKey = cursor.getString(0);
-                if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Current APN ID: " + prevApnKey);
+                if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Current APN ID: " + prevApnKey);
             }
             cursor.close();
 
@@ -299,10 +300,10 @@ public class MobileNetworkManager {
         if (changed) {
             // ネットワーク復元情報(APN)を保存
             EmailNotifyPreferences.saveNetworkApnInfo(mCtx, prevApnKey, modifierStr, modifierType);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network: apnKey=" + prevApnKey +
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Saved network: apnKey=" + prevApnKey +
                     ", modifier=" + modifierStr + ", type=" + modifierType);
         } else {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "APN is already active.");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "APN is already active.");
         }
         return changed;
     }
@@ -320,20 +321,20 @@ public class MobileNetworkManager {
         if (wm.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
             if (!enable) {
                 // 有効→無効化
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
                 wm.setWifiEnabled(false);
                 changed = true;
             } else {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already enabled.");
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already enabled.");
             }
         } else {
             if (enable) {
                 // 無効→有効化
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
                 wm.setWifiEnabled(true);
                 changed = true;
             } else {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Wi-Fi is already disabled.");
             }
         }
 
@@ -350,7 +351,7 @@ public class MobileNetworkManager {
         String apnKey = EmailNotifyPreferences.getNetworkSaveApnKey(mCtx);
         String modifierStr = EmailNotifyPreferences.getNetworkSaveApnModifierString(mCtx);
         String modifierType = EmailNotifyPreferences.getNetworkSaveApnModifierType(mCtx);
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring APN: apnKey=" + apnKey + ", modifier=" + modifierStr +
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Restoring APN: apnKey=" + apnKey + ", modifier=" + modifierStr +
                 ", type=" + modifierType);
 
         ContentValues values;
@@ -380,7 +381,7 @@ public class MobileNetworkManager {
                         new_type = type + modifierStr;
                     } else {
                         // すでに無効化されているので何もしない
-                        if (EmailNotify.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
+                        if (BuildConfig.DEBUG) MyLog.d(mCtx, EmailNotify.TAG, "Skipping APN: apn=" + apn + ", type=" + type);
                         continue;
                     }
 
@@ -443,7 +444,7 @@ public class MobileNetworkManager {
         if (changed) {
             // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
             EmailNotifyPreferences.saveNetworkInfo(mCtx);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
         }
 
         return changed;
@@ -464,7 +465,7 @@ public class MobileNetworkManager {
         if (wifiChanged) {
             // 復元用に変更前のネットワーク情報を保存(有効フラグを立てる)
             EmailNotifyPreferences.saveNetworkInfo(mCtx);
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Saved network information.");
         }
         return wifiChanged;
     }
@@ -476,7 +477,7 @@ public class MobileNetworkManager {
         WifiManager wm = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
 
         if (EmailNotifyPreferences.hasNetworkSave(mCtx)) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Restoring network...");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Restoring network...");
 
             // APN設定を復元
             restoreAPN();
@@ -484,11 +485,11 @@ public class MobileNetworkManager {
             // データ通信設定を復元
             if (EmailNotifyPreferences.hasNetworkSaveMobileDataEnable(mCtx)) {
                 if (EmailNotifyPreferences.getNetworkSaveMobileDataEnable(mCtx)) {
-                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Mobile Data...");
+                    if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Enabling Mobile Data...");
                     setMobileDataEnabled(true);
                     MyLog.d(mCtx, EmailNotify.TAG, "Mobile Data enabled.");
                 } else {
-                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Mobile Data...");
+                    if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Disabling Mobile Data...");
                     setMobileDataEnabled(false);
                     MyLog.d(mCtx, EmailNotify.TAG, "Mobile Data disabled.");
                 }
@@ -497,11 +498,11 @@ public class MobileNetworkManager {
             // Wi-Fi設定を復元
             if (EmailNotifyPreferences.hasNetworkSaveWifiEnable(mCtx)) {
                 if (EmailNotifyPreferences.getNetworkSaveWifiEnable(mCtx)) {
-                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
+                    if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Enabling Wi-Fi...");
                     wm.setWifiEnabled(true);
                     MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi enabled.");
                 } else {
-                    if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
+                    if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Disabling Wi-Fi...");
                     wm.setWifiEnabled(false);
                     MyLog.d(mCtx, EmailNotify.TAG, "Wi-Fi disabled.");
                 }

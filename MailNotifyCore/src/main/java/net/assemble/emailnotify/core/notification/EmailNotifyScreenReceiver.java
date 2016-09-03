@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import net.assemble.emailnotify.core.BuildConfig;
 import net.assemble.emailnotify.core.EmailNotify;
 import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
 
@@ -16,7 +17,7 @@ import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
 public class EmailNotifyScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
 
         if (intent.getAction() != null) {
             // Screen On

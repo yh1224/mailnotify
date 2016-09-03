@@ -178,7 +178,7 @@ public class MyLogReportService extends Service {
          */
         @Override
         protected String doInBackground(Object... params) {
-            //if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "Executing ReportTask.");
+            //if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "Executing ReportTask.");
             HashMap<String, String> posts = new HashMap<String, String>();
 
             try {

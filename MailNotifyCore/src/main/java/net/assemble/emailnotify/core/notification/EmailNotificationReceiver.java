@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import net.assemble.emailnotify.core.BuildConfig;
 import net.assemble.emailnotify.core.EmailNotify;
 import net.assemble.emailnotify.core.R;
 
@@ -21,7 +22,7 @@ public class EmailNotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
 
         String action = intent.getAction();
         if (action != null) {

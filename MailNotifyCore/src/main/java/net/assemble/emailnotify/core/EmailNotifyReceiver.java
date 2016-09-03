@@ -14,7 +14,7 @@ import net.orleaf.android.MyLog;
 public class EmailNotifyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
 
         if (!EmailNotifyPreferences.getEnable(ctx)) {
             return;

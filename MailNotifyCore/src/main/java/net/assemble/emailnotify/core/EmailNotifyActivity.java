@@ -91,7 +91,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         inflater.inflate(R.menu.menu, menu);
 
         // デバッグ用メニュー追加
-        if (EmailNotify.DEBUG) {
+        if (BuildConfig.DEBUG) {
             MenuItem menuReport = menu.add("Log");
             menuReport.setIcon(android.R.drawable.ic_menu_view);
             menuReport.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -100,7 +100,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
                     Intent intent = new Intent().setClass(EmailNotifyActivity.this, MyLogActivity.class);
                     intent.putExtra(MyLogActivity.EXTRA_REPORTER_ID,
                             EmailNotifyPreferences.getPreferenceId(EmailNotifyActivity.this));
-                    if (EmailNotify.DEBUG) {
+                    if (BuildConfig.DEBUG) {
                         intent.putExtra(MyLogActivity.EXTRA_LEVEL, MyLog.LEVEL_VERBOSE);
                         intent.putExtra(MyLogActivity.EXTRA_DEBUG_MENU, true);
                     }

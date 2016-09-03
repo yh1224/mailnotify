@@ -23,11 +23,6 @@ public class EmailNotify {
     public static final String ACTION_LOG_SENT = "net.assemble.emailnotify.LOG_SENT";
 
     /**
-     * デバッグ版
-     */
-    public static final boolean DEBUG = false;
-
-    /**
      * 使用期限
      */
     public static final String TRIAL_EXPIRES = null;
@@ -53,7 +48,7 @@ public class EmailNotify {
         } catch (NameNotFoundException e) {
             throw new AssertionError(e);
         }
-        if (DEBUG) {
+        if (BuildConfig.DEBUG) {
             ver += "(DEBUG)";
         }
         return ver;

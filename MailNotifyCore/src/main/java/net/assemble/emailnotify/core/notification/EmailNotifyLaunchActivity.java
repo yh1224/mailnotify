@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.assemble.emailnotify.core.BuildConfig;
 import net.assemble.emailnotify.core.EmailNotify;
 import net.assemble.emailnotify.core.R;
 import net.assemble.emailnotify.core.preferences.EmailNotifyPreferences;
@@ -112,7 +113,7 @@ public class EmailNotifyLaunchActivity extends Activity {
                             EmailNotificationManager.showRestoreNetworkIcon(EmailNotifyLaunchActivity.this);
                             return true;
                         } else {
-                            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "No need to modify network configuration.");
+                            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "No need to modify network configuration.");
                             return false;
                         }
                     }
@@ -132,7 +133,7 @@ public class EmailNotifyLaunchActivity extends Activity {
             @Override
             public void onDataConnectionStateChanged(int state) {
                 super.onDataConnectionStateChanged(state);
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "DataConnectionState changed: " + state);
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "DataConnectionState changed: " + state);
                 checkAndLaunch();
             }
         };
@@ -143,7 +144,7 @@ public class EmailNotifyLaunchActivity extends Activity {
         mConnectivityReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
+                if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "received intent: " + intent.getAction());
                 logIntent(intent);
                 checkAndLaunch();
             }
@@ -197,11 +198,11 @@ public class EmailNotifyLaunchActivity extends Activity {
             networkInfo = cm.getActiveNetworkInfo();
         }
         if (networkInfo != null && networkInfo.isConnected()) {
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connected to " + networkInfo.getTypeName());
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "connected to " + networkInfo.getTypeName());
             return true;
         }
 
-        if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "not connected.");
+        if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "not connected.");
         return false;
     }
 
@@ -223,12 +224,12 @@ public class EmailNotifyLaunchActivity extends Activity {
         if (wm.getWifiState() != WifiManager.WIFI_STATE_DISABLED ||
                 tm.getDataState() != TelephonyManager.DATA_DISCONNECTED) {
             // 接続処理中
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "connecting to network");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "connecting to network");
             mProgressBar.setVisibility(View.VISIBLE);
             mMessageText.setText(R.string.network_connecting);
         } else {
             // ネットワーク無効
-            if (EmailNotify.DEBUG) Log.d(EmailNotify.TAG, "network disabled");
+            if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "network disabled");
             mProgressBar.setVisibility(View.INVISIBLE);
             mMessageText.setText(getResources().getString(R.string.network_disabled));
         }
