@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.orleaf.android.emailnotify.liveview.plugins"
-    android:versionCode="2" android:versionName="0.2">
+    package="net.orleaf.android.emailnotify.liveview.plugins" >
     <application android:icon="@drawable/icon"
         android:label="@string/app_name" android:description="@string/application_description">
         <service android:name=".EmnPluginService">

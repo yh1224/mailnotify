@@ -12,10 +12,14 @@ android {
     productFlavors {
         free {
             applicationId "net.assemble.emailnotify"
+            versionCode 422
+            versionName "4.2.2"
             buildConfigField "boolean", "FREE_VERSION", "true"
         }
         Plus {
             applicationId "net.assemble.mailnotify"
+            versionCode 430
+            versionName "4.3"
             buildConfigField "boolean", "FREE_VERSION", "false"
         }
     }
