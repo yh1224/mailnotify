@@ -1,4 +1,2 @@
-include ':mailNotifyCore'
-include ':mailNotifyFree'
-include ':mailNotifyPlus'
-include ':mailNotifyLiveViewPlugin'
+include ':app'
+include ':appLiveViewPlugin'
