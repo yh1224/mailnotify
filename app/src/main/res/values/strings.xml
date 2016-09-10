@@ -2,185 +2,185 @@
 <resources>
 
     <string name="app_name">Mail Notify</string>
-    <string name="notify_text">メールが届いています。</string>
-    <string name="mail_unit">通</string>
-    <string name="notification_message">メール着信を監視しています。</string>
-    <string name="launch">アプリ起動</string>
-    <string name="clear_notification">通知を消去</string>
-    <string name="network_disabled">ネットワーク接続が無効です。</string>
-    <string name="network_connecting">ネットワーク接続を待機しています&#8230;</string>
-    <string name="autoconnected_network">ネットワーク設定を変更しました。元の状態に戻すには、ステータスバーの「ネットワーク復元」をタップしてください。</string>
-    <string name="restore_network">ネットワークの復元</string>
-    <string name="restore_network_message">ネットワーク設定を自動接続前の状態に戻します。</string>
-    <string name="restored_network">ネットワーク設定を復元しました。</string>
-    <string name="warning">警告</string>
-    <string name="ok">OK</string>
-    <string name="disallow">許可しない</string>
-    <string name="cancel">キャンセル</string>
-    <string name="preferences">設定</string>
-    <string name="log">ログ</string>
-    <string name="history">履歴</string>
-    <string name="help">使い方</string>
-    <string name="about">バージョン情報</string>
-    <string name="support">サポート</string>
-    <string name="support_url">http://orleaf.net</string>
-    <string name="feedback_to">yh1224%2Borange@gmail.com</string>
-    <string name="buy">購入</string>
-    <string name="launch_app">アプリ起動</string>
-    <string name="pref_group_observe">メール着信監視設定</string>
-    <string name="pref_notification_icon_title">監視アイコン</string>
-    <string name="pref_notification_icon_summary">ステータスバーに常にアイコンを表示します。</string>
-    <string name="pref_services_title">メールサービス</string>
-    <string name="pref_services_summary">監視するメールサービスを指定します。</string>
-    <string name="pref_service_mopera_title">mopera Uメール</string>
-    <string name="pref_service_spmode_title">spモードメール</string>
-    <string name="pref_service_imode_title">iモードメール</string>
-    <string name="pref_service_imode_warning">iモードメールには、サービス側の仕様のため以下の制限があります。\n\n-
+    <string name="notify_text" translatable="false">メールが届いています。</string>
+    <string name="mail_unit" translatable="false">通</string>
+    <string name="notification_message" translatable="false">メール着信を監視しています。</string>
+    <string name="launch" translatable="false">アプリ起動</string>
+    <string name="clear_notification" translatable="false">通知を消去</string>
+    <string name="network_disabled" translatable="false">ネットワーク接続が無効です。</string>
+    <string name="network_connecting" translatable="false">ネットワーク接続を待機しています&#8230;</string>
+    <string name="autoconnected_network" translatable="false">ネットワーク設定を変更しました。元の状態に戻すには、ステータスバーの「ネットワーク復元」をタップしてください。</string>
+    <string name="restore_network" translatable="false">ネットワークの復元</string>
+    <string name="restore_network_message" translatable="false">ネットワーク設定を自動接続前の状態に戻します。</string>
+    <string name="restored_network" translatable="false">ネットワーク設定を復元しました。</string>
+    <string name="warning" translatable="false">警告</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="disallow" translatable="false">許可しない</string>
+    <string name="cancel" translatable="false">キャンセル</string>
+    <string name="preferences" translatable="false">設定</string>
+    <string name="log" translatable="false">ログ</string>
+    <string name="history" translatable="false">履歴</string>
+    <string name="help" translatable="false">使い方</string>
+    <string name="about" translatable="false">バージョン情報</string>
+    <string name="support" translatable="false">サポート</string>
+    <string name="support_url" translatable="false">http://orleaf.net</string>
+    <string name="feedback_to" translatable="false">yh1224%2Borange@gmail.com</string>
+    <string name="buy" translatable="false">購入</string>
+    <string name="launch_app" translatable="false">アプリ起動</string>
+    <string name="pref_group_observe" translatable="false">メール着信監視設定</string>
+    <string name="pref_notification_icon_title" translatable="false">監視アイコン</string>
+    <string name="pref_notification_icon_summary" translatable="false">ステータスバーに常にアイコンを表示します。</string>
+    <string name="pref_services_title" translatable="false">メールサービス</string>
+    <string name="pref_services_summary" translatable="false">監視するメールサービスを指定します。</string>
+    <string name="pref_service_mopera_title" translatable="false">mopera Uメール</string>
+    <string name="pref_service_spmode_title" translatable="false">spモードメール</string>
+    <string name="pref_service_imode_title" translatable="false">iモードメール</string>
+    <string name="pref_service_imode_warning" translatable="false">iモードメールには、サービス側の仕様のため以下の制限があります。\n\n-
         3G接続中には通知が届かないようです。\n-
         iモード.netへのログイン通知メールも通知されます。\n\niモードメールの通知を有効にしますか?</string>
-    <string name="pref_service_unspec_title">mopera U/spモードメール</string>
-    <string name="pref_service_unspec_summary">サービスを特定できない機種ではこちらをチェックしてください。</string>
-    <string name="pref_service_unknown_title">その他</string>
-    <string name="pref_notify_mopera_title">mopera Uメール通知設定</string>
-    <string name="pref_notify_spmode_title">spモードメール通知設定</string>
-    <string name="pref_notify_imode_title">iモードメール通知設定</string>
-    <string name="service_not_supported">メールを一度も受信していないか、お使いの機種では特定できません。</string>
-    <string name="pref_group_notify">通知設定</string>
-    <string name="pref_notify_title">通知設定</string>
-    <string name="pref_notify_summary">通知音等の設定</string>
-    <string name="pref_notify_custom_title">通知設定(サービス毎)</string>
-    <string name="pref_notify_custom_summary">サービス毎に個別の通知設定を使用します。</string>
-    <string name="pref_notify_custom_mopera_screen_title">mopera Uメール</string>
-    <string name="pref_notify_custom_mopera_title">有効</string>
-    <string name="pref_notify_custom_mopera_summary">mopera Uメール用に個別の通知設定を使用します。</string>
-    <string name="pref_notify_custom_spmode_screen_title">spモードメール</string>
-    <string name="pref_notify_custom_spmode_title">有効</string>
-    <string name="pref_notify_custom_spmode_summary">spモードメール用に個別の通知設定を使用します。</string>
-    <string name="pref_notify_custom_imode_screen_title">iモードメール</string>
-    <string name="pref_notify_custom_imode_title">有効</string>
-    <string name="pref_notify_custom_imode_summary">iモードメール用に個別の通知設定を使用します。</string>
-    <string name="pref_notify_custom_summary_true">設定されています。</string>
-    <string name="pref_notify_custom_summary_false">設定されていません。</string>
-    <string name="pref_group_notify_sound">サウンド設定</string>
-    <string name="pref_notify_sound_title">通知音</string>
-    <string name="pref_notify_sound_summary">メール着信通知の通知音を選択します。</string>
-    <string name="pref_notify_sound_length_title">通知音の再生時間</string>
-    <string name="pref_notify_sound_length_summary">短い通知音だけでなく、着信音/アラーム音も選択可能にします。</string>
-    <string name="pref_notify_sound_length_unit">秒</string>
-    <string name="pref_notify_sound_length_zero">選択した通知音の長さに従う</string>
-    <string name="pref_notify_sound_length_warning">再生時間の指定を有効にすると、通知音に加えて着信音やアラーム音の選択ができるようになります。ただしそれらを選択後に再生時間設定を無効(選択した通知音に従う)に戻した場合、停止するまで鳴り続けることになりますのでご注意ください。
+    <string name="pref_service_unspec_title" translatable="false">mopera U/spモードメール</string>
+    <string name="pref_service_unspec_summary" translatable="false">サービスを特定できない機種ではこちらをチェックしてください。</string>
+    <string name="pref_service_unknown_title" translatable="false">その他</string>
+    <string name="pref_notify_mopera_title" translatable="false">mopera Uメール通知設定</string>
+    <string name="pref_notify_spmode_title" translatable="false">spモードメール通知設定</string>
+    <string name="pref_notify_imode_title" translatable="false">iモードメール通知設定</string>
+    <string name="service_not_supported" translatable="false">メールを一度も受信していないか、お使いの機種では特定できません。</string>
+    <string name="pref_group_notify" translatable="false">通知設定</string>
+    <string name="pref_notify_title" translatable="false">通知設定</string>
+    <string name="pref_notify_summary" translatable="false">通知音等の設定</string>
+    <string name="pref_notify_custom_title" translatable="false">通知設定(サービス毎)</string>
+    <string name="pref_notify_custom_summary" translatable="false">サービス毎に個別の通知設定を使用します。</string>
+    <string name="pref_notify_custom_mopera_screen_title" translatable="false">mopera Uメール</string>
+    <string name="pref_notify_custom_mopera_title" translatable="false">有効</string>
+    <string name="pref_notify_custom_mopera_summary" translatable="false">mopera Uメール用に個別の通知設定を使用します。</string>
+    <string name="pref_notify_custom_spmode_screen_title" translatable="false">spモードメール</string>
+    <string name="pref_notify_custom_spmode_title" translatable="false">有効</string>
+    <string name="pref_notify_custom_spmode_summary" translatable="false">spモードメール用に個別の通知設定を使用します。</string>
+    <string name="pref_notify_custom_imode_screen_title" translatable="false">iモードメール</string>
+    <string name="pref_notify_custom_imode_title" translatable="false">有効</string>
+    <string name="pref_notify_custom_imode_summary" translatable="false">iモードメール用に個別の通知設定を使用します。</string>
+    <string name="pref_notify_custom_summary_true" translatable="false">設定されています。</string>
+    <string name="pref_notify_custom_summary_false" translatable="false">設定されていません。</string>
+    <string name="pref_group_notify_sound" translatable="false">サウンド設定</string>
+    <string name="pref_notify_sound_title" translatable="false">通知音</string>
+    <string name="pref_notify_sound_summary" translatable="false">メール着信通知の通知音を選択します。</string>
+    <string name="pref_notify_sound_length_title" translatable="false">通知音の再生時間</string>
+    <string name="pref_notify_sound_length_summary" translatable="false">短い通知音だけでなく、着信音/アラーム音も選択可能にします。</string>
+    <string name="pref_notify_sound_length_unit" translatable="false">秒</string>
+    <string name="pref_notify_sound_length_zero" translatable="false">選択した通知音の長さに従う</string>
+    <string name="pref_notify_sound_length_warning" translatable="false">再生時間の指定を有効にすると、通知音に加えて着信音やアラーム音の選択ができるようになります。ただしそれらを選択後に再生時間設定を無効(選択した通知音に従う)に戻した場合、停止するまで鳴り続けることになりますのでご注意ください。
 </string>
-    <string name="pref_group_notify_vibration">バイブレーション設定</string>
-    <string name="pref_notify_vibration_title">バイブレーション</string>
-    <string name="pref_notify_vibration_summary">メール着信通知時にバイブレーションします。</string>
-    <string name="pref_notify_vibration_pattern_title">バイブレーションパターン</string>
-    <string name="vibration_pattern_1">パターン1</string>
-    <string name="vibration_pattern_2">パターン2</string>
-    <string name="vibration_pattern_3">パターン3</string>
-    <string name="vibration_pattern_4">パターン4</string>
-    <string name="vibration_pattern_5">パターン5</string>
-    <string name="pref_notify_vibration_length_title">バイブレーション時間</string>
-    <string name="pref_notify_vibration_length_unit">秒</string>
-    <string name="pref_notify_vibration_manneronly_title">マナーモードのみ</string>
-    <string name="pref_notify_vibration_manneronly_summary">マナーモード時のみバイブレーションします。</string>
-    <string name="pref_group_notify_led">LED設定</string>
-    <string name="pref_notify_led_title">LED</string>
-    <string name="pref_notify_led_summary">LEDを点滅します。</string>
-    <string name="pref_notify_led_color_title">LEDの色</string>
-    <string name="blue">青色 (Blue)</string>
-    <string name="white">白色 (White)</string>
-    <string name="red">赤色 (Red)</string>
-    <string name="green">緑色 (Green)</string>
-    <string name="yellow">黄色 (Yellow)</string>
-    <string name="cyan">水色 (Cyan)</string>
-    <string name="magenta">紫色 (Magenta)</string>
-    <string name="pref_group_notify_bar">ステータスバー設定</string>
-    <string name="pref_notify_view_title">ステータスバー通知</string>
-    <string name="pref_notify_view_summary">ステータスバーに通知します。</string>
-    <string name="pref_notify_view_warning">ステータスバーに通知しない場合でも、通知音・バイブレーション・LEDを停止するにはステータスバーを引き出す必要があります。\n\n非表示にしてよろしいですか?
+    <string name="pref_group_notify_vibration" translatable="false">バイブレーション設定</string>
+    <string name="pref_notify_vibration_title" translatable="false">バイブレーション</string>
+    <string name="pref_notify_vibration_summary" translatable="false">メール着信通知時にバイブレーションします。</string>
+    <string name="pref_notify_vibration_pattern_title" translatable="false">バイブレーションパターン</string>
+    <string name="vibration_pattern_1" translatable="false">パターン1</string>
+    <string name="vibration_pattern_2" translatable="false">パターン2</string>
+    <string name="vibration_pattern_3" translatable="false">パターン3</string>
+    <string name="vibration_pattern_4" translatable="false">パターン4</string>
+    <string name="vibration_pattern_5" translatable="false">パターン5</string>
+    <string name="pref_notify_vibration_length_title" translatable="false">バイブレーション時間</string>
+    <string name="pref_notify_vibration_length_unit" translatable="false">秒</string>
+    <string name="pref_notify_vibration_manneronly_title" translatable="false">マナーモードのみ</string>
+    <string name="pref_notify_vibration_manneronly_summary" translatable="false">マナーモード時のみバイブレーションします。</string>
+    <string name="pref_group_notify_led" translatable="false">LED設定</string>
+    <string name="pref_notify_led_title" translatable="false">LED</string>
+    <string name="pref_notify_led_summary" translatable="false">LEDを点滅します。</string>
+    <string name="pref_notify_led_color_title" translatable="false">LEDの色</string>
+    <string name="blue" translatable="false">青色 (Blue)</string>
+    <string name="white" translatable="false">白色 (White)</string>
+    <string name="red" translatable="false">赤色 (Red)</string>
+    <string name="green" translatable="false">緑色 (Green)</string>
+    <string name="yellow" translatable="false">黄色 (Yellow)</string>
+    <string name="cyan" translatable="false">水色 (Cyan)</string>
+    <string name="magenta" translatable="false">紫色 (Magenta)</string>
+    <string name="pref_group_notify_bar" translatable="false">ステータスバー設定</string>
+    <string name="pref_notify_view_title" translatable="false">ステータスバー通知</string>
+    <string name="pref_notify_view_summary" translatable="false">ステータスバーに通知します。</string>
+    <string name="pref_notify_view_warning" translatable="false">ステータスバーに通知しない場合でも、通知音・バイブレーション・LEDを停止するにはステータスバーを引き出す必要があります。\n\n非表示にしてよろしいですか?
 </string>
-    <string name="pref_group_notify_launch">メールアプリ設定</string>
-    <string name="pref_notify_launch_app_title">起動アプリ</string>
-    <string name="pref_notify_launch_app_is">通知タップ時に起動するアプリ:</string>
-    <string name="pref_notify_launch_app_summary">通知をタップしたときに起動するアプリを選択してください。</string>
-    <string name="select_app">アプリ選択</string>
-    <string name="pref_group_notify_network">ネットワーク設定</string>
-    <string name="pref_notify_auto_connect_title">自動接続</string>
-    <string name="pref_notify_auto_connect_summary">通知をタップしたときにネットワークに自動的に接続します。</string>
-    <string name="pref_notify_auto_connect_warning">モバイルネットワークまたは Wi-Fi に接続するよう一時的に設定を変更してから指定したアプリを起動します。メール受信後は復元アイコンをタップすることで元の設定に復元できます。\n\nモバイルネットワークへの接続については、ご使用の端末や環境によっては正常に動作しない場合があります。Android 4.0 以降では接続先 APN を指定することはできません。\n\n自動接続を有効にしてよろしいですか?</string>
-    <string name="pref_notify_auto_connect_type_title">ネットワーク種別</string>
-    <string name="mobile_network">モバイルネットワーク</string>
-    <string name="wifi">Wi-Fi</string>
-    <string name="pref_notify_auto_connect_apn_title">接続先APN</string>
-    <string name="pref_notify_auto_connect_force_title">接続時も切り替え</string>
-    <string name="pref_notify_auto_connect_force_summary">別のネットワークに接続済みの場合でも、指定したネットワークに切り替えます。</string>
-    <string name="apn_not_writable">APNを変更する権限がありません</string>
-    <string name="apn_not_specify">変更しない</string>
-    <string name="pref_group_notify_sms">SMS通知設定</string>
-    <string name="pref_notify_sms_title">SMS通知</string>
-    <string name="pref_notify_sms_summary">指定した電話番号にSMSで通知します。</string>
-    <string name="pref_notify_sms_warning">SMSの送信には送信料がかかります。通知を有効にしますか？</string>
-    <string name="pref_notify_sms_tel_title">通知先電話番号</string>
-    <string name="notify_sms_failed">SMSの送信に失敗しました。</string>
-    <string name="pref_group_notify_renotify">再通知設定</string>
-    <string name="pref_notify_renotify_title">再通知</string>
-    <string name="pref_notify_renotify_summary">通知を消去するまで定期的に再通知します。</string>
-    <string name="pref_notify_renotify_interval_title">再通知間隔</string>
-    <string name="pref_notify_renotify_interval_unit">分</string>
-    <string name="pref_notify_renotify_count_title">再通知回数</string>
-    <string name="pref_notify_renotify_count_unit">回</string>
-    <string name="pref_notify_renotify_count_zero">制限なし</string>
-    <string name="pref_notify_stop_screen_title">通知停止設定</string>
-    <string name="pref_notify_stop_screen_summary">通知音等の停止に関する設定</string>
-    <string name="pref_group_notify_stop_on_screen">画面ONで停止</string>
-    <string name="pref_notify_stop_on_screen_title">画面ONで停止</string>
-    <string name="pref_notify_stop_on_screen_summary">電源ボタンを押したときに通知音・バイブレーションを停止します。</string>
-    <string name="pref_notify_stop_led_on_screen_title">LEDも消灯</string>
-    <string name="pref_notify_stop_led_on_screen_summary">LEDも消灯します。</string>
-    <string name="pref_notify_stop_renotify_on_screen_title">再通知も停止</string>
-    <string name="pref_notify_stop_renotify_on_screen_summary">停止後は再通知しません。</string>
-    <string name="pref_group_other">その他</string>
-    <string name="pref_notify_delay_title">通知遅延</string>
-    <string name="pref_notify_delay_summary">メール着信を検出してから通知するまでの待ち時間を設定します。</string>
-    <string name="pref_notify_delay_unit">秒</string>
-    <string name="pref_notify_delay_zero">無効 (即時通知)</string>
-    <string name="pref_group_notify_autoclear">自動消去</string>
-    <string name="pref_notify_autoclear_interval_title">自動消去時間</string>
-    <string name="pref_notify_autoclear_interval_summary">通知を自動的に消去するまでの時間を設定します。</string>
-    <string name="pref_notify_autoclear_interval_unit">分</string>
-    <string name="pref_notify_autoclear_interval_zero">無効</string>
-    <string name="pref_group_notify_test">通知テスト</string>
-    <string name="pref_group_experimental">試験的な実装 (Experimental)</string>
-    <string name="pref_exclude_hours_title">通知抑止時間帯</string>
-    <string name="pref_exclude_hours_summary">指定した時間帯の通知を抑止します。</string>
-    <string name="pref_exclude_hours_warning">「(開始時)-(終了時)」という形式で入力してください。\n\n例)\n「0&#8211;6」  0:00～ 6:00\n「23&#8211;6」 23:00～ 6:00</string>
-    <string name="pref_exclude_hours_invalid">時間帯の指定が無効です。</string>
-    <string name="pref_exclude_hours_from">:00～</string>
-    <string name="pref_exclude_hours_to">:00</string>
-    <string name="pref_group_debug">デバッグ</string>
-    <string name="pref_group_debug_log">デバッグログ</string>
-    <string name="pref_debug_log_send_title">定期的に送信</string>
-    <string name="pref_debug_log_send_summary">動作ログを定期的に開発者に送信します。</string>
-    <string name="pref_debug_log_send_warning">アプリの動作精度向上を目的とし、定期的に動作ログの送信をおこないます。送信されるログにはメールアドレスの情報が含まれます。ログは暗号化されて送信され、開発用途以外には使用しません。\n\n動作ログの送信を許可しますか？
+    <string name="pref_group_notify_launch" translatable="false">メールアプリ設定</string>
+    <string name="pref_notify_launch_app_title" translatable="false">起動アプリ</string>
+    <string name="pref_notify_launch_app_is" translatable="false">通知タップ時に起動するアプリ:</string>
+    <string name="pref_notify_launch_app_summary" translatable="false">通知をタップしたときに起動するアプリを選択してください。</string>
+    <string name="select_app" translatable="false">アプリ選択</string>
+    <string name="pref_group_notify_network" translatable="false">ネットワーク設定</string>
+    <string name="pref_notify_auto_connect_title" translatable="false">自動接続</string>
+    <string name="pref_notify_auto_connect_summary" translatable="false">通知をタップしたときにネットワークに自動的に接続します。</string>
+    <string name="pref_notify_auto_connect_warning" translatable="false">モバイルネットワークまたは Wi-Fi に接続するよう一時的に設定を変更してから指定したアプリを起動します。メール受信後は復元アイコンをタップすることで元の設定に復元できます。\n\nモバイルネットワークへの接続については、ご使用の端末や環境によっては正常に動作しない場合があります。Android 4.0 以降では接続先 APN を指定することはできません。\n\n自動接続を有効にしてよろしいですか?</string>
+    <string name="pref_notify_auto_connect_type_title" translatable="false">ネットワーク種別</string>
+    <string name="mobile_network" translatable="false">モバイルネットワーク</string>
+    <string name="wifi" translatable="false">Wi-Fi</string>
+    <string name="pref_notify_auto_connect_apn_title" translatable="false">接続先APN</string>
+    <string name="pref_notify_auto_connect_force_title" translatable="false">接続時も切り替え</string>
+    <string name="pref_notify_auto_connect_force_summary" translatable="false">別のネットワークに接続済みの場合でも、指定したネットワークに切り替えます。</string>
+    <string name="apn_not_writable" translatable="false">APNを変更する権限がありません</string>
+    <string name="apn_not_specify" translatable="false">変更しない</string>
+    <string name="pref_group_notify_sms" translatable="false">SMS通知設定</string>
+    <string name="pref_notify_sms_title" translatable="false">SMS通知</string>
+    <string name="pref_notify_sms_summary" translatable="false">指定した電話番号にSMSで通知します。</string>
+    <string name="pref_notify_sms_warning" translatable="false">SMSの送信には送信料がかかります。通知を有効にしますか？</string>
+    <string name="pref_notify_sms_tel_title" translatable="false">通知先電話番号</string>
+    <string name="notify_sms_failed" translatable="false">SMSの送信に失敗しました。</string>
+    <string name="pref_group_notify_renotify" translatable="false">再通知設定</string>
+    <string name="pref_notify_renotify_title" translatable="false">再通知</string>
+    <string name="pref_notify_renotify_summary" translatable="false">通知を消去するまで定期的に再通知します。</string>
+    <string name="pref_notify_renotify_interval_title" translatable="false">再通知間隔</string>
+    <string name="pref_notify_renotify_interval_unit" translatable="false">分</string>
+    <string name="pref_notify_renotify_count_title" translatable="false">再通知回数</string>
+    <string name="pref_notify_renotify_count_unit" translatable="false">回</string>
+    <string name="pref_notify_renotify_count_zero" translatable="false">制限なし</string>
+    <string name="pref_notify_stop_screen_title" translatable="false">通知停止設定</string>
+    <string name="pref_notify_stop_screen_summary" translatable="false">通知音等の停止に関する設定</string>
+    <string name="pref_group_notify_stop_on_screen" translatable="false">画面ONで停止</string>
+    <string name="pref_notify_stop_on_screen_title" translatable="false">画面ONで停止</string>
+    <string name="pref_notify_stop_on_screen_summary" translatable="false">電源ボタンを押したときに通知音・バイブレーションを停止します。</string>
+    <string name="pref_notify_stop_led_on_screen_title" translatable="false">LEDも消灯</string>
+    <string name="pref_notify_stop_led_on_screen_summary" translatable="false">LEDも消灯します。</string>
+    <string name="pref_notify_stop_renotify_on_screen_title" translatable="false">再通知も停止</string>
+    <string name="pref_notify_stop_renotify_on_screen_summary" translatable="false">停止後は再通知しません。</string>
+    <string name="pref_group_other" translatable="false">その他</string>
+    <string name="pref_notify_delay_title" translatable="false">通知遅延</string>
+    <string name="pref_notify_delay_summary" translatable="false">メール着信を検出してから通知するまでの待ち時間を設定します。</string>
+    <string name="pref_notify_delay_unit" translatable="false">秒</string>
+    <string name="pref_notify_delay_zero" translatable="false">無効 (即時通知)</string>
+    <string name="pref_group_notify_autoclear" translatable="false">自動消去</string>
+    <string name="pref_notify_autoclear_interval_title" translatable="false">自動消去時間</string>
+    <string name="pref_notify_autoclear_interval_summary" translatable="false">通知を自動的に消去するまでの時間を設定します。</string>
+    <string name="pref_notify_autoclear_interval_unit" translatable="false">分</string>
+    <string name="pref_notify_autoclear_interval_zero" translatable="false">無効</string>
+    <string name="pref_group_notify_test" translatable="false">通知テスト</string>
+    <string name="pref_group_experimental" translatable="false">試験的な実装 (Experimental)</string>
+    <string name="pref_exclude_hours_title" translatable="false">通知抑止時間帯</string>
+    <string name="pref_exclude_hours_summary" translatable="false">指定した時間帯の通知を抑止します。</string>
+    <string name="pref_exclude_hours_warning" translatable="false">「(開始時)-(終了時)」という形式で入力してください。\n\n例)\n「0&#8211;6」  0:00～ 6:00\n「23&#8211;6」 23:00～ 6:00</string>
+    <string name="pref_exclude_hours_invalid" translatable="false">時間帯の指定が無効です。</string>
+    <string name="pref_exclude_hours_from" translatable="false">:00～</string>
+    <string name="pref_exclude_hours_to" translatable="false">:00</string>
+    <string name="pref_group_debug" translatable="false">デバッグ</string>
+    <string name="pref_group_debug_log" translatable="false">デバッグログ</string>
+    <string name="pref_debug_log_send_title" translatable="false">定期的に送信</string>
+    <string name="pref_debug_log_send_summary" translatable="false">動作ログを定期的に開発者に送信します。</string>
+    <string name="pref_debug_log_send_warning" translatable="false">アプリの動作精度向上を目的とし、定期的に動作ログの送信をおこないます。送信されるログにはメールアドレスの情報が含まれます。ログは暗号化されて送信され、開発用途以外には使用しません。\n\n動作ログの送信を許可しますか？
     </string>
-    <string name="pref_debug_log_send_wifionly_title">Wi-Fi接続時のみ</string>
-    <string name="pref_debug_log_send_wifionly_summary">3G接続時にはログを送信しません。</string>
-    <string name="pref_debug_feedback_title">フィードバック</string>
-    <string name="pref_debug_feedback_summary">今すぐ動作ログを開発者に送信し、メールを送ります。</string>
-    <string name="sending_log">ログを送信しています。</string>
-    <string name="send_log_failed">ログの送信に失敗しました。</string>
-    <string name="notification_muted_now">- 通知音が無音に設定されています。\n</string>
-    <string name="vibration_disabled_now">- 通知バイブレーションが無効に設定されています。\n</string>
-    <string name="check_system_settings">携帯電話の設定を確認してください。</string>
-    <string name="loading_app_list">アプリケーションの一覧を取得しています。</string>
-    <string name="enable">有効化</string>
-    <string name="enabled">監視中</string>
-    <string name="disabled">停止中</string>
-    <string name="test_notify">通知テスト</string>
-    <string name="service_started">メール着信監視を開始しました。</string>
-    <string name="service_stopped">メール着信監視を停止しました。</string>
-    <string name="notify_expired">使用期限を過ぎました。最新版をご利用ください。</string>
-    <string name="notify_suspended">メール着信監視が停止しました。</string>
-    <string name="application_not_found">アプリケーションを起動できませんでした。</string>
+    <string name="pref_debug_log_send_wifionly_title" translatable="false">Wi-Fi接続時のみ</string>
+    <string name="pref_debug_log_send_wifionly_summary" translatable="false">3G接続時にはログを送信しません。</string>
+    <string name="pref_debug_feedback_title" translatable="false">フィードバック</string>
+    <string name="pref_debug_feedback_summary" translatable="false">今すぐ動作ログを開発者に送信し、メールを送ります。</string>
+    <string name="sending_log" translatable="false">ログを送信しています。</string>
+    <string name="send_log_failed" translatable="false">ログの送信に失敗しました。</string>
+    <string name="notification_muted_now" translatable="false">- 通知音が無音に設定されています。\n</string>
+    <string name="vibration_disabled_now" translatable="false">- 通知バイブレーションが無効に設定されています。\n</string>
+    <string name="check_system_settings" translatable="false">携帯電話の設定を確認してください。</string>
+    <string name="loading_app_list" translatable="false">アプリケーションの一覧を取得しています。</string>
+    <string name="enable" translatable="false">有効化</string>
+    <string name="enabled" translatable="false">監視中</string>
+    <string name="disabled" translatable="false">停止中</string>
+    <string name="test_notify" translatable="false">通知テスト</string>
+    <string name="service_started" translatable="false">メール着信監視を開始しました。</string>
+    <string name="service_stopped" translatable="false">メール着信監視を停止しました。</string>
+    <string name="notify_expired" translatable="false">使用期限を過ぎました。最新版をご利用ください。</string>
+    <string name="notify_suspended" translatable="false">メール着信監視が停止しました。</string>
+    <string name="application_not_found" translatable="false">アプリケーションを起動できませんでした。</string>
 
 </resources>

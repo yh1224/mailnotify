@@ -8,7 +8,7 @@
         <item>@string/vibration_pattern_4</item>
         <item>@string/vibration_pattern_5</item>
     </string-array>
-    <string-array name="entryvalues_vibration_pattern">
+    <string-array name="entryvalues_vibration_pattern" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -24,7 +24,7 @@
         <item>@string/magenta</item>
         <item>@string/white</item>
     </string-array>
-    <string-array name="entryvalues_led_color">
+    <string-array name="entryvalues_led_color" translatable="false">
         <item>ffff0000</item>
         <item>ff00ff00</item>
         <item>ff0000ff</item>
@@ -37,7 +37,7 @@
         <item>@string/mobile_network</item>
         <item>@string/wifi</item>
     </string-array>
-    <string-array name="entryvalues_auto_connect_type">
+    <string-array name="entryvalues_auto_connect_type" translatable="false">
         <item>mobile</item>
         <item>wifi</item>
     </string-array>
