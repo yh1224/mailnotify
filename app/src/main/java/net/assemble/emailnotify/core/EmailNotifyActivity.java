@@ -55,7 +55,7 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         updateService();
 
         //noinspection PointlessBooleanExpression
-        if (BuildConfig.FREE_VERSION) {
+        if (BuildConfig.FEATURE_SENDLOG) {
             confirmReport();
         }
     }

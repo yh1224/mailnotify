@@ -79,6 +79,9 @@ public class EmailNotifyPreferencesActivity extends PreferenceActivity
         //noinspection PointlessBooleanExpression
         if (BuildConfig.FREE_VERSION) {
             addPreferencesFromResource(R.xml.preferences_free);
+            if (BuildConfig.FEATURE_SENDLOG) {
+                addPreferencesFromResource(R.xml.preferences_free_debug);
+            }
         } else {
             addPreferencesFromResource(R.xml.preferences);
         }

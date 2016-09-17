@@ -130,7 +130,7 @@ public class EmailNotifyObserveService extends Service {
 
         // ログ送信
         //noinspection PointlessBooleanExpression
-        if (BuildConfig.FREE_VERSION && EmailNotifyPreferences.getSendLog(this)) {
+        if (BuildConfig.FEATURE_SENDLOG && EmailNotifyPreferences.getSendLog(this)) {
             long prev = EmailNotifyPreferences.getLogSent(this);
             long current = Calendar.getInstance().getTimeInMillis();
             if (prev == 0 || current - prev > LOG_SEND_INTERVAL) {
