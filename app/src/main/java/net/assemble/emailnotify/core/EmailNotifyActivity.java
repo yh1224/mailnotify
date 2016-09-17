@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -126,21 +125,21 @@ public class EmailNotifyActivity extends Activity implements View.OnClickListene
         }
 
         // 購入メニュー (FREE/TRIAL版)
-        //noinspection PointlessBooleanExpression
-        if (BuildConfig.FREE_VERSION || EmailNotify.TRIAL_EXPIRES != null) {
-            if (!EmailNotifyPreferences.getLicense(this)) {
-                MenuItem menuBuy = menu.add(R.string.buy);
-                menuBuy.setIcon(android.R.drawable.ic_menu_more);
-                menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(EmailNotify.MARKET_URL));
-                        startActivity(intent);
-                        return true;
-                    }
-                });
-            }
-        }
+//        //noinspection PointlessBooleanExpression
+//        if (BuildConfig.FREE_VERSION || EmailNotify.TRIAL_EXPIRES != null) {
+//            if (!EmailNotifyPreferences.getLicense(this)) {
+//                MenuItem menuBuy = menu.add(R.string.buy);
+//                menuBuy.setIcon(android.R.drawable.ic_menu_more);
+//                menuBuy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(EmailNotify.MARKET_URL));
+//                        startActivity(intent);
+//                        return true;
+//                    }
+//                });
+//            }
+//        }
 
         return true;
     }
