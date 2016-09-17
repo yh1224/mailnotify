@@ -15,12 +15,14 @@ android {
             versionCode 423
             versionName "4.2.3"
             buildConfigField "boolean", "FREE_VERSION", "true"
+            buildConfigField "boolean", "FEATURE_SENDLOG", "false"
         }
         Plus {
             applicationId "net.assemble.mailnotify"
             versionCode 430
             versionName "4.3"
             buildConfigField "boolean", "FREE_VERSION", "false"
+            buildConfigField "boolean", "FEATURE_SENDLOG", "false"
         }
     }
     buildTypes {
