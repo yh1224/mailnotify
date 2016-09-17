@@ -17,6 +17,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.SystemClock;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -174,7 +175,11 @@ public class EmailNotification {
                 long next = SystemClock.elapsedRealtime() + interval * 1000;
                 mRenotifyIntent = getPendingIntent(EmailNotificationReceiver.ACTION_RENOTIFY);
                 AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                } else {
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                }
                 mActiveNotify |= NOTIFY_RENOTIFY;
                 if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId + "] Started renotify timer for " +
                         mMailbox + " (" + interval + "sec.), active=" + mActiveNotify);
@@ -238,7 +243,11 @@ public class EmailNotification {
                 long next = SystemClock.elapsedRealtime() + delay * 1000;
                 mRenotifyIntent = getPendingIntent(EmailNotificationReceiver.ACTION_RENOTIFY);
                 AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                } else {
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mRenotifyIntent);
+                }
                 if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "[" + mNotificationId +
                         "] Started notify delay timer for " + mMailbox + " (" + delay + " sec.)");
                 MyLog.d(mCtx, EmailNotify.TAG, "[" + mNotificationId +
@@ -328,7 +337,11 @@ public class EmailNotification {
             long next = SystemClock.elapsedRealtime() + soundLen * 1000;
             mStopIntent = getPendingIntent(EmailNotificationReceiver.ACTION_STOP_SOUND);
             AlarmManager alarmManager = (AlarmManager) mCtx.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
+            } else {
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, next, mStopIntent);
+            }
             if (BuildConfig.DEBUG) Log.d(EmailNotify.TAG, "[" + (mNotificationId + NOTIFICATIONID_SOUND) +
                     "] Started stop timer for " + mMailbox);
         }
